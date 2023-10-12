@@ -20,7 +20,7 @@
 
 CC := gcc
 CFLAGS := -Wall -Wextra -Werror -pedantic
-LIBS := -lm 
+LIBS := -lm
 DEBUG_CFLAGS := -g
 RELEASE_CFLAGS := -O2
 
@@ -29,7 +29,7 @@ BUILDDIR := .
 EXE_NAME := programa-principal
 DOCSDIR := docs
 
-define Doxyfile 
+define Doxyfile
 
 	INPUT = include src README.md
 	RECURSIVE = YES
@@ -47,25 +47,37 @@ endef
 
 # END CONFIGURATION
 
+# START MAKEFILE RULES
 
+export Doxyfile
 
+SOURCES = $(shell ls src/*.c)
+HEADERS = $(shell ls include/*.h)
+OBJECTS = $(patsubst src/%.c, $(OBJDIR)/%.o, $(SOURCES))
 
+ifeq ($(DEBUG), 1)
+	CFLAGS += ${DEBUG_CFLAGS}
+else
+	CFLAGS += ${RELEASE_CFLAGS}
+endif
 
+default: $(BUILDDIR)/$(EXE_NAME)
 
+$(OBJDIR)/%.o: src/%.c $(HEADERS) $(OBJDIRS)
+	@mkdir -p $(shell dirname $@)
+	${CC} -c -o $@ $< ${CFLAGS} -Iinclude
 
+$(BUILDDIR)/$(EXE_NAME): $(OBJECTS)
+	@mkdir -p $(BUILDDIR)
+	$(CC) -o $@ $^ ${LIBS}
 
+$(DOCSDIR): $(SOURCES) $(HEADERS) README.md
+	echo "$$Doxyfile" | doxygen -
 
+clean:
+	@rm -r $(OBJDIR)            > /dev/null 2>&1 ||:
+	@rm $(BUILDDIR)/$(EXE_NAME) > /dev/null 2>&1 ||:
+	@rm -r $(DOCSDIR)           > /dev/null 2>&1 ||:
 
-
-
-
-
-
-
-
-
-
-
-
-
+# END MAKEFILE RULES
 
