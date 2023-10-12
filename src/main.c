@@ -24,12 +24,12 @@
 
 /**
  * @brief (Exemplo de como documentar código usando doxygen)
- * 
- * @param argc 
- * @param argsv 
- * @return int 
+ *
+ * @param argc
+ * @param argsv
+ * @return int
  */
 
-int main(int argc,char** argsv){
+int main(int argc, char** argsv){
     return 0;
 }

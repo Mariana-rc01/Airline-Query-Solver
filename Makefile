@@ -18,30 +18,30 @@
 
 # START CONFIGURATION
 
-CC := gcc
-CFLAGS := -Wall -Wextra -Werror -pedantic
-LIBS := -lm
-DEBUG_CFLAGS := -g
+CC             := gcc
+CFLAGS         := -Wall -Wextra -Werror -pedantic
+LIBS           := -lm
+DEBUG_CFLAGS   := -g
 RELEASE_CFLAGS := -O2
 
-OBJDIR := obj
-BUILDDIR := .
-EXE_NAME := programa-principal
-DOCSDIR := docs
+OBJDIR         := obj
+#BUILDDIR := .
+EXE_NAME       := programa-principal
+DOCSDIR        := docs
 
 define Doxyfile
 
-	INPUT = include src README.md
-	RECURSIVE = YES
-	EXTRACT_ALL = YES
-	FILE_PATTERNS = *.h *.c
+	INPUT                  = include src README.md
+	RECURSIVE              = YES
+	EXTRACT_ALL            = YES
+	FILE_PATTERNS 		   = *.h *.c
 
-	PROJECT_NAME = SciLabProject
+	PROJECT_NAME 		   = SciLabProject
 	USE_MDFILE_AS_MAINPAGE = README.md
 
-	OUTPUT_DIRECTORY = $(DOCSDIR)
-	GENERATE_HTML = YES
-	GENERATE_LATEX = YES
+	OUTPUT_DIRECTORY	   = $(DOCSDIR)
+	GENERATE_HTML          = YES
+	GENERATE_LATEX         = YES
 
 endef
 
@@ -61,23 +61,22 @@ else
 	CFLAGS += ${RELEASE_CFLAGS}
 endif
 
-default: $(BUILDDIR)/$(EXE_NAME)
+default: $(EXE_NAME)
 
 $(OBJDIR)/%.o: src/%.c $(HEADERS) $(OBJDIRS)
 	@mkdir -p $(shell dirname $@)
 	${CC} -c -o $@ $< ${CFLAGS} -Iinclude
 
-$(BUILDDIR)/$(EXE_NAME): $(OBJECTS)
-	@mkdir -p $(BUILDDIR)
+$(EXE_NAME): $(OBJECTS)
 	$(CC) -o $@ $^ ${LIBS}
 
 $(DOCSDIR): $(SOURCES) $(HEADERS) README.md
 	echo "$$Doxyfile" | doxygen -
 
 clean:
-	@rm -r $(OBJDIR)            > /dev/null 2>&1 ||:
-	@rm $(BUILDDIR)/$(EXE_NAME) > /dev/null 2>&1 ||:
-	@rm -r $(DOCSDIR)           > /dev/null 2>&1 ||:
+	@rm -r $(OBJDIR)   > /dev/null 2>&1 ||:
+	@rm $(EXE_NAME)    > /dev/null 2>&1 ||:
+	@rm -r $(DOCSDIR)  > /dev/null 2>&1 ||:
 
 # END MAKEFILE RULES
 
