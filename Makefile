@@ -19,8 +19,8 @@
 # START CONFIGURATION
 
 CC             := gcc
-CFLAGS         := -Wall -Wextra -Werror -pedantic
-LIBS           := -lm
+CFLAGS         := -Wall -Wextra -Werror -pedantic $(shell pkg-config --cflags glib-2.0)
+LIBS           := -lm $(shell pkg-config --libs glib-2.0)
 DEBUG_CFLAGS   := -g
 RELEASE_CFLAGS := -O2
 
@@ -51,8 +51,8 @@ endef
 
 export Doxyfile
 
-SOURCES = $(shell ls src/*.c)
-HEADERS = $(shell ls include/*.h)
+SOURCES = $(shell ls src/**/*.c)
+HEADERS = $(shell ls include/**/*.h)
 OBJECTS = $(patsubst src/%.c, $(OBJDIR)/%.o, $(SOURCES))
 
 ifeq ($(DEBUG), 1)

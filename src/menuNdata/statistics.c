@@ -1,6 +1,6 @@
 /**
- * @file main.c
- * @brief Contains the entry point to the program
+ * @file statistics.c
+ * @brief Module that connects all the entities
  */
 
 /*
@@ -17,21 +17,16 @@
  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
- */
+*/
 
+#include "menuNdata/statistics.h"
+
+#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-/**
- * @brief (Exemplo de como documentar código usando doxygen)
- *
- * @param argc
- * @param argsv
- * @return int
- */
+struct stats{
 
-int main(int argc, char** argsv){
-    argc++;
-    argsv[0] = "1";
-    return 0;
-}
+};
+

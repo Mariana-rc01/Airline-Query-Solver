@@ -1,1 +1,0 @@
-pasta onde serão armazenados os ficheiros gerados pelo doxygen.

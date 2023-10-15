@@ -1,6 +1,6 @@
 /**
- * @file main.c
- * @brief Contains the entry point to the program
+ * @file parser.h
+ * @brief Module that parses any given file
  */
 
 /*
@@ -17,21 +17,28 @@
  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
- */
+*/
 
+#ifndef PARSER_H
+#define PARSER_H
+
+#include <glib.h>
 #include <stdio.h>
-#include <stdlib.h>
+
+typedef void (*void_function)(char**, void*, STATS);
 
 /**
- * @brief (Exemplo de como documentar código usando doxygen)
- *
- * @param argc
- * @param argsv
- * @return int
- */
+ * @brief Function to parse a file
+ * 
+ * @param f Pointer to given file
+ * @param max_fields Number of attributes of the csv file
+ * @param func Function that loads the data into the structs
+ * @param catalog The catalog of the respective file
+ * @param statistics Struct that contains the data
+*/
 
-int main(int argc, char** argsv){
-    argc++;
-    argsv[0] = "1";
-    return 0;
-}
+void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS statistics);
+
+char** parseL (char* line, int max_fields);
+
+#endif

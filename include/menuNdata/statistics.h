@@ -1,6 +1,6 @@
 /**
- * @file main.c
- * @brief Contains the entry point to the program
+ * @file statistics.h
+ * @brief Module that connects all the entities
  */
 
 /*
@@ -19,19 +19,10 @@
  *   limitations under the License.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef STATISTICS_H
+#define STATISTICS_H
 
-/**
- * @brief (Exemplo de como documentar código usando doxygen)
- *
- * @param argc
- * @param argsv
- * @return int
- */
 
-int main(int argc, char** argsv){
-    argc++;
-    argsv[0] = "1";
-    return 0;
-}
+typedef struct statistics* STATS;
+
+#endif

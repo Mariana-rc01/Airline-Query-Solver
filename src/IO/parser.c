@@ -1,6 +1,6 @@
 /**
- * @file main.c
- * @brief Contains the entry point to the program
+ * @file parser.c
+ * @brief Module that parses any given file
  */
 
 /*
@@ -17,21 +17,41 @@
  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
- */
+*/
 
+#include "menuNdata/statistics.h"
+#include "IO/parser.h"
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
+#include <ncurses.h>
+#include <glib.h>
 
-/**
- * @brief (Exemplo de como documentar código usando doxygen)
- *
- * @param argc
- * @param argsv
- * @return int
- */
+void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS statistics){
 
-int main(int argc, char** argsv){
-    argc++;
-    argsv[0] = "1";
-    return 0;
+    char* line = NULL;
+    size_t lsize = 0;
+
+    // Ignore first line
+    getline(&line,&lsize,f);
+
+    while(getline(&line,&lsize,f) != -1){
+
+        //Replace \n for \0
+        line[strlen(line)-1] = '\0';
+
+
+        char **fields = parseL(line, max_fields);
+        func(fields,catalog,statistics);
+
+        free(fields);
+    }
+
+    free(line);
 }
+
+
+
+
+
+
