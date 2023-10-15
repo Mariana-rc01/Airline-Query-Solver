@@ -29,7 +29,7 @@ typedef void (*void_function)(char**, void*, STATS);
 
 /**
  * @brief Function to parse a file
- * 
+ *
  * @param f Pointer to given file
  * @param max_fields Number of attributes of the csv file
  * @param func Function that loads the data into the structs
@@ -38,6 +38,13 @@ typedef void (*void_function)(char**, void*, STATS);
 */
 
 void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS statistics);
+
+/**
+ * @brief Function to parse a line
+ *
+ * @param line Pointer to given line
+ * @param max_fields Number of attributes of the csv file
+*/
 
 char** parseL (char* line, int max_fields);
 

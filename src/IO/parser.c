@@ -50,8 +50,23 @@ void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS s
     free(line);
 }
 
+char** parseL (char* line, int max_fields){
+    char** fields = malloc(sizeof(char*) * max_fields);
+    char* temp = strstr(line, ";");
+    char* field = NULL;
 
+    for (int i = 0; temp != NULL; (temp = strstr(line, ";")) && i++) {
+        if (temp != line) field = temp;
+        else field = NULL;
 
+        fields[i] = field;
+        line = temp + 1;
+        *temp = '\0';
+    }
 
+    field = line;
+    fields[i] = field;
 
+    return fields;
+}
 

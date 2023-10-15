@@ -1,1 +1,0 @@
-pasta onde se encontrarão as API de cada entidade
