@@ -22,9 +22,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include <glib.h>
 #include <stdio.h>
-
 #include "menuNdata/statistics.h"
 
 typedef void (*void_function)(char**, void*, STATS);

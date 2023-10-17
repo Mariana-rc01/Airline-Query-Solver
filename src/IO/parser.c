@@ -24,8 +24,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ncurses.h>
-#include <glib.h>
 
 void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS statistics){
 
