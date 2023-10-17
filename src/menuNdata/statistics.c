@@ -27,6 +27,6 @@
 #include <string.h>
 
 struct stats{
-
+    int n;
 };
 

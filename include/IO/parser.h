@@ -25,6 +25,8 @@
 #include <glib.h>
 #include <stdio.h>
 
+#include "menuNdata/statistics.h"
+
 typedef void (*void_function)(char**, void*, STATS);
 
 /**

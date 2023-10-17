@@ -33,7 +33,9 @@ void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS s
     size_t lsize = 0;
 
     // Ignore first line
-    getline(&line,&lsize,f);
+    if (getline(&line,&lsize,f) == -1) {
+        printf("Invalid csv.\n");
+    }
 
     while(getline(&line,&lsize,f) != -1){
 
@@ -55,7 +57,8 @@ char** parseL (char* line, int max_fields){
     char* temp = strstr(line, ";");
     char* field = NULL;
 
-    for (int i = 0; temp != NULL; (temp = strstr(line, ";")) && i++) {
+    int i;
+    for (i = 0; temp != NULL; (temp = strstr(line, ";")), i++) {
         if (temp != line) field = temp;
         else field = NULL;
 
