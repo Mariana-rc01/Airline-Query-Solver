@@ -1,6 +1,6 @@
 /**
  * @file passengers.h
- * @brief
+ * @brief This file contains the definition of the passengers struct and related functions.
  */
 
 /*
@@ -22,24 +22,67 @@
 #ifndef PASSENGERS_H
 #define PASSENGERS_H
 
+/**
+ * @typedef PASS
+ * @brief Typedef for struct passengers pointer.
+ */
 typedef struct passengers *PASS;
 
 #include "menuNdata/statistics.h"
 
+/**
+ * @brief Creates a new passengers struct with default values.
+ * @return A pointer to the newly created passenger.
+ */
 PASS create_passengers(void);
 
-void set_flight_id(PASS pass, int f_id);
+/**
+ * @brief Sets the flight ID associated with the passenger.
+ * @param pass A pointer to the passenger struct.
+ * @param f_id The flight ID.
+ */
+void set_flight_id_P(PASS pass, int f_id);
 
-void set_user_id(PASS pass, char* u_id);
+/**
+ * @brief Sets the user ID of the passenger.
+ * @param pass A pointer to the passenger struct.
+ * @param u_id The user ID of the passenger.
+ */
+void set_user_id_P(PASS pass, char* u_id);
 
-int get_flight_id(PASS pass);
+/**
+ * @brief Gets the flight ID associated with the passenger.
+ * @param pass A pointer to the passenger struct.
+ * @return The flight ID.
+ */
+int get_flight_id_P(PASS pass);
 
-char* get_user_id(PASS pass);
+/**
+ * @brief Gets the user ID of the passenger.
+ * @param pass A pointer to the passenger struct.
+ * @return The user ID of the passenger.
+ */
+char* get_user_id_P(PASS pass);
 
+/**
+ * @brief Frees memory associated with a passenger struct.
+ * @param pass A pointer to the passenger struct.
+ */
 void free_passengers(PASS pass);
 
-int verifiy_passengers(char** passengers_fields);
+/**
+ * @brief Verifies the validity of passenger data.
+ * @param passengers_fields An array of passenger data fields.
+ * @return 1 if the passenger data is valid, 0 otherwise.
+ */
+int verify_passengers(char** passengers_fields);
 
+/**
+ * @brief Builds a passenger struct from passenger data fields.
+ * @param passengers_fields An array of passenger data fields.
+ * @param catalog A pointer to the catalog.
+ * @param stats A pointer to the statistics.
+ */
 void build_passengers(char** passengers_fields, void* catalog, STATS stats);
 
 #endif

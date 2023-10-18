@@ -1,6 +1,6 @@
 /**
  * @file users.c
- * @brief
+ * @brief This file contains the implementation of the user struct and related functions.
  */
 
 /*
@@ -27,19 +27,23 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * @struct user
+ * @brief Represents user information.
+ */
 struct user {
-    char* id;
-    char* name;
-    char* email;
-    char* phone_number;
-    int birth_date;
-    char sex;
-    char* passport;
-    char* country_code;
-    char* address;
-    char* account_creation;
-    char* pay_method;
-    char* account_status;
+    char* id; /**< Unique user ID. */
+    char* name; /**< User's name. */
+    char* email; /**< User's email address. */
+    char* phone_number; /**< User's phone number. */
+    int birth_date; /**< User's birth date in YYYYMMDD format. */
+    char sex; /**< User's gender (single character). */
+    char* passport; /**< User's passport information. */
+    char* country_code; /**< User's country code. */
+    char* address; /**< User's address. */
+    char* account_creation; /**< Account creation date and time. */
+    char* pay_method; /**< User's payment method. */
+    char* account_status; /**< User's account status. */
 };
 
 USER create_user(void){
@@ -207,7 +211,7 @@ int verify_user(char** fields){
 }
 
 void build_user(char  **user_fields, void *catalog, STATS stats){
-    
+
     if (!verify_user(user_fields)) return;
 
     USER user = create_user();
