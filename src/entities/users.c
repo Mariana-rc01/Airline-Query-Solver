@@ -23,7 +23,6 @@
 
 #include "IO/input.h"
 #include "menuNdata/statistics.h"
-#include "catalog/user_catalog.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -49,6 +48,8 @@ USER create_user(void){
     new->name = NULL;
     new->email = NULL;
     new->phone_number = NULL;
+    new->birth_date = 0;
+    new->sex = "";
     new->passport = NULL;
     new->country_code = NULL;
     new->address = NULL;
@@ -57,31 +58,6 @@ USER create_user(void){
     new->account_status = NULL;
 
     return new;
-}
-
-void build_user(char  **user_fields, void *catalog, STATS stats){
-    if (!verify_user(user_fields)) return;
-
-    USER user = create_user();
-
-    set_user_id(user,user_fields[0]);
-    set_user_name(user,user_fields[1]);
-    set_user_email(user,user_fields[2]);
-    set_user_phone_number(user,user_fields[3]);
-    set_user_birth_date(user,user_fields[4]);
-    set_user_sex(user,user_fields[5]);
-    set_user_passport(user,user_fields[6]);
-    set_user_country_code(user,user_fields[7]);
-    set_user_address(user,user_fields[8]);
-    set_user_account_creation(user,user_fields[9]);
-    set_user_pay_method(user,user_fields[10]);
-    set_user_account_status(user,user_fields[11]);
-
-    //Fazer isto nos catalogos e estatisticas, só mencionei, ainda não escrevi nada sobre isso
-    USER_CATALOG user_catalog = (USER_CATALOG)catalog;
-    set_catalog_user_id(user, user_fields[0], catalog);
-    insert_user(user, user->id, user_catalog);
-    insert_user_statistics(stats,user);
 }
 
 void set_user_id(USER user, char* id){
@@ -100,9 +76,11 @@ void set_user_phone_number(USER user, char* phone_number){
     user->phone_number = strdup(phone_number);
 }
 
+// este tipo de funções podia ir para o utils nao? como o isdigit e isletter e ouratoi sq
 int s_to_d(char c){
     return c - '0';
 }
+
 /*YYYY/MM/DD -> YYYYMMDD*/
 void set_user_birth_date(USER user, char* birth_date){
     int date = 0;
@@ -204,8 +182,8 @@ void free_user(USER user){
     free(user->account_creation);
     free(user->pay_method);
     free(user->account_status);
-    free(user);
 
+    free(user);
 }
 
 int verify_user(char** fields){
@@ -226,4 +204,24 @@ int verify_user(char** fields){
     if (!(compare_date_timeless(fields[4],fields[9]))) return 0;
 
     return 1;
+}
+
+void build_user(char  **user_fields, void *catalog, STATS stats){
+    
+    if (!verify_user(user_fields)) return;
+
+    USER user = create_user();
+
+    set_user_id(user,user_fields[0]);
+    set_user_name(user,user_fields[1]);
+    set_user_email(user,user_fields[2]);
+    set_user_phone_number(user,user_fields[3]);
+    set_user_birth_date(user,user_fields[4]);
+    set_user_sex(user,user_fields[5]);
+    set_user_passport(user,user_fields[6]);
+    set_user_country_code(user,user_fields[7]);
+    set_user_address(user,user_fields[8]);
+    set_user_account_creation(user,user_fields[9]);
+    set_user_pay_method(user,user_fields[10]);
+    set_user_account_status(user,user_fields[11]);
 }

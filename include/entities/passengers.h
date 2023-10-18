@@ -1,5 +1,5 @@
 /**
- * @file flight_catalog.h
+ * @file passengers.h
  * @brief
  */
 
@@ -19,15 +19,27 @@
  *   limitations under the License.
 */
 
-#ifndef FLIGHT_CATALOG_H
-#define FLIGHT_CATALOG_H
+#ifndef PASSENGERS_H
+#define PASSENGERS_H
 
-#include "entities/flights.h"
+typedef struct passengers *PASS;
 
-typedef struct flight_catalog *FLIGHT_CATALOG;
+#include "menuNdata/statistics.h"
 
-void insert_flight(FLIGHT flight, int id, FLIGHT_CATALOG catalog);
+PASS create_passengers(void);
 
-void set_catalog_flight_id(FLIGHT flight, char* id, FLIGHT_CATALOG catalog);
+void set_flight_id(PASS pass, int f_id);
+
+void set_user_id(PASS pass, char* u_id);
+
+int get_flight_id(PASS pass);
+
+char* get_user_id(PASS pass);
+
+void free_passengers(PASS pass);
+
+int verifiy_passengers(char** passengers_fields);
+
+void build_passengers(char** passengers_fields, void* catalog, STATS stats);
 
 #endif

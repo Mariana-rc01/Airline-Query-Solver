@@ -259,7 +259,7 @@ int compare_date_time(char* date_string_start, char* date_string_end){
     return 1;
 }
 
-// “<username>@<domain>.<TLD>”
+// “<username>@<domain>.<TLD>” hugo@domain.pt
 int validate_email(char* email){
     int i = 0;
     int email_length = strlen(email);
@@ -282,7 +282,7 @@ int validate_email(char* email){
 }
 
 int validate_country_code(char* code){
-    if(strlen(code) != 3  ||
+    if(strlen(code) != 2  ||
        !isLetter(code[0]) ||
        !isLetter(code[1])) return 0;
 
@@ -320,7 +320,7 @@ int validate_airports(char* airport){
 
 int validate_hotel_stars(char* stars){
     int i = 0;
-    while(stars[i] != '.'  || stars[i] != '-' ||
+    while(stars[i] != '.'  || stars[i] != '-' || stars[i] != ',' ||
           stars[i] != '\0' || !isDigit(stars[i])) i++;
 
     if (stars[i] != '\0' && (ourAtoi(stars) < 1 || ourAtoi(stars) > 5)) return 0;

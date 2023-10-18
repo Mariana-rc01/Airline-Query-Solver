@@ -22,7 +22,6 @@
 #include "entities/flights.h"
 
 #include "menuNdata/statistics.h"
-#include "catalog/flight_catalog.h"
 #include "IO/input.h"
 
 #include <stdlib.h>
@@ -47,8 +46,10 @@ struct flight {
 
 FLIGHT create_flight(void){
     FLIGHT new = malloc(sizeof(struct flight));
+    new->id = 0;
     new->airline = NULL;
     new->plane_model = NULL;
+    new->total_seats = 0;
     new->origin = NULL;
     new->schedule_departure_date = NULL;
     new->schedule_arrival_date = NULL;
@@ -60,33 +61,6 @@ FLIGHT create_flight(void){
 
     return new;
 }
-
-void build_flight(char  **flight_fields, void *catalog, STATS stats){
-    if (!verify_flight(flight_fields)) return;
-
-    FLIGHT flight = create_flight();
-
-    set_flight_id(flight,flight_fields[0]);
-    set_flight_airline(flight,flight_fields[1]);
-    set_flight_plane_model(flight,flight_fields[2]);
-    set_flight_total_seats(flight,flight_fields[3]);
-    set_flight_origin(flight,flight_fields[4]);
-    set_flight_destination(flight,flight_fields[5]);
-    set_flight_schedule_departure_date(flight,flight_fields[6]);
-    set_flight_schedule_arrival_date(flight,flight_fields[7]);
-    set_flight_real_departure_date(flight,flight_fields[8]);
-    set_flight_real_arrival_date(flight,flight_fields[9]);
-    set_flight_pilot(flight,flight_fields[10]);
-    set_flight_copilot(flight,flight_fields[11]);
-    set_flight_notes(flight,flight_fields[12]);
-
-    //Fazer isto nos catalogos e estatisticas, só mencionei, ainda não escrevi nada sobre isso
-    FLIGHT_CATALOG flight_catalog = (FLIGHT_CATALOG)catalog;
-    set_catalog_flight_id(flight, flight_fields[0], catalog);
-    insert_flight(flight, flight->id, flight_catalog);
-    insert_flight_statistics(stats,flight);
-}
-
 
 void set_flight_id(FLIGHT flight, char* id){
     flight->id = ourAtoi(id);
@@ -230,3 +204,25 @@ int verify_flight(char** fields){
 
     return 1;
 }
+
+void build_flight(char  **flight_fields, void *catalog, STATS stats){
+    
+    if (!verify_flight(flight_fields)) return;
+
+    FLIGHT flight = create_flight();
+
+    set_flight_id(flight,flight_fields[0]);
+    set_flight_airline(flight,flight_fields[1]);
+    set_flight_plane_model(flight,flight_fields[2]);
+    set_flight_total_seats(flight,flight_fields[3]);
+    set_flight_origin(flight,flight_fields[4]);
+    set_flight_destination(flight,flight_fields[5]);
+    set_flight_schedule_departure_date(flight,flight_fields[6]);
+    set_flight_schedule_arrival_date(flight,flight_fields[7]);
+    set_flight_real_departure_date(flight,flight_fields[8]);
+    set_flight_real_arrival_date(flight,flight_fields[9]);
+    set_flight_pilot(flight,flight_fields[10]);
+    set_flight_copilot(flight,flight_fields[11]);
+    set_flight_notes(flight,flight_fields[12]);
+}
+
