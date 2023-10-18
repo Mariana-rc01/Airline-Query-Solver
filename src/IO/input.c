@@ -22,14 +22,14 @@
 #include "IO/input.h"
 
 #include <stdio.h>
-#include <stdbool.h>
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 /**
- * @brief Verifies if a character is a digit 
- * 
+ * @brief Verifies if a character is a digit
+ *
  * @param c Character to be verified
  * @return Bool
  */
@@ -43,18 +43,18 @@ int isLetter(char c){
 
 /**
  * @brief This function casts any String to Int.
- * 
+ *
  * We can't just cast a String to number, we have to pay attention to units
  * E.g. Thousands, Hundreds, Tens, Ones...
  * For this, we need to raise 10 to the power of the length of the string minus 2
  * This is the Invanriant of this function
- * 
- * 
+ *
+ *
  * @param string Accepts any type of string
  * @return Cast from string to int
  */
 int ourAtoi(char* string){
-    int i, r;
+    int i, r = 0;
     double n = pow(10.0,(double)(strlen(string)-2));
     for(i = 0; string[i] != '\0'; i++){
         r = (string[i] - '0') * (int) n;
@@ -87,7 +87,7 @@ int validate_date_timeless(char* date_string){
     else return 0;
 
     if (aux > 31 || aux < 1) return 0;
-    
+
     return 1;
 }
 
@@ -95,7 +95,7 @@ int validate_date_timeless(char* date_string){
 int validate_date_time(char* date_string){
 
     if(validate_date_timeless(date_string) == 0) return 0;
- 
+
     // Validate hours
     int aux;
     if(isDigit(date_string[11]) && isDigit(date_string[12]))
@@ -122,10 +122,10 @@ int validate_date_time(char* date_string){
 }
 
 int compare_date_timeless(char* date_string_start , char* date_string_end){
-    
+
     int i;
-    char* start = NULL; 
-    char* end = NULL;
+    char* start = (char*)malloc(5);
+    char* end = (char*)malloc(5);
     for(i = 0; i < 4; i++){
         start[i] = date_string_start[i];
     }
@@ -139,14 +139,18 @@ int compare_date_timeless(char* date_string_start , char* date_string_end){
     int yearS = ourAtoi(start);
     int yearE = ourAtoi(end);
 
-    if((yearS - yearE) > 0) return 0;
+    if((yearS - yearE) > 0) {
+        free(start);
+        free(end);
+        return 0;
+    }
     else if(yearS - yearE == 0){
 
         for(i = 0; i < 2; i++){
             start[i] = date_string_start[i+5];
         }
         start[i] = '\0';
-        
+
         for(i = 0; i < 2; i++){
             end[i] = date_string_end[i+5];
         }
@@ -155,13 +159,17 @@ int compare_date_timeless(char* date_string_start , char* date_string_end){
         int monthS = ourAtoi(start);
         int monthE = ourAtoi(end);
 
-        if((monthS - monthE) > 0) return 0;
+        if((monthS - monthE) > 0) {
+            free(start);
+            free(end);
+            return 0;
+        }
         else if((monthS - monthE) == 0){
             for(i = 0; i < 2; i++){
                 start[i] = date_string_start[i+8];
             }
             start[i] = '\0';
-            
+
             for(i = 0; i < 2; i++){
                 end[i] = date_string_end[i+8];
             }
@@ -170,9 +178,15 @@ int compare_date_timeless(char* date_string_start , char* date_string_end){
             int dayS = ourAtoi(start);
             int dayE = ourAtoi(end);
 
-            if((dayS - dayE) >= 0) return 0;
+            if((dayS - dayE) >= 0) {
+                free(start);
+                free(end);
+                return 0;
+            }
         }
     }
+    free(start);
+    free(end);
     return 1;
 }
 
@@ -181,8 +195,8 @@ int compare_date_time(char* date_string_start, char* date_string_end){
     if (compare_date_timeless(date_string_start, date_string_end) == 0) return 0;
 
     int i;
-    char* start = NULL; 
-    char* end = NULL;
+    char* start = (char*)malloc(5);
+    char* end = (char*)malloc(5);
     for(i = 0; i < 2; i++){
         start[i] = date_string_start[i+11];
     }
@@ -196,14 +210,18 @@ int compare_date_time(char* date_string_start, char* date_string_end){
     int hourS = ourAtoi(start);
     int hourE = ourAtoi(end);
 
-    if((hourS - hourE) > 0) return 0;
+    if((hourS - hourE) > 0) {
+        free(start);
+        free(end);
+        return 0;
+    }
     else if(hourS - hourE == 0){
 
         for(i = 0; i < 2; i++){
             start[i] = date_string_start[i+14];
         }
         start[i] = '\0';
-        
+
         for(i = 0; i < 2; i++){
             end[i] = date_string_end[i+14];
         }
@@ -212,13 +230,17 @@ int compare_date_time(char* date_string_start, char* date_string_end){
         int minuteS = ourAtoi(start);
         int minuteE = ourAtoi(end);
 
-        if((minuteS - minuteE) > 0) return 0;
+        if((minuteS - minuteE) > 0) {
+            free(start);
+            free(end);
+            return 0;
+        }
         else if((minuteS - minuteE) == 0){
             for(i = 0; i < 2; i++){
                 start[i] = date_string_start[i+17];
             }
             start[i] = '\0';
-            
+
             for(i = 0; i < 2; i++){
                 end[i] = date_string_end[i+17];
             }
@@ -227,14 +249,18 @@ int compare_date_time(char* date_string_start, char* date_string_end){
             int secondS = ourAtoi(start);
             int secondE = ourAtoi(end);
 
-            if((secondS - secondE) >= 0) return 0;
+            if((secondS - secondE) >= 0) {
+                free(start);
+                free(end);
+                return 0;
+            }
         }
     }
     return 1;
 }
 
-// “<username>@<domain>.<TLD>” 
-int validate_email(char* email){    
+// “<username>@<domain>.<TLD>”
+int validate_email(char* email){
     int i = 0;
     int email_length = strlen(email);
 
@@ -257,7 +283,7 @@ int validate_email(char* email){
 
 int validate_country_code(char* code){
     if(strlen(code) != 3  ||
-       !isLetter(code[0]) || 
+       !isLetter(code[0]) ||
        !isLetter(code[1])) return 0;
 
     return 1;
@@ -271,7 +297,7 @@ int validate_account_status(char* status){
     }
     if(status[i] != '\0') return 0;
     if(strcmp(status,"ACTIVE") != 0 || strcmp(status,"INACTIVE") != 0) return 0;
-    
+
     return 1;
 }
 
@@ -285,7 +311,7 @@ int validate_airports(char* airport){
     while(airport[i] != '\0' && isLetter(airport[i])){
         airport[i] = toupper(airport[i]);
         i++;
-    } 
+    }
 
     if(airport[i] != '\0') return 0;
 
@@ -320,10 +346,10 @@ int validate_price_per_night(char* price){
 }
 
 int validate_includes_breakfast(char* boolean){
-    
+
     if(strlen(boolean) == 0) return 1;
 
-    if(strlen(boolean) == 1 && 
+    if(strlen(boolean) == 1 &&
        (boolean[0] == '1' || boolean[0] == '0' ||
         boolean[0] == 't' || boolean[0] == 'f')) return 1;
 
@@ -335,7 +361,7 @@ int validate_includes_breakfast(char* boolean){
     }
     if(boolean[i] != '\0') return 0;
     if(strcmp(boolean,"TRUE") != 0 || strcmp(boolean,"FALSE") != 0) return 0;
-    
+
     return 1;
 }
 

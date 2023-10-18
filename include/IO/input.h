@@ -60,4 +60,28 @@ int compare_date_timeless(char* date_string_start , char* date_string_end);
  */
 int compare_date_time(char* date_string_start, char* date_string_end);
 
+int validate_email(char* email);
+
+int validate_country_code(char* code);
+
+int validate_account_status(char* status);
+
+int validate_total_seats(char* seats, char* passengers);
+
+int validate_airports(char* airport);
+
+int validate_hotel_stars(char* stars);
+
+int validate_city_tax(char* tax);
+
+int validate_price_per_night(char* price);
+
+int validate_includes_breakfast(char* boolean);
+
+int validate_rating(char* rating);
+
+int validate_existence(char* string);
+
+int ourAtoi(char* string);
+
 #endif

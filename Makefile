@@ -51,6 +51,8 @@ endef
 
 export Doxyfile
 
+SHELL := bash -O globstar # Dependency on bash for recursive wildcards
+
 SOURCES = $(shell ls src/**/*.c)
 HEADERS = $(shell ls include/**/*.h)
 OBJECTS = $(patsubst src/%.c, $(OBJDIR)/%.o, $(SOURCES))

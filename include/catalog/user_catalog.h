@@ -1,6 +1,6 @@
 /**
- * @file statistics.h
- * @brief Module that connects all the entities
+ * @file user_catalog.c
+ * @brief
  */
 
 /*
@@ -17,18 +17,17 @@
  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
- */
+*/
 
-#ifndef STATISTICS_H
-#define STATISTICS_H
-
-typedef struct statistics* STATS;
+#ifndef USER_CATALOG_H
+#define USER_CATALOG_H
 
 #include "entities/users.h"
-#include "entities/flights.h"
 
-void insert_user_statistics(STATS stats,USER user);
+typedef struct user_catalog *USER_CATALOG;
 
-void insert_flight_statistics(STATS stats,FLIGHT flight);
+void insert_user(USER user, char* id, USER_CATALOG catalog);
+
+void set_catalog_user_id(USER user, char* id, USER_CATALOG catalog);
 
 #endif
