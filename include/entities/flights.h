@@ -1,6 +1,6 @@
 /**
  * @file flights.h
- * @brief
+ * @brief This file contains the definition of the flight struct and related functions.
  */
 
 /*
@@ -22,70 +22,222 @@
 #ifndef FLIGHTS_H
 #define FLIGHTS_H
 
+/**
+ * @typedef FLIGHT
+ * @brief Typedef for struct flight pointer.
+ */
 typedef struct flight *FLIGHT;
 
 #include "menuNdata/statistics.h"
 
+/**
+ * @brief Creates a new flight struct with default values.
+ * @return A pointer to the new created flight.
+ */
 FLIGHT create_flight(void);
 
-void build_flight(char  **flight_fields, void *catalog, STATS stats);
-
+/**
+ * @brief Sets the flight ID.
+ * @param flight A pointer to the flight struct.
+ * @param id The flight ID.
+ */
 void set_flight_id(FLIGHT flight, char* id);
 
+/**
+ * @brief Sets the airline for the flight.
+ * @param flight A pointer to the flight struct.
+ * @param airline The airline name.
+ */
 void set_flight_airline(FLIGHT flight, char* airline);
 
+/**
+ * @brief Sets the plane model for the flight.
+ * @param flight A pointer to the flight struct.
+ * @param plane_model The plane model.
+ */
 void set_flight_plane_model(FLIGHT flight, char* plane_model);
 
+/**
+ * @brief Sets the total number of seats for the flight.
+ * @param flight A pointer to the flight struct.
+ * @param total_seats The total number of seats.
+ */
 void set_flight_total_seats(FLIGHT flight, char* total_seats);
 
+/**
+ * @brief Sets the origin airport for the flight.
+ * @param flight A pointer to the flight struct.
+ * @param origin The flight origin airport.
+ */
 void set_flight_origin(FLIGHT flight, char* origin);
 
+/**
+ * @brief Sets the destination airport for the flight.
+ * @param flight A pointer to the flight struct.
+ * @param destination The flight destination airport.
+ */
 void set_flight_destination(FLIGHT flight, char* destination);
 
+/**
+ * @brief Sets the scheduled departure date and time for the flight.
+ * @param flight A pointer to the flight struct.
+ * @param schedule_departure_date The scheduled departure date and time.
+ */
 void set_flight_schedule_departure_date(FLIGHT flight, char* schedule_departure_date);
 
+/**
+ * @brief Sets the scheduled arrival date and time for the flight.
+ * @param flight A pointer to the flight struct.
+ * @param schedule_arrival_date The scheduled arrival date and time.
+ */
 void set_flight_schedule_arrival_date(FLIGHT flight, char* schedule_arrival_date);
 
+/**
+ * @brief Sets the real departure date and time for the flight.
+ * @param flight A pointer to the flight struct.
+ * @param real_departure_date The real departure date and time.
+ */
 void set_flight_real_departure_date(FLIGHT flight, char* real_departure_date);
 
+/**
+ * @brief Sets the real arrival date and time for the flight.
+ * @param flight A pointer to the flight struct.
+ * @param real_arrival_date The real arrival date and time.
+ */
 void set_flight_real_arrival_date(FLIGHT flight, char* real_arrival_date);
 
+/**
+ * @brief Sets the pilot's name for the flight.
+ * @param flight A pointer to the flight struct.
+ * @param pilot The pilot's name.
+ */
 void set_flight_pilot(FLIGHT flight, char* pilot);
 
+/**
+ * @brief Sets the copilot's name for the flight.
+ * @param flight A pointer to the flight struct.
+ * @param copilot The copilot's name.
+ */
 void set_flight_copilot(FLIGHT flight, char* copilot);
 
+/**
+ * @brief Sets additional notes for the flight.
+ * @param flight A pointer to the flight struct.
+ * @param notes Additional notes.
+ */
 void set_flight_notes(FLIGHT flight, char* notes);
 
 
+/**
+ * @brief Gets the flight ID.
+ * @param flight A pointer to the flight struct.
+ * @return The flight ID.
+ */
 int get_flight_id(FLIGHT flight);
 
+/**
+ * @brief Gets the airline for the flight.
+ * @param flight A pointer to the flight struct.
+ * @return The airline name.
+ */
 char* get_flight_airline(FLIGHT flight);
 
+/**
+ * @brief Gets the plane model for the flight.
+ * @param flight A pointer to the flight struct.
+ * @return The plane model.
+ */
 char* get_flight_plane_model(FLIGHT flight);
 
+/**
+ * @brief Gets the total number of seats for the flight.
+ * @param flight A pointer to the flight struct.
+ * @return The total number of seats.
+ */
 int get_flight_total_seats(FLIGHT flight);
 
+/**
+ * @brief Gets the flight origin airport.
+ * @param flight A pointer to the flight struct.
+ * @return The flight origin airport.
+ */
 char* get_flight_origin(FLIGHT flight);
 
+/**
+ * @brief Gets the flight destination airport.
+ * @param flight A pointer to the flight struct.
+ * @return The flight destination airport.
+ */
 char* get_flight_destination(FLIGHT flight);
 
+/**
+ * @brief Gets the scheduled departure date and time for the flight.
+ * @param flight A pointer to the flight struct.
+ * @return The scheduled departure date and time.
+ */
 char* get_flight_schedule_departure_date(FLIGHT flight);
 
+/**
+ * @brief Gets the scheduled arrival date and time for the flight.
+ * @param flight A pointer to the flight struct.
+ * @return The scheduled arrival date and time.
+ */
 char* get_flight_schedule_arrival_date(FLIGHT flight);
 
+/**
+ * @brief Gets the real departure date and time for the flight.
+ * @param flight A pointer to the flight struct.
+ * @return The real departure date and time.
+ */
 char* get_flight_real_departure_date(FLIGHT flight);
 
+/**
+ * @brief Gets the real arrival date and time for the flight.
+ * @param flight A pointer to the flight struct.
+ * @return The real arrival date and time.
+ */
 char* get_flight_real_arrival_date(FLIGHT flight);
 
+/**
+ * @brief Gets the pilot's name for the flight.
+ * @param flight A pointer to the flight struct.
+ * @return The pilot's name.
+ */
 char* get_flight_pilot(FLIGHT flight);
 
+/**
+ * @brief Gets the copilot's name for the flight.
+ * @param flight A pointer to the flight struct.
+ * @return The copilot's name.
+ */
 char* get_flight_copilot(FLIGHT flight);
 
+/**
+ * @brief Gets additional notes for the flight.
+ * @param flight A pointer to the flight struct.
+ * @return Additional notes.
+ */
 char* get_flight_notes(FLIGHT flight);
 
-
+/**
+ * @brief Frees memory associated with a flight struct.
+ * @param flight A pointer to the flight struct.
+ */
 void free_flight(FLIGHT flight);
 
+/**
+ * @brief Verifies the validity of flight data.
+ * @param fields An array of flight data fields.
+ * @return 1 if the flight data is valid, 0 otherwise.
+ */
 int verify_flight(char** fields);
+
+/**
+ * @brief Builds a flight struct from flight data fields.
+ * @param flight_fields An array of flight data fields.
+ * @param catalog A pointer to the catalog.
+ * @param stats A pointer to the statistics.
+ */
+void build_flight(char **flight_fields, void *catalog, STATS stats);
 
 #endif

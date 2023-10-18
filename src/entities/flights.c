@@ -1,6 +1,6 @@
 /**
  * @file flights.c
- * @brief
+ * @brief This file contains the implementation of the flight struct and related functions.
  */
 
 /*
@@ -27,22 +27,25 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * @struct flight
+ * @brief Represents flight information.
+ */
 struct flight {
-    int id;
-    char* airline;
-    char* plane_model;
-    int total_seats;
-    char* origin;
-    char* destination;
-    char* schedule_departure_date;
-    char* schedule_arrival_date;
-    char* real_departure_date;
-    char* real_arrival_date;
-    char* pilot;
-    char* copilot;
-    char* notes;
+    int id; /**< Unique flight ID. */
+    char* airline; /**< Airline name. */
+    char* plane_model; /**< Model of the plane. */
+    int total_seats; /**< Total number of seats in the plane. */
+    char* origin; /**< Flight origin airport. */
+    char* destination; /**< Flight destination airport. */
+    char* schedule_departure_date; /**< Scheduled departure date and time. */
+    char* schedule_arrival_date; /**< Scheduled arrival date and time. */
+    char* real_departure_date; /**< Real departure date and time. */
+    char* real_arrival_date; /**< Real arrival date and time. */
+    char* pilot; /**< Pilot's name. */
+    char* copilot; /**< Copilot's name. */
+    char* notes; /**< Additional notes. */
 };
-
 
 FLIGHT create_flight(void){
     FLIGHT new = malloc(sizeof(struct flight));
@@ -206,7 +209,7 @@ int verify_flight(char** fields){
 }
 
 void build_flight(char  **flight_fields, void *catalog, STATS stats){
-    
+
     if (!verify_flight(flight_fields)) return;
 
     FLIGHT flight = create_flight();

@@ -1,6 +1,6 @@
 /**
  * @file passengers.c
- * @brief
+ * @brief This file contains the implementation of the passengers struct and related functions.
  */
 
 /*
@@ -27,33 +27,37 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct passengers{
-    int flight_id;
-    char* user_id;
+/**
+ * @struct passengers
+ * @brief Represents passenger information related to a flight.
+ */
+struct passengers {
+    int flight_id; /**< Unique flight ID associated with the passenger. */
+    char* user_id; /**< Unique user ID of the passenger. */
 };
 
 PASS create_passengers(void){
     PASS new = malloc(sizeof(struct passengers));
-   
+
     new->flight_id = 0;
     new->user_id = NULL;;
 
     return new;
 }
 
-void set_flight_id(PASS pass, int f_id){
+void set_flight_id_P(PASS pass, int f_id){
     pass->flight_id = f_id;
 }
 
-void set_user_id(PASS pass, char* u_id){
+void set_user_id_P(PASS pass, char* u_id){
     pass->user_id = strdup(u_id);
 }
 
-int get_flight_id(PASS pass){
+int get_flight_id_P(PASS pass){
     return pass->flight_id;
 }
 
-char* get_user_id(PASS pass){
+char* get_user_id_P(PASS pass){
     return strdup(pass->user_id);
 }
 
@@ -65,13 +69,13 @@ void free_passengers(PASS pass){
     free(pass);
 }
 
-int verifiy_passengers(char** passengers_fields){
+int verify_passengers(char** passengers_fields){
     if (!(passengers_fields[0]) || !(passengers_fields[1])) return 0;
     return 1;
 }
 
 void build_passengers(char** passengers_fields, void* catalog, STATS stats){
-    
+
     if (!verify_passengers(passengers_fields)) return;
 
     PASS pass = create_passengers();
