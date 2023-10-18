@@ -25,6 +25,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
 
 /**
  * @brief Verifies if a character is a digit 
@@ -34,6 +35,10 @@
  */
 int isDigit(char c){
     return(c >= '0' && c <= '9');
+}
+
+int isLetter(char c){
+    return((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
 }
 
 /**
@@ -228,7 +233,121 @@ int compare_date_time(char* date_string_start, char* date_string_end){
     return 1;
 }
 
+// “<username>@<domain>.<TLD>” 
+int validate_email(char* email){    
+    int i = 0;
+    int email_length = strlen(email);
+
+    // validates username (at least 1 char)
+    while(email[i] != '@' || email[i] == '\0') i++;
+    if(i < 1 || i == email_length) return 0;
+
+    // validates domain (at least 1 char)
+    int j = i;
+    i++;
+    while(email[i] != '.' || email[i] == '\0') i++;
+    if((i - j) <= 1 || i == email_length) return 0;
+
+    // validates TLD (at least 2 chars)
+    // the position i marks the position of the '.'
+    if(email_length - i <= 2) return 0;
+
+    return 1;
+}
+
+int validate_country_code(char* code){
+    if(strlen(code) != 3  ||
+       !isLetter(code[0]) || 
+       !isLetter(code[1])) return 0;
+
+    return 1;
+}
+
+int validate_account_status(char* status){
+    int i = 0;
+    while(status[i] != '\0' && isLetter(status[i])){
+        status[i] = toupper(status[i]);
+        i++;
+    }
+    if(status[i] != '\0') return 0;
+    if(strcmp(status,"ACTIVE") != 0 || strcmp(status,"INACTIVE") != 0) return 0;
+    
+    return 1;
+}
+
+int validate_total_seats(char* seats, char* passengers){
+    return(ourAtoi(passengers) <= ourAtoi(seats));
+}
+
+int validate_airports(char* airport){
+    if(strlen(airport) != 3) return 0;
+    int i = 0;
+    while(airport[i] != '\0' && isLetter(airport[i])){
+        airport[i] = toupper(airport[i]);
+        i++;
+    } 
+
+    if(airport[i] != '\0') return 0;
+
+    return 1;
+}
+
+int validate_hotel_stars(char* stars){
+    int i = 0;
+    while(stars[i] != '.'  || stars[i] != '-' ||
+          stars[i] != '\0' || !isDigit(stars[i])) i++;
+
+    if (stars[i] != '\0' && (ourAtoi(stars) < 1 || ourAtoi(stars) > 5)) return 0;
+    return 1;
+}
+
+int validate_city_tax(char* tax){
+    int i = 0;
+    while(tax[i] != '.'  || tax[i] != '-' ||
+          tax[i] != '\0' || !isDigit(tax[i])) i++;
+
+    if (tax[i] != '\0' && ourAtoi(tax) < 0) return 0;
+    return 1;
+}
+
+int validate_price_per_night(char* price){
+    int i = 0;
+    while(price[i] != '.'  || price[i] != '-' ||
+          price[i] != '\0' || !isDigit(price[i])) i++;
+
+    if (price[i] != '\0' && ourAtoi(price) <= 0) return 0;
+    return 1;
+}
+
+int validate_includes_breakfast(char* boolean){
+    
+    if(strlen(boolean) == 0) return 1;
+
+    if(strlen(boolean) == 1 && 
+       (boolean[0] == '1' || boolean[0] == '0' ||
+        boolean[0] == 't' || boolean[0] == 'f')) return 1;
 
 
+    int i = 0;
+    while(boolean[i] != '\0' && isLetter(boolean[i])){
+        boolean[i] = toupper(boolean[i]);
+        i++;
+    }
+    if(boolean[i] != '\0') return 0;
+    if(strcmp(boolean,"TRUE") != 0 || strcmp(boolean,"FALSE") != 0) return 0;
+    
+    return 1;
+}
+
+int validate_rating(char* rating){
+
+    if(strlen(rating) == 0) return 1;
+
+    return(validate_hotel_stars(rating));
+}
+
+int validate_existence(char* string){
+    return(strlen(string));
+}
 
 
