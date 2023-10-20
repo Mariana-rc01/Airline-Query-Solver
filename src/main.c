@@ -54,9 +54,9 @@ char* concat(const char *s1, const char *s2) {
  */
 
 int main(int argc, char** argsv){   
-    char* path1 = arsv[0];
-    char* path2 = arsv[1];
-    FILE *flights_file, *passengers_file, *users_file, *reservations_file;
+    char* path1 = argsv[0];
+    char* path2 = argsv[1];
+    FILE *flights_file, *passengers_file, *users_file, *reservations_file, *queries_file;
     void *flights_catalog, *users_catalog, *passengers_catalog, *reservations_catalog;
     STATS statistics = NULL;
     if(argc == 2) { 
@@ -68,7 +68,7 @@ int main(int argc, char** argsv){
         
         parseF(flights_file, 13, build_flight, flights_catalog, statistics);
         parseF(passengers_file, 2, build_passengers, passengers_catalog, statistics);
-        parseF(users_file, 12, build_users, users_catalog, statistics);
+        parseF(users_file, 12, build_user, users_catalog, statistics);
         parseF(reservations_file, 14, build_reservations, reservations_catalog, statistics);
         return 0;
     }
@@ -77,7 +77,7 @@ int main(int argc, char** argsv){
         return 0;
     }
     else{
-        printf(%s, "Invalid number of arguments, must be either 0 or 2");
+        printf("Invalid number of arguments, must be either 0 or 2");
         //perror("Error");
         return 0;
     }

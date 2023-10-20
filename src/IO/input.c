@@ -71,8 +71,9 @@ int validate_date_timeless(char* date_string){
     if(!isDigit(date_string[0]) &&
        !isDigit(date_string[1]) &&
        !isDigit(date_string[2]) &&
-       !isDigit(date_string[3])) return 0;
-
+       !isDigit(date_string[3]) && 
+       (date_string[4] != '/')  &&
+       (date_string[7] != '/')) return 0;
     // validate months
     int aux;
     if(isDigit(date_string[5]) && isDigit(date_string[6]))
@@ -94,7 +95,8 @@ int validate_date_timeless(char* date_string){
 // YYYY/MM/DD hh:mm:ss
 int validate_date_time(char* date_string){
 
-    if(validate_date_timeless(date_string) == 0) return 0;
+    if(validate_date_timeless(date_string) == 0 && (date_string[10] != ' ') &&
+    (date_string[13] != ':') && (date_string[16] != ':'))  return 0;
 
     // Validate hours
     int aux;
@@ -329,7 +331,7 @@ int validate_hotel_stars(char* stars){
 
 int validate_city_tax(char* tax){
     int i = 0;
-    while(tax[i] != '.'  || tax[i] != '-' ||
+    while(tax[i] != '.'  || tax[i] != '-' || tax[i] != ',' ||
           tax[i] != '\0' || !isDigit(tax[i])) i++;
 
     if (tax[i] != '\0' && ourAtoi(tax) < 0) return 0;
@@ -338,7 +340,7 @@ int validate_city_tax(char* tax){
 
 int validate_price_per_night(char* price){
     int i = 0;
-    while(price[i] != '.'  || price[i] != '-' ||
+    while(price[i] != '.'  || price[i] != '-' || price[i] != ',' ||
           price[i] != '\0' || !isDigit(price[i])) i++;
 
     if (price[i] != '\0' && ourAtoi(price) <= 0) return 0;

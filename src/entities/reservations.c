@@ -65,11 +65,11 @@ RESERV create_reservation(void){
     return new;
 }
 
-void set_id(RESERV res, char* i){
+void set_reservation_id(RESERV res, char* i){
     res->id = strdup(i);
 }
 
-void set_user_id(RESERV res, char* u_id){
+void set_user_id_R(RESERV res, char* u_id){
     res->user_id = strdup(u_id);
 }
 
@@ -135,11 +135,11 @@ void set_commnet(RESERV res, char* comm){
     res->comment = strdup(comm);
 }
 
-char* get_id(RESERV res){
+char* get_reservation_id(RESERV res){
     return strdup(res->id);
 }
 
-char* get_user_id(RESERV res){
+char* get_user_id_R(RESERV res){
     return strdup(res->user_id);
 }
 

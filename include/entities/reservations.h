@@ -28,9 +28,9 @@ typedef struct reservations *RESERV;
 
 RESERV create_reservation(void);
 
-void set_id(RESERV res, char* i);
+void set_reservation_id(RESERV res, char* i);
 
-void set_user_id(RESERV res, char* u_id);
+void set_user_id_R(RESERV res, char* u_id);
 
 void set_hotel_id(RESERV res, char* h_id);
 
@@ -56,9 +56,9 @@ void set_rating(RESERV res, char* ratin);
 
 void set_commnet(RESERV res, char* comm);
 
-char* get_id(RESERV res);
+char* get_reservation_id(RESERV res);
 
-char* get_user_id(RESERV res);
+char* get_user_id_R(RESERV res);
 
 char* get_hotel_id(RESERV res);
 
