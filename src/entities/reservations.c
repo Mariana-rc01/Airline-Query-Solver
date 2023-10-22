@@ -27,21 +27,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct reservations{
-    char* id;
-    char* user_id;
-    char* hotel_id;
-    char* hotel_name;
-    int hotel_stars;
-    char* city_tax;
-    char* address;
-    int begin_date;
-    int end_date;
-    char* price_per_night;
-    char* includes_breakfast;
-    char* room_details;
-    char* rating;
-    char* comment;
+/**
+ * @struct reservations
+ * @brief Represents a reservation record.
+ */
+struct reservations {
+    char* id; /**< Unique reservation ID. */
+    char* user_id; /**< User's ID associated with the reservation. */
+    char* hotel_id; /**< Hotel's ID associated with the reservation. */
+    char* hotel_name; /**< Name of the hotel. */
+    char* hotel_stars; /**< Number of stars rating for the hotel. */
+    char* city_tax; /**< City tax information. */
+    char* address; /**< Hotel's address. */
+    char* begin_date; /**< Start date of the reservation. */
+    char* end_date; /**< End date of the reservation. */
+    char* price_per_night; /**< Price per night for the reservation. */
+    char* includes_breakfast; /**< Information about breakfast inclusion. */
+    char* room_details; /**< Details about the room. */
+    char* rating; /**< Rating associated with the reservation. */
+    char* comment; /**< User's comment on the reservation. */
 };
 
 RESERV create_reservation(void){
@@ -81,38 +85,24 @@ void set_hotel_name(RESERV res, char* h_name){
     res->hotel_name = strdup(h_name);
 }
 
-void set_hotel_stars(RESERV res, int stars){
-    res->hotel_stars = stars;
+void set_hotel_stars(RESERV res, char* stars){
+    res->hotel_stars = strdup(stars);
 }
 
 void set_city_tax(RESERV res, char* c_tax){
     res->city_tax = strdup(c_tax);
 }
 
-void set_address(RESERV res, char** address){
+void set_address(RESERV res, char* address){
     res->address = strdup(address);
 }
 
 void set_begin_date(RESERV res, char* b_date){
-    int date = 0;
-
-    date = s_to_d(b_date[9]) + s_to_d(b_date[8]) * 10 +
-    s_to_d(b_date[6]) * 100 + s_to_d(b_date[5]) * 1000 +
-    s_to_d(b_date[3]) * 10000 + s_to_d(b_date[2]) * 100000 +
-    s_to_d(b_date[1]) * 1000000 + s_to_d(b_date[0]) * 10000000;
-
-    res->begin_date = date;
+    res->begin_date = strdup(b_date);
 }
 
 void set_end_date(RESERV res, char* e_date){
-    int date = 0;
-
-    date = s_to_d(e_date[9]) + s_to_d(e_date[8]) * 10 +
-    s_to_d(e_date[6]) * 100 + s_to_d(e_date[5]) * 1000 +
-    s_to_d(e_date[3]) * 10000 + s_to_d(e_date[2]) * 100000 +
-    s_to_d(e_date[1]) * 1000000 + s_to_d(e_date[0]) * 10000000;
-
-    res->end_date = date;
+    res->end_date = strdup(e_date);
 }
 
 void set_price_per_night(RESERV res, char* price){
@@ -151,8 +141,8 @@ char* get_hotel_name(RESERV res){
     return strdup(res->hotel_name);
 }
 
-int get_hotel_stars(RESERV res){
-    return res->hotel_stars;
+char* get_hotel_stars(RESERV res){
+    return strdup(res->hotel_stars);
 }
 
 char* get_city_tax(RESERV res){
@@ -163,12 +153,12 @@ char* get_address(RESERV res){
     return strdup(res->address);
 }
 
-int get_begin_date(RESERV res){
-    return res->begin_date;
+char* get_begin_date(RESERV res){
+    return strdup(res->begin_date);
 }
 
-int get_end_date(RESERV res){
-    return res->end_date;
+char* get_end_date(RESERV res){
+    return strdup(res->end_date);
 }
 
 char* get_price_per_night(RESERV res){
@@ -216,19 +206,17 @@ int verify_reservations(char** fields){
 
     if (!validate_hotel_stars(fields[4])) return 0;
     if (!validate_city_tax(fields[5])) return 0;
-    if (!validate_date_time(fields[7])) return 0;
-    if (!validate_date_time(fields[8])) return 0;
-    // temos também que validar se a begin_date é antes da end_date aqui?
+    if (!validate_date_timeless(fields[7])) return 0;
+    if (!validate_date_timeless(fields[8])) return 0;
+    if (!compare_date_timeless(fields[7],fields[8])) return 0;
     if (!validate_price_per_night(fields[9])) return 0;
     if (!validate_includes_breakfast(fields[10])) return 0;
-    //if (!validate_room_details(fields[11])) return 0;
     if (!validate_rating(fields[12])) return 0;
-    //if (!validate_comment(fields[13])) return 0;
 
     return 1;
 }
 
-void build_reservations(char  **reservations_fields, void *catalog, STATS stats){
+void build_reservations(char** reservations_fields, void* catalog, STATS stats){
 
     if (!verify_reservations(reservations_fields)) return;
 
