@@ -36,7 +36,7 @@ struct user {
     char* name; /**< User's name. */
     char* email; /**< User's email address. */
     char* phone_number; /**< User's phone number. */
-    int birth_date; /**< User's birth date in YYYYMMDD format. */
+    char* birth_date; /**< User's birth date in YYYY/MM/DD format. */
     char sex; /**< User's gender (single character). */
     char* passport; /**< User's passport information. */
     char* country_code; /**< User's country code. */
@@ -52,7 +52,7 @@ USER create_user(void){
     new->name = NULL;
     new->email = NULL;
     new->phone_number = NULL;
-    new->birth_date = 0;
+    new->birth_date = NULL;
     new->sex = "";
     new->passport = NULL;
     new->country_code = NULL;
@@ -80,21 +80,8 @@ void set_user_phone_number(USER user, char* phone_number){
     user->phone_number = strdup(phone_number);
 }
 
-// este tipo de funções podia ir para o utils nao? como o isdigit e isletter e ouratoi sq
-int s_to_d(char c){
-    return c - '0';
-}
-
-/*YYYY/MM/DD -> YYYYMMDD*/
 void set_user_birth_date(USER user, char* birth_date){
-    int date = 0;
-
-    date = s_to_d(birth_date[9]) + s_to_d(birth_date[8]) * 10 +
-    s_to_d(birth_date[6]) * 100 + s_to_d(birth_date[5]) * 1000 +
-    s_to_d(birth_date[3]) * 10000 + s_to_d(birth_date[2]) * 100000 +
-    s_to_d(birth_date[1]) * 1000000 + s_to_d(birth_date[0]) * 10000000;
-
-    user->birth_date = date;
+    user->birth_date = strdup(birth_date);
 }
 
 void set_user_sex(USER user, char* sex){
@@ -142,8 +129,8 @@ char* get_user_phone_number(USER user){
     return strdup(user->phone_number);
 }
 
-int get_user_birth_date(USER user){
-    return (user->birth_date);
+char* get_user_birth_date(USER user){
+    return strdup(user->birth_date);
 }
 
 char get_user_sex(USER user){
@@ -180,6 +167,7 @@ void free_user(USER user){
     free(user->name);
     free(user->email);
     free(user->phone_number);
+    free(user->birth_date);
     free(user->passport);
     free(user->country_code);
     free(user->address);

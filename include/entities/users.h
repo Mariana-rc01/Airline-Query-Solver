@@ -65,6 +65,13 @@ void set_user_email(USER user, char* email);
 void set_user_phone_number(USER user, char* phone_number);
 
 /**
+ * @brief Sets the user's birth date.
+ * @param user A pointer to the user struct.
+ * @param birth_date The user's birth date.
+ */
+void set_user_birth_date(USER user, char* birth_date);
+
+/**
  * @brief Sets the user's gender.
  * @param user A pointer to the user struct.
  * @param sex The user's gender (single character).
@@ -140,6 +147,13 @@ char* get_user_email(USER user);
  * @return The user's phone number.
  */
 char* get_user_phone_number(USER user);
+
+/**
+ * @brief Gets the user's birth date.
+ * @param user A pointer to the user struct.
+ * @return The user's birth date.
+ */
+char* get_user_birth_date(USER user);
 
 /**
  * @brief Gets the user's gender.
