@@ -1,5 +1,5 @@
 /**
- * @file statistics.h
+ * @file utils.c
  * @brief Module that connects all the entities
  */
 
@@ -19,16 +19,21 @@
  *   limitations under the License.
  */
 
-#ifndef STATISTICS_H
-#define STATISTICS_H
+int isDigit(char c){
+    return(c >= '0' && c <= '9');
+}
 
-typedef struct statistics* STATS;
+int isLetter(char c){
+    return((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
+}
 
-#include "entities/users.h"
-#include "entities/flights.h"
+int ourAtoi(char* string){
+    int i, r = 0;
+    double n = pow(10.0,(double)(strlen(string)-2));
+    for(i = 0; string[i] != '\0'; i++){
+        r = (string[i] - '0') * (int) n;
+        n /= 10;
+    }
 
-void insert_user_statistics(STATS stats, USER user);
-
-void insert_flight_statistics(STATS stats, FLIGHT flight);
-
-#endif
+    return r;
+}
