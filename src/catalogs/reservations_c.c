@@ -39,6 +39,8 @@ RESERV_C create_reservations_c(void){
     new_catalog->reservations = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify) free_reservations);
     new_catalog->reservations_id = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
     new_catalog->reservations_user_id = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
+
+    return new;
 }
 
 void insert_reservations_c(RESERV reserv, RESERV_C catalog){

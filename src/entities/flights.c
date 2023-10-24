@@ -32,7 +32,7 @@
  * @brief Represents flight information.
  */
 struct flight {
-    int id; /**< Unique flight ID. */
+    char* id; /**< Unique flight ID. */
     char* airline; /**< Airline name. */
     char* plane_model; /**< Model of the plane. */
     int total_seats; /**< Total number of seats in the plane. */
@@ -66,7 +66,7 @@ FLIGHT create_flight(void){
 }
 
 void set_flight_id(FLIGHT flight, char* id){
-    flight->id = ourAtoi(id);
+    flight->id = strdup(id);
 }
 
 void set_flight_airline(FLIGHT flight, char* airline){
@@ -117,8 +117,8 @@ void set_flight_notes(FLIGHT flight, char* notes){
     flight->notes = strdup(notes);
 }
 
-int get_flight_id(FLIGHT flight){
-    return (flight->id);
+char* get_flight_id(FLIGHT flight){
+    return strdup(flight->id);
 }
 
 char* get_flight_airline(FLIGHT flight){
@@ -170,6 +170,7 @@ char* get_flight_notes(FLIGHT flight){
 }
 
 void free_flight(FLIGHT flight){
+    free(flight->id);
     free(flight->airline);
     free(flight->plane_model);
     free(flight->origin);
@@ -208,7 +209,7 @@ int verify_flight(char** fields){
     return 1;
 }
 
-void build_flight(char  **flight_fields, void *catalog, STATS stats){
+void build_flight(char **flight_fields, void *catalog, STATS stats){
 
     if (!verify_flight(flight_fields)) return;
 
