@@ -133,7 +133,7 @@ void set_flight_notes(FLIGHT flight, char* notes);
  * @param flight A pointer to the flight struct.
  * @return The flight ID.
  */
-int get_flight_id(FLIGHT flight);
+char* get_flight_id(FLIGHT flight);
 
 /**
  * @brief Gets the airline for the flight.

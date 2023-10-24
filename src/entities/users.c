@@ -23,6 +23,7 @@
 
 #include "IO/input.h"
 #include "menuNdata/statistics.h"
+#include "catalogs/users_c.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -37,7 +38,7 @@ struct user {
     char* email; /**< User's email address. */
     char* phone_number; /**< User's phone number. */
     char* birth_date; /**< User's birth date in YYYY/MM/DD format. */
-    char sex; /**< User's gender (single character). */
+    char* sex; /**< User's gender. */
     char* passport; /**< User's passport information. */
     char* country_code; /**< User's country code. */
     char* address; /**< User's address. */
@@ -53,7 +54,7 @@ USER create_user(void){
     new->email = NULL;
     new->phone_number = NULL;
     new->birth_date = NULL;
-    new->sex = "";
+    new->sex = NULL;
     new->passport = NULL;
     new->country_code = NULL;
     new->address = NULL;
@@ -85,7 +86,7 @@ void set_user_birth_date(USER user, char* birth_date){
 }
 
 void set_user_sex(USER user, char* sex){
-    user->sex = sex[0];
+    user->sex = strdup(sex);
 }
 
 void set_user_passport(USER user, char* passport){
@@ -133,8 +134,8 @@ char* get_user_birth_date(USER user){
     return strdup(user->birth_date);
 }
 
-char get_user_sex(USER user){
-    return (user->sex);
+char* get_user_sex(USER user){
+    return strdup(user->sex);
 }
 
 char* get_user_passport(USER user){
@@ -216,4 +217,7 @@ void build_user(char  **user_fields, void *catalog, STATS stats){
     set_user_account_creation(user,user_fields[9]);
     set_user_pay_method(user,user_fields[10]);
     set_user_account_status(user,user_fields[11]);
+
+    insert_user_c(user,catalog);
+    (void) stats;
 }

@@ -23,6 +23,7 @@
 
 #include "menuNdata/statistics.h"
 #include "IO/input.h"
+#include "catalogs/passengers_c.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -32,29 +33,29 @@
  * @brief Represents passenger information related to a flight.
  */
 struct passengers {
-    int flight_id; /**< Unique flight ID associated with the passenger. */
+    char* flight_id; /**< Unique flight ID associated with the passenger. */
     char* user_id; /**< Unique user ID of the passenger. */
 };
 
 PASS create_passengers(void){
     PASS new = malloc(sizeof(struct passengers));
 
-    new->flight_id = 0;
+    new->flight_id = NULL;
     new->user_id = NULL;;
 
     return new;
 }
 
-void set_flight_id_P(PASS pass, int f_id){
-    pass->flight_id = f_id;
+void set_flight_id_P(PASS pass, char* f_id){
+    pass->flight_id = strdup(f_id);
 }
 
 void set_user_id_P(PASS pass, char* u_id){
     pass->user_id = strdup(u_id);
 }
 
-int get_flight_id_P(PASS pass){
-    return pass->flight_id;
+char* get_flight_id_P(PASS pass){
+    return strdup(pass->flight_id);
 }
 
 char* get_user_id_P(PASS pass){
@@ -80,8 +81,11 @@ void build_passengers(char** passengers_fields, void* catalog, STATS stats){
 
     PASS pass = create_passengers();
 
-    set_flight_id(pass,passengers_fields[0]);
-    set_user_id(pass,passengers_fields[1]);
+    set_flight_id_P(pass,passengers_fields[0]);
+    set_user_id_P(pass,passengers_fields[1]);
+
+    insert_passengers_c(pass,catalog);
+    (void) stats;
 }
 
 

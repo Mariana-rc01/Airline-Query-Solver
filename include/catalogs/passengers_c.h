@@ -1,6 +1,6 @@
 /**
  * @file passengers_c.h
- * @brief This file contains the implementation of the flight struct and related functions.
+ * @brief This file contains the definition of the passengers catalog struct and related functions.
  */
 
 /*
@@ -20,7 +20,7 @@
 */
 
 #ifndef PASSENGERS_C_H
-#define PASSENGERS_C_H 
+#define PASSENGERS_C_H
 
 #include "entities/passengers.h"
 #include <glib.h>
@@ -43,31 +43,6 @@ PASS_C create_passengers_c(void);
  * @param catalog A pointer to the passengers catalog.
  */
 void insert_passengers_c(PASS pass, PASS_C catalog);
-
-/**
- * @brief Sets the flight and user ID for a passenger in the catalog.
- * @param catalog A pointer to the passengers catalog.
- * @param pass A pointer to the passenger record.
- * @param flight_id The flight ID.
- * @param user_id The user ID.
- */
-void set_c_flight_id_P(PASS_C catalog, PASS pass, char* flight_id, char* user_id);
-
-/**
- * @brief Gets the passengers by flight ID.
- * @param catalog A pointer to the passengers catalog.
- * @param flight_id The flight ID.
- * @return A string containing passenger information for the specified flight ID.
- */
-char* get_c_passengers_by_flight_id(PASS_C catalog, char* flight_id);
-
-/**
- * @brief Gets the passengers by user ID.
- * @param catalog A pointer to the passengers catalog.
- * @param user_id The user ID.
- * @return A string containing passenger information for the specified user ID.
- */
-char* get_c_passengers_by_user_id(PASS_C catalog, char* user_id);
 
 /**
  * @brief Gets a passenger record by flight ID.

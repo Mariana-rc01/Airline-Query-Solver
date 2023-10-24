@@ -25,8 +25,8 @@ DEBUG_CFLAGS   := -g
 RELEASE_CFLAGS := -O2
 
 OBJDIR         := obj
-#BUILDDIR := .
 EXE_NAME       := programa-principal
+TEST_EXE_NAME  := programa-testes
 DOCSDIR        := docs
 
 define Doxyfile
@@ -63,7 +63,7 @@ else
 	CFLAGS += ${RELEASE_CFLAGS}
 endif
 
-default: $(EXE_NAME)
+default: $(EXE_NAME) $(TEST_EXE_NAME)
 
 $(OBJDIR)/%.o: src/%.c $(HEADERS) $(OBJDIRS)
 	@mkdir -p $(shell dirname $@)
@@ -72,13 +72,17 @@ $(OBJDIR)/%.o: src/%.c $(HEADERS) $(OBJDIRS)
 $(EXE_NAME): $(OBJECTS)
 	$(CC) -o $@ $^ ${LIBS}
 
+$(TEST_EXE_NAME): $(OBJECTS) test/*.c
+	$(CC) -o $@ $^ ${LIBS}
+
 $(DOCSDIR): $(SOURCES) $(HEADERS) README.md
 	echo "$$Doxyfile" | doxygen -
 
 clean:
-	@rm -r $(OBJDIR)   > /dev/null 2>&1 ||:
-	@rm $(EXE_NAME)    > /dev/null 2>&1 ||:
-	@rm -r $(DOCSDIR)  > /dev/null 2>&1 ||:
+	@rm -r $(OBJDIR)     > /dev/null 2>&1 ||:
+	@rm $(EXE_NAME)      > /dev/null 2>&1 ||:
+	@rm $(TEST_EXE_NAME) > /dev/null 2>&1 ||:
+	@rm -r $(DOCSDIR)    > /dev/null 2>&1 ||:
 
 # END MAKEFILE RULES
 

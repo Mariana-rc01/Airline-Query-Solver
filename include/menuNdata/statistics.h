@@ -27,8 +27,5 @@ typedef struct statistics* STATS;
 #include "entities/users.h"
 #include "entities/flights.h"
 
-void insert_user_statistics(STATS stats, USER user);
-
-void insert_flight_statistics(STATS stats, FLIGHT flight);
 
 #endif

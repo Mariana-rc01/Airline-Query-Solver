@@ -158,9 +158,9 @@ char* get_user_birth_date(USER user);
 /**
  * @brief Gets the user's gender.
  * @param user A pointer to the user struct.
- * @return The user's gender (single character).
+ * @return The user's gender.
  */
-char get_user_sex(USER user);
+char* get_user_sex(USER user);
 
 /**
  * @brief Gets the user's passport information.
