@@ -30,7 +30,7 @@ struct flights_catalog {
     GHashTable* flights; /**< Hash table that maps flight IDs to flight objects.*/
 };
 
-FLIGHTS_C create_user_c(void){
+FLIGHTS_C create_flight_c(void){
     FLIGHTS_C new = malloc(sizeof(struct flights_catalog));
 
     new->flights = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify) free_user);

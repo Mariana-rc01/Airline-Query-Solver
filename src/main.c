@@ -23,6 +23,9 @@
 #include "entities/passengers.h"
 #include "entities/reservations.h"
 #include "entities/users.h"
+#include "catalogs/flights_c.h"
+#include "catalogs/users_c.h"
+#include "catalogs/reservations_c.h"
 #include "menuNdata/statistics.h"
 #include "IO/parser.h"
 #include "IO/input.h"
@@ -38,7 +41,7 @@
  */
 
 char* concat(const char *s1, const char *s2) {
-    char *result = malloc(strlen(s1) + strlen(s2) + 1); 
+    char *result = malloc(strlen(s1) + strlen(s2) + 1);
     strcpy(result, s1);
     strcat(result, s2);
     return result;
@@ -48,28 +51,33 @@ char* concat(const char *s1, const char *s2) {
  * @brief Function main that receives the arguments from the command line
  *
  * Depending on number of arguments starts wither batch mode(2 arguments) or interactive mode (no arguments)
- * 
+ *
  * @param argc Number of arguments
  * @param argsv Array containing the arguments
  */
 
-int main(int argc, char** argsv){   
+int main(int argc, char** argsv){
     char* path1 = argsv[0];
     char* path2 = argsv[1];
     FILE *flights_file, *passengers_file, *users_file, *reservations_file, *queries_file;
-    void *flights_catalog, *users_catalog, *passengers_catalog, *reservations_catalog;
+
+    FLIGHTS_C flights_catalog = create_flight_c();
+    USERS_C users_catalog = create_user_c();
+    RESERV_C reservations_catalog = create_reservations_c();
+
     STATS statistics = NULL;
-    if(argc == 2) { 
+    if(argc == 2) {
         flights_file = fopen(concat(path1, "flights.csv"), "r");
         passengers_file = fopen(concat(path1, "passengers.csv"), "r");
         users_file = fopen(concat(path1, "users.csv"), "r");
         reservations_file = fopen(concat(path1, "reservations.csv"), "r");
         queries_file = fopen(path2, "r");
-        
+
         parseF(flights_file, 13, build_flight, flights_catalog, statistics);
-        parseF(passengers_file, 2, build_passengers, passengers_catalog, statistics);
+        parseF(passengers_file, 2, build_passengers, flights_catalog, statistics);
         parseF(users_file, 12, build_user, users_catalog, statistics);
         parseF(reservations_file, 14, build_reservations, reservations_catalog, statistics);
+        (void) queries_file;
         return 0;
     }
     if(argc == 0) {

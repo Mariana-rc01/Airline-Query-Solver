@@ -31,7 +31,7 @@ struct users_catalog {
 };
 
 USERS_C create_user_c(void){
-    USERS_C new = malloc(sizeof(strcut users_catalog));
+    USERS_C new = malloc(sizeof(struct users_catalog));
 
     new->users = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify) free_user);
 
@@ -43,8 +43,7 @@ void insert_user_c(USER user, USERS_C catalog){
     g_hash_table_insert(catalog->users, key, user);
 }
 
-USER get_user_by_id(USERS_C catalog, USER user){
-    char* id = get_user_id(user);
+USER get_user_by_id(USERS_C catalog, char* id){
     return g_hash_table_lookup(catalog->users, id);
 }
 

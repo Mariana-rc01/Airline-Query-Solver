@@ -19,6 +19,9 @@
  *   limitations under the License.
  */
 
+#include <math.h>
+#include <string.h>
+
 int isDigit(char c){
     return(c >= '0' && c <= '9');
 }

@@ -39,7 +39,7 @@ typedef struct flights_catalog *FLIGHTS_C;
  *
  * @return A new instance of FLIGHTS_C.
  */
-FLIGHTS_C create_user_c(void);
+FLIGHTS_C create_flight_c(void);
 
 /**
  * @brief Insert a flight into the flight catalog.

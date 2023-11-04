@@ -53,11 +53,11 @@ void insert_user_c(USER user, USERS_C catalog);
  * @brief Get a user based on the user ID.
  *
  * @param catalog The user catalog.
- * @param user The user whose ID will be used for the lookup.
+ * @param id The ID will be used for the lookup.
  *
  * @return The user corresponding to the specified ID or NULL if not found.
  */
-USER get_user_by_id(USERS_C catalog, USER user);
+USER get_user_by_id(USERS_C catalog, char* id);
 
 /**
  * @brief Free the allocated memory for the user catalog.

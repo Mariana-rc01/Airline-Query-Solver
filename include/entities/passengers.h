@@ -41,7 +41,7 @@ PASS create_passengers(void);
  * @param pass A pointer to the passenger struct.
  * @param f_id The flight ID.
  */
-void set_flight_id_P(PASS pass, int f_id);
+void set_flight_id_P(PASS pass, char* f_id);
 
 /**
  * @brief Sets the user ID of the passenger.
@@ -55,7 +55,7 @@ void set_user_id_P(PASS pass, char* u_id);
  * @param pass A pointer to the passenger struct.
  * @return The flight ID.
  */
-int get_flight_id_P(PASS pass);
+char* get_flight_id_P(PASS pass);
 
 /**
  * @brief Gets the user ID of the passenger.

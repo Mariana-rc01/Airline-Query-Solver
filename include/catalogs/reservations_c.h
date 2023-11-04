@@ -1,6 +1,6 @@
 /**
  * @file reservations_c.h
- * @brief This file contains the implementation of the flight struct and related functions.
+ * @brief This file contains the definition of the reservations catalog struct and related functions.
  */
 
 /*
@@ -42,14 +42,6 @@ RESERV_C create_reservations_c(void);
  * @param catalog A pointer to the reservations catalog.
  */
 void insert_reservations_c(RESERV reserv, RESERV_C catalog);
-
-/**
- * @brief Sets the ID for a reservation record in the catalog.
- * @param catalog A pointer to the reservations catalog.
- * @param reserv A pointer to the reservation record.
- * @param id The reservation ID.
- */
-void set_catalog_reservations_id(RESERV_C catalog, RESERV reserv, char* id);
 
 /**
  * @brief Gets a reservation record by its ID.

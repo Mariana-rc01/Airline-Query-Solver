@@ -23,6 +23,7 @@
 
 #include "menuNdata/statistics.h"
 #include "IO/input.h"
+#include "catalogs/flights_c.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -228,5 +229,9 @@ void build_flight(char **flight_fields, void *catalog, STATS stats){
     set_flight_pilot(flight,flight_fields[10]);
     set_flight_copilot(flight,flight_fields[11]);
     set_flight_notes(flight,flight_fields[12]);
+
+    insert_flight_c(flight,catalog);
+    (void) stats;
+
 }
 

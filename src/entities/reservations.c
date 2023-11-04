@@ -23,6 +23,7 @@
 
 #include "menuNdata/statistics.h"
 #include "IO/input.h"
+#include "catalogs/reservations_c.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -121,7 +122,7 @@ void set_rating(RESERV res, char* ratin){
     res->rating = strdup(ratin);
 }
 
-void set_commnet(RESERV res, char* comm){
+void set_comment(RESERV res, char* comm){
     res->comment = strdup(comm);
 }
 
@@ -220,22 +221,25 @@ void build_reservations(char** reservations_fields, void* catalog, STATS stats){
 
     if (!verify_reservations(reservations_fields)) return;
 
-    RESERV res = create_reserres();
+    RESERV res = create_reservation();
 
-    set_reservations_id(res,reservations_fields[0]);
-    set_reservations_user_id(res,reservations_fields[1]);
-    set_reservations_hotel_id(res,reservations_fields[2]);
-    set_reservations_hotel_name(res,reservations_fields[3]);
-    set_reservations_hotel_stars(res,reservations_fields[4]);
-    set_reservations_city_tax(res,reservations_fields[5]);
-    set_reservations_address(res,reservations_fields[6]);
-    set_reservations_begin_date(res,reservations_fields[7]);
-    set_reservations_end_date(res,reservations_fields[8]);
-    set_reservations_price_per_night(res,reservations_fields[9]);
-    set_reservations_includes_breakfast(res,reservations_fields[10]);
-    set_reservations_room_details(res,reservations_fields[11]);
-    set_reservations_rating(res,reservations_fields[12]);
-    set_reservations_comment(res,reservations_fields[13]);
+    set_reservation_id(res,reservations_fields[0]);
+    set_user_id_R(res,reservations_fields[1]);
+    set_hotel_id(res,reservations_fields[2]);
+    set_hotel_name(res,reservations_fields[3]);
+    set_hotel_stars(res,reservations_fields[4]);
+    set_city_tax(res,reservations_fields[5]);
+    set_address(res,reservations_fields[6]);
+    set_begin_date(res,reservations_fields[7]);
+    set_end_date(res,reservations_fields[8]);
+    set_price_per_night(res,reservations_fields[9]);
+    set_includes_breakfast(res,reservations_fields[10]);
+    set_room_details(res,reservations_fields[11]);
+    set_rating(res,reservations_fields[12]);
+    set_comment(res,reservations_fields[13]);
+
+    insert_reservations_c(res, catalog);
+    (void) stats;
 }
 
 
