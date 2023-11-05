@@ -25,8 +25,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS statistics){
+void parseF (FILE* f, int max_fields, void_function func, void *catalog1, void *catalog2, STATS statistics, FILE* error_f){
 
+    int verify = 0;
     char* line = NULL;
     size_t lsize = 0;
 
@@ -40,9 +41,13 @@ void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS s
         //Replace \n for \0
         line[strlen(line)-1] = '\0';
 
-
         char **fields = parseL(line, max_fields);
-        func(fields,catalog,statistics);
+        verify = func(fields,catalog1, catalog2,statistics);
+
+        if (verify == 0) {
+            // Write the current line on the error file
+            fprintf(error_f, "%s\n", line);
+        }
 
         free(fields);
     }

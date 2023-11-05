@@ -24,6 +24,7 @@
 #include "menuNdata/statistics.h"
 #include "IO/input.h"
 #include "catalogs/passengers_c.h"
+#include "catalogs/users_c.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -70,14 +71,15 @@ void free_passengers(PASS pass){
     free(pass);
 }
 
-int verify_passengers(char** passengers_fields){
+int verify_passengers(char** passengers_fields, USERS_C users){
     if (!(passengers_fields[0]) || !(passengers_fields[1])) return 0;
+    if (!(get_user_by_id(users, passengers_fields[1]))) return 0;
     return 1;
 }
 
-void build_passengers(char** passengers_fields, void* catalog, STATS stats){
+int build_passengers(char** passengers_fields, void* catalogU, void* catalogF, STATS stats){
 
-    if (!verify_passengers(passengers_fields)) return;
+    if (!verify_passengers(passengers_fields, catalogU)) return 0;
 
     PASS pass = create_passengers();
 
@@ -86,6 +88,9 @@ void build_passengers(char** passengers_fields, void* catalog, STATS stats){
 
     insert_passengers_c(pass,catalog);
     (void) stats;
+    (void) catalogF;
+
+    return 1;
 }
 
 

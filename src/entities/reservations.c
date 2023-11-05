@@ -24,6 +24,7 @@
 #include "menuNdata/statistics.h"
 #include "IO/input.h"
 #include "catalogs/reservations_c.h"
+#include "catalogs/users_c.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -201,7 +202,7 @@ void free_reservations(RESERV res){
     free(res);
 }
 
-int verify_reservations(char** fields){
+int verify_reservations(char** fields, USERS_C users){
     if (!(fields[0]) || !(fields[1]) || !(fields[2]) ||
         !(fields[3]) || !(fields[6])) return 0;
 
@@ -213,13 +214,14 @@ int verify_reservations(char** fields){
     if (!validate_price_per_night(fields[9])) return 0;
     if (!validate_includes_breakfast(fields[10])) return 0;
     if (!validate_rating(fields[12])) return 0;
+    if (!(get_user_by_id(users, fields[1]))) return 0;
 
     return 1;
 }
 
-void build_reservations(char** reservations_fields, void* catalog, STATS stats){
+int build_reservations(char** reservations_fields, void* catalog, void *catalogU, STATS stats){
 
-    if (!verify_reservations(reservations_fields)) return;
+    if (!verify_reservations(reservations_fields, catalogU)) return 0;
 
     RESERV res = create_reservation();
 
@@ -240,6 +242,8 @@ void build_reservations(char** reservations_fields, void* catalog, STATS stats){
 
     insert_reservations_c(res, catalog);
     (void) stats;
+
+    return 1;
 }
 
 

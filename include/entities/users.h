@@ -222,8 +222,11 @@ int verify_user(char** fields);
  * @brief Builds a user struct from user data fields.
  * @param user_fields An array of user data fields.
  * @param catalog A pointer to the catalog.
+ * @param catalog1 A pointer to the catalog.
  * @param stats A pointer to the statistics.
+ * 
+ * @return 1 if the user is added to the catalog 0 if not
  */
-void build_user(char **user_fields, void *catalog, STATS stats);
+int build_user(char **user_fields, void *catalog, void *catalog1, STATS stats);
 
 #endif

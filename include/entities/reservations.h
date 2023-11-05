@@ -249,8 +249,11 @@ int verify_reservations(char** fields);
  * @brief Builds a reservation struct from reservation data fields.
  * @param reservations_fields An array of reservation data fields.
  * @param catalog A pointer to the catalog.
+ * @param catalogU A pointer to the users catalog.
  * @param stats A pointer to the statistics.
+ * 
+ * @return 1 if the reservation is added to the catalog 0 if not
  */
-void build_reservations(char** reservations_fields, void* catalog, STATS stats);
+int build_reservations(char** reservations_fields, void* catalog, void* catalogU, STATS stats);
 
 #endif

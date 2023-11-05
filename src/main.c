@@ -60,6 +60,7 @@ int main(int argc, char** argsv){
     char* path1 = argsv[0];
     char* path2 = argsv[1];
     FILE *flights_file, *passengers_file, *users_file, *reservations_file, *queries_file;
+    FILE *flights_error_file, *passengers_error_file, *users_error_file, *reservations_error_file;
 
     FLIGHTS_C flights_catalog = create_flight_c();
     USERS_C users_catalog = create_user_c();
@@ -73,11 +74,42 @@ int main(int argc, char** argsv){
         reservations_file = fopen(concat(path1, "reservations.csv"), "r");
         queries_file = fopen(path2, "r");
 
-        parseF(flights_file, 13, build_flight, flights_catalog, statistics);
-        parseF(passengers_file, 2, build_passengers, flights_catalog, statistics);
-        parseF(users_file, 12, build_user, users_catalog, statistics);
-        parseF(reservations_file, 14, build_reservations, reservations_catalog, statistics);
+        flights_error_file = fopen("flights_errors.csv", "w");
+        passengers_error_file = fopen("passengers_errors.csv", "w");
+        users_error_file = fopen("users_errors.csv", "w");
+        reservations_error_file = fopen("reservations_errors.csv", "w");
+
+        parseF(users_file, 12, build_user, users_catalog, users_catalog, statistics, users_error_file);
+        parseF(passengers_file, 2, build_passengers, users_catalog, flights_catalog, statistics, passengers_error_file);
+        parseF(flights_file, 13, build_flight, flights_catalog, flights_catalog, statistics, flights_error_file);
+        parseF(reservations_file, 14, build_reservations, reservations_catalog, users_catalog, statistics, reservations_error_file);
         (void) queries_file;
+
+        fclose(flights_file);
+        fclose(passengers_file);
+        fclose(users_file);
+        fclose(reservations_file);
+        fclose(queries_file);
+
+        fclose(flights_error_file);
+        fclose(passengers_error_file);
+        fclose(users_error_file);
+        fclose(reservations_error_file);
+
+        // Verifies if the error files contain any data
+        if (isFileEmpty("flights_errors.csv")) {
+            remove("flights_errors.csv");
+        }
+        if (isFileEmpty("passengers_errors.csv")) {
+            remove("passengers_errors.csv");
+        }
+        if (isFileEmpty("users_errors.csv")) {
+            remove("users_errors.csv");
+        }
+        if (isFileEmpty("reservations_errors.csv")) {
+            remove("reservations_errors.csv");
+        }
+
         return 0;
     }
     if(argc == 0) {
@@ -90,3 +122,4 @@ int main(int argc, char** argsv){
         return 0;
     }
 }
+

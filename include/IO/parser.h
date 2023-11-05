@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include "menuNdata/statistics.h"
 
-typedef void (*void_function)(char**, void*, STATS);
+typedef int (*void_function)(char**, void*, STATS);
 
 /**
  * @brief Function to parse a file
@@ -33,11 +33,12 @@ typedef void (*void_function)(char**, void*, STATS);
  * @param f Pointer to given file
  * @param max_fields Number of attributes of the csv file
  * @param func Function that loads the data into the structs
- * @param catalog The catalog of the respective file
+ * @param catalog1 The catalog of the respective file
+ * @param catalog2 The auxiliar catalog of the respective file
  * @param statistics Struct that contains the data
+ * @param error_f Pointer to the error file
 */
-
-void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS statistics);
+void parseF (FILE* f, int max_fields, void_function func, void *catalog1, void *catalog2, STATS statistics, FILE* error_f);
 
 /**
  * @brief Function to parse a line
@@ -45,7 +46,6 @@ void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS s
  * @param line Pointer to given line
  * @param max_fields Number of attributes of the csv file
 */
-
 char** parseL (char* line, int max_fields);
 
 #endif

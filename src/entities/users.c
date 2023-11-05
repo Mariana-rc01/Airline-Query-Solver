@@ -45,6 +45,7 @@ struct user {
     char* account_creation; /**< Account creation date and time. */
     char* pay_method; /**< User's payment method. */
     char* account_status; /**< User's account status. */
+     list_of_flights; /**< User's list of flights. */
 };
 
 USER create_user(void){
@@ -199,9 +200,9 @@ int verify_user(char** fields){
     return 1;
 }
 
-void build_user(char  **user_fields, void *catalog, STATS stats){
+int build_user(char  **user_fields, void *catalog, void *catalog1, STATS stats){
 
-    if (!verify_user(user_fields)) return;
+    if (!verify_user(user_fields)) return 0;
 
     USER user = create_user();
 
@@ -220,4 +221,7 @@ void build_user(char  **user_fields, void *catalog, STATS stats){
 
     insert_user_c(user,catalog);
     (void) stats;
+    (void) catalog1;
+
+    return 1:
 }
