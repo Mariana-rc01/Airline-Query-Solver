@@ -31,46 +31,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/**
- * @brief Concatenes two strings
- *
- * @param s1 Initial string
- * @param s2 Final string
- */
-
-char* concat(const char *s1, const char *s2) {
-    char *result = malloc(strlen(s1) + strlen(s2) + 1);
-    strcpy(result, s1);
-    strcat(result, s2);
-    return result;
-}
-
-int isFileEmpty(FILE *file) {
-
-    //File is empty
-    if (file == NULL) {
-        printf("Invalid csv.\n");
-        return -1;
-    }
-
-    size_t lsize = 0;
-    char *line = NULL;
-    int lines = 0;
-
-    while (getline(&line, &lsize, file) != -1) {
-        lines++;
-
-        // File isn't empty
-        if (lines > 1) {
-            free(line);
-            return 0;
-        }
-    }
-
-    free(line);
-
-    return 1;
-}
 
 /**
  * @brief Function main that receives the arguments from the command line
@@ -81,67 +41,14 @@ int isFileEmpty(FILE *file) {
  * @param argsv Array containing the arguments
  */
 
-int main(int argc, char** argsv){
-    char* path1 = argsv[0];
-    char* path2 = argsv[1];
-    FILE *flights_file, *passengers_file, *users_file, *reservations_file, *queries_file;
-    FILE *flights_error_file, *passengers_error_file, *users_error_file, *reservations_error_file;
-
-    FLIGHTS_C flights_catalog = create_flight_c();
-    USERS_C users_catalog = create_user_c();
-    RESERV_C reservations_catalog = create_reservations_c();
-    PASS_C passengers_catalog = create_passengers_c();
-    MANAGER manager_catalog = create_manager_c(users_catalog,flights_catalog,reservations_catalog,passengers_catalog);
-    (void) manager_catalog;
-
-    STATS statistics = NULL;
+int main(int argc, char** argsv){   
     if(argc == 2) {
-        flights_file = fopen(concat(path1, "flights.csv"), "r");
-        passengers_file = fopen(concat(path1, "passengers.csv"), "r");
-        users_file = fopen(concat(path1, "users.csv"), "r");
-        reservations_file = fopen(concat(path1, "reservations.csv"), "r");
-        queries_file = fopen(path2, "r");
-
-        flights_error_file = fopen("flights_errors.csv", "w");
-        passengers_error_file = fopen("passengers_errors.csv", "w");
-        users_error_file = fopen("users_errors.csv", "w");
-        reservations_error_file = fopen("reservations_errors.csv", "w");
-
-        parseF(users_file, 12, build_user, users_catalog, statistics, users_error_file);
-        parseF(passengers_file, 2, build_passengers, manager_catalog, statistics, passengers_error_file);
-        parseF(flights_file, 13, build_flight, flights_catalog, statistics, flights_error_file);
-        parseF(reservations_file, 14, build_reservations, manager_catalog, statistics, reservations_error_file);
-        (void) queries_file;
-
-        fclose(flights_file);
-        fclose(passengers_file);
-        fclose(users_file);
-        fclose(reservations_file);
-        fclose(queries_file);
-
-        fclose(flights_error_file);
-        fclose(passengers_error_file);
-        fclose(users_error_file);
-        fclose(reservations_error_file);
-
-        // Verifies if the error files contain any data
-        if (isFileEmpty(flights_error_file)) {
-            remove("flights_errors.csv");
-        }
-        if (isFileEmpty(passengers_error_file)) {
-            remove("passengers_errors.csv");
-        }
-        if (isFileEmpty(users_error_file)) {
-            remove("users_errors.csv");
-        }
-        if (isFileEmpty(reservations_error_file)) {
-            remove("reservations_errors.csv");
-        }
-
+        batch(argsv[0], argsv[1]);
+        
         return 0;
     }
     if(argc == 0) {
-        //stdin...
+        printf("Interactive mode not yet implemented");
         return 0;
     }
     else{

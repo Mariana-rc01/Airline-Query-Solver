@@ -21,6 +21,7 @@
 
 #include <math.h>
 #include <string.h>
+#include <stdio.h>
 
 int isDigit(char c){
     return(c >= '0' && c <= '9');
@@ -39,4 +40,37 @@ int ourAtoi(char* string){
     }
 
     return r;
+}
+
+char* concat(char *s1, char *s2, char* result) {
+    strcpy(result, s1);
+    strcat(result, s2);
+    return result;
+}
+
+int isFileEmpty(FILE *file) {
+
+    //File is empty
+    if (file == NULL) {
+        printf("Invalid csv.\n");
+        return -1;
+    }
+
+    size_t lsize = 0;
+    char *line = NULL;
+    int lines = 0;
+
+    while (getline(&line, &lsize, file) != -1) {
+        lines++;
+
+        // File isn't empty
+        if (lines > 1) {
+            free(line);
+            return 0;
+        }
+    }
+
+    free(line);
+
+    return 1;
 }

@@ -53,5 +53,25 @@ int isLetter(char c);
  */
 int ourAtoi(char* string);
 
+/**
+ * @brief This function concatenates 2 strings resulting in a separate string
+ *
+ * The reason we use this instead of just strcat is because strcat modifys the first
+ * which in this case we want to keep intact
+ *
+ *
+ * @param s1 path to the file we want to open
+ * @param s2 name of the file we want to open
+ * @param result string we want to change
+ * @return result
+ */
+char* concat(char* s1, char* s2, char* result);
 
+/**
+ * @brief This function verifies if a given fil is empty
+ *
+ * @param file File to be verified
+ * @return Bool
+ */
+int isFileEmpty(FILE *file);
 #endif
