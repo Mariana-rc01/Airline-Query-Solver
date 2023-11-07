@@ -1,6 +1,6 @@
 /**
- * @file reservantions.h
- * @brief
+ * @file reservations.h
+ * @brief This file contains the definition of the reservations struct and related functions.
  */
 
 /*
@@ -29,6 +29,7 @@
 typedef struct reservations *RESERV;
 
 #include "menuNdata/statistics.h"
+#include "catalogs/users_c.h"
 
 /**
  * @brief Creates a new reservation struct with default values.
@@ -135,6 +136,13 @@ void set_rating(RESERV res, char* ratin);
 void set_comment(RESERV res, char* comm);
 
 /**
+ * @brief Sets the reservation's cost.
+ * @param res A pointer to the reservations struct.
+ * @param cost The reservation's cost.
+ */
+void set_cost(RESERV res, double cost);
+
+/**
  * @brief Gets the reservation ID.
  * @param res A pointer to the reservations struct.
  * @return The reservation ID.
@@ -233,6 +241,13 @@ char* get_rating(RESERV res);
 char* get_comment(RESERV res);
 
 /**
+ * @brief Gets the cost of the reservation.
+ * @param res A pointer to the reservations struct.
+ * @return The reservation's cost.
+ */
+double get_cost(RESERV res);
+
+/**
  * @brief Frees memory associated with a reserv struct.
  * @param res A pointer to the reservation struct.
  */
@@ -241,19 +256,19 @@ void free_reservations(RESERV res);
 /**
  * @brief Verifies the validity of reservation data.
  * @param fields An array of reserv data fields.
+ * @param users Catalog of users.
  * @return 1 if the user data is valid, 0 otherwise.
  */
-int verify_reservations(char** fields);
+int verify_reservations(char** fields, USERS_C users);
 
 /**
  * @brief Builds a reservation struct from reservation data fields.
  * @param reservations_fields An array of reservation data fields.
- * @param catalog A pointer to the catalog.
- * @param catalogU A pointer to the users catalog.
+ * @param catalog A pointer to the manager catalog.
  * @param stats A pointer to the statistics.
- * 
+ *
  * @return 1 if the reservation is added to the catalog 0 if not
  */
-int build_reservations(char** reservations_fields, void* catalog, void* catalogU, STATS stats);
+int build_reservations(char** reservations_fields, void* catalog, STATS stats);
 
 #endif

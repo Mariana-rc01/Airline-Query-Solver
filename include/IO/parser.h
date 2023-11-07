@@ -33,12 +33,11 @@ typedef int (*void_function)(char**, void*, STATS);
  * @param f Pointer to given file
  * @param max_fields Number of attributes of the csv file
  * @param func Function that loads the data into the structs
- * @param catalog1 The catalog of the respective file
- * @param catalog2 The auxiliar catalog of the respective file
+ * @param catalog The catalog of the respective file
  * @param statistics Struct that contains the data
  * @param error_f Pointer to the error file
 */
-void parseF (FILE* f, int max_fields, void_function func, void *catalog1, void *catalog2, STATS statistics, FILE* error_f);
+void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS statistics, FILE* error_f);
 
 /**
  * @brief Function to parse a line

@@ -77,9 +77,9 @@ int verify_passengers(char** passengers_fields, USERS_C users){
     return 1;
 }
 
-int build_passengers(char** passengers_fields, void* catalogU, void* catalogF, STATS stats){
+int build_passengers(char** passengers_fields, void* catalog, STATS stats){
 
-    if (!verify_passengers(passengers_fields, catalogU)) return 0;
+    if (!verify_passengers(passengers_fields, catalog)) return 0;
 
     PASS pass = create_passengers();
 
@@ -88,7 +88,6 @@ int build_passengers(char** passengers_fields, void* catalogU, void* catalogF, S
 
     insert_passengers_c(pass,catalog);
     (void) stats;
-    (void) catalogF;
 
     return 1;
 }

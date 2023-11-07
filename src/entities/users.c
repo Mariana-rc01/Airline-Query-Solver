@@ -45,7 +45,7 @@ struct user {
     char* account_creation; /**< Account creation date and time. */
     char* pay_method; /**< User's payment method. */
     char* account_status; /**< User's account status. */
-     list_of_flights; /**< User's list of flights. */
+    double total_spent; /**< User's total spent on reservations. */
 };
 
 USER create_user(void){
@@ -62,6 +62,7 @@ USER create_user(void){
     new->account_creation = NULL;
     new->pay_method = NULL;
     new->account_status = NULL;
+    new->total_spent = 0;
 
     return new;
 }
@@ -114,6 +115,9 @@ void set_user_account_status(USER user, char* account_status){
     user->account_status = strdup(account_status);
 }
 
+void set_user_total_spent(USER user, double cost){
+    user->total_spent = cost;
+}
 
 char* get_user_id(USER user){
     return strdup(user->id);
@@ -163,6 +167,9 @@ char* get_user_account_status(USER user){
     return strdup(user->account_status);
 }
 
+double get_user_total_spent(USER user){
+    return user->total_spent;
+}
 
 void free_user(USER user){
     free(user->id);
@@ -200,7 +207,7 @@ int verify_user(char** fields){
     return 1;
 }
 
-int build_user(char  **user_fields, void *catalog, void *catalog1, STATS stats){
+int build_user(char  **user_fields, void *catalog, STATS stats){
 
     if (!verify_user(user_fields)) return 0;
 
@@ -221,7 +228,6 @@ int build_user(char  **user_fields, void *catalog, void *catalog1, STATS stats){
 
     insert_user_c(user,catalog);
     (void) stats;
-    (void) catalog1;
 
-    return 1:
+    return 1;
 }

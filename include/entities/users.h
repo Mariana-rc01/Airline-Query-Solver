@@ -121,6 +121,13 @@ void set_user_pay_method(USER user, char* pay_method);
 void set_user_account_status(USER user, char* account_status);
 
 /**
+ * @brief Sets the user's total spent.
+ * @param user A pointer to the user struct.
+ * @param total_spent The user's total spent.
+ */
+void set_user_total_spent(USER user, double total_spent);
+
+/**
  * @brief Gets the user ID.
  * @param user A pointer to the user struct.
  * @return The user ID.
@@ -204,6 +211,12 @@ char* get_user_pay_method(USER user);
  */
 char* get_user_account_status(USER user);
 
+/**
+ * @brief Gets the user's total spent.
+ * @param user A pointer to the user struct.
+ * @return The user's total spent.
+ */
+double get_user_total_spent(USER user);
 
 /**
  * @brief Frees memory associated with a user struct.
@@ -221,12 +234,11 @@ int verify_user(char** fields);
 /**
  * @brief Builds a user struct from user data fields.
  * @param user_fields An array of user data fields.
- * @param catalog A pointer to the catalog.
- * @param catalog1 A pointer to the catalog.
+ * @param catalog A pointer to the respective catalog.
  * @param stats A pointer to the statistics.
- * 
+ *
  * @return 1 if the user is added to the catalog 0 if not
  */
-int build_user(char **user_fields, void *catalog, void *catalog1, STATS stats);
+int build_user(char **user_fields, void *catalog, STATS stats);
 
 #endif

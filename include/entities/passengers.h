@@ -80,12 +80,11 @@ int verify_passengers(char** passengers_fields, USERS_C users);
 /**
  * @brief Builds a passenger struct from passenger data fields.
  * @param passengers_fields An array of passenger data fields.
- * @param catalogU A pointer to the users catalog.
- * @param catalogF A pointer to the flights catalog.
+ * @param catalog A pointer to the manager catalog.
  * @param stats A pointer to the statistics.
- * 
+ *
  * @return 1 if the passenger is added to the catalog 0 if not
  */
-int build_passengers(char** passengers_fields, void* catalogU, void* catalogF, STATS stats);
+int build_passengers(char** passengers_fields, void* catalog, STATS stats);
 
 #endif

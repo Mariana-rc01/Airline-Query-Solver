@@ -47,6 +47,12 @@ USER get_user_by_id(USERS_C catalog, char* id){
     return g_hash_table_lookup(catalog->users, id);
 }
 
+void update_user_c(USERS_C catalog, char* id, double cost){
+    USER user = get_user_by_id(catalog, id);
+
+    set_user_total_spent(user, get_user_total_spent(user) + cost);
+}
+
 void free_user_c(USERS_C catalog){
     g_hash_table_destroy(catalog->users);
     free(catalog);

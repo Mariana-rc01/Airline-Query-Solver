@@ -1,6 +1,6 @@
 /**
  * @file reservations.c
- * @brief
+ * @brief This file contains the implementation of the reservations struct and related functions.
  */
 
 /*
@@ -23,8 +23,8 @@
 
 #include "menuNdata/statistics.h"
 #include "IO/input.h"
-#include "catalogs/reservations_c.h"
-#include "catalogs/users_c.h"
+#include "utils/utils.h"
+#include "catalogs/manager_c.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -48,6 +48,7 @@ struct reservations {
     char* room_details; /**< Details about the room. */
     char* rating; /**< Rating associated with the reservation. */
     char* comment; /**< User's comment on the reservation. */
+    double cost; /**< Cost of the reservation. */
 };
 
 RESERV create_reservation(void){
@@ -67,6 +68,7 @@ RESERV create_reservation(void){
     new->room_details = NULL;
     new->rating = NULL;
     new->comment = NULL;
+    new->cost = 0;
 
     return new;
 }
@@ -127,6 +129,10 @@ void set_comment(RESERV res, char* comm){
     res->comment = strdup(comm);
 }
 
+void set_cost(RESERV res, double cost){
+    res->cost = cost;
+}
+
 char* get_reservation_id(RESERV res){
     return strdup(res->id);
 }
@@ -183,6 +189,10 @@ char* get_comment(RESERV res){
     return strdup(res->comment);
 }
 
+double get_cost(RESERV res){
+    return (res->cost);
+}
+
 void free_reservations(RESERV res){
     free(res->id);
     free(res->user_id);
@@ -219,9 +229,13 @@ int verify_reservations(char** fields, USERS_C users){
     return 1;
 }
 
-int build_reservations(char** reservations_fields, void* catalog, void *catalogU, STATS stats){
+int build_reservations(char** reservations_fields, void* catalog, STATS stats){
 
-    if (!verify_reservations(reservations_fields, catalogU)) return 0;
+    MANAGER managerC = (MANAGER)catalog;
+    USERS_C usersC = get_users_c(managerC);
+    RESERV_C reservsC = get_reserv_c(managerC);
+
+    if (!verify_reservations(reservations_fields, usersC)) return 0;
 
     RESERV res = create_reservation();
 
@@ -240,7 +254,25 @@ int build_reservations(char** reservations_fields, void* catalog, void *catalogU
     set_rating(res,reservations_fields[12]);
     set_comment(res,reservations_fields[13]);
 
-    insert_reservations_c(res, catalog);
+    double cost = 0;
+    char* beginD = NULL;
+    beginD[0] = reservations_fields[7][8];
+    beginD[1] = reservations_fields[7][9];
+    beginD[2] = '\0';
+
+    char* endD = NULL;
+    endD[0] = reservations_fields[8][8];
+    endD[1] = reservations_fields[8][9];
+    endD[2] = '\0';
+
+    int nNights = ourAtoi(endD) - ourAtoi(beginD);
+    int price_per_night = ourAtoi(reservations_fields[9]);
+    int city_tax = ourAtoi(reservations_fields[5]);
+    cost = price_per_night * nNights + ((price_per_night * nNights) / 100) * city_tax;
+    set_cost(res,cost);
+
+    insert_reservations_c(res, reservsC);
+    update_user_c(usersC,reservations_fields[1],cost);
     (void) stats;
 
     return 1;

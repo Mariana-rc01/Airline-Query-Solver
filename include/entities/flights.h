@@ -236,11 +236,10 @@ int verify_flight(char** fields);
  * @brief Builds a flight struct from flight data fields.
  * @param flight_fields An array of flight data fields.
  * @param catalog A pointer to the catalog.
- * @param catalog1 A pointer to the catalog.
  * @param stats A pointer to the statistics.
- * 
+ *
  * @return 1 if the flight is added to the catalog 0 if not
  */
-int build_flight(char **flight_fields, void *catalog, void *catalog1, STATS stats);
+int build_flight(char **flight_fields, void *catalog, STATS stats);
 
 #endif

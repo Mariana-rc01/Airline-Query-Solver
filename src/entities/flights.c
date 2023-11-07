@@ -210,7 +210,7 @@ int verify_flight(char** fields){
     return 1;
 }
 
-int build_flight(char **flight_fields, void *catalog, void *catalog1, STATS stats){
+int build_flight(char **flight_fields, void *catalog, STATS stats){
 
     if (!verify_flight(flight_fields)) return 0;
 
@@ -232,7 +232,6 @@ int build_flight(char **flight_fields, void *catalog, void *catalog1, STATS stat
 
     insert_flight_c(flight,catalog);
     (void) stats;
-    (void) catalog1;
 
     return 1;
 }

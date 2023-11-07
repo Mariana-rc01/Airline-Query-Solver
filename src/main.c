@@ -23,9 +23,7 @@
 #include "entities/passengers.h"
 #include "entities/reservations.h"
 #include "entities/users.h"
-#include "catalogs/flights_c.h"
-#include "catalogs/users_c.h"
-#include "catalogs/reservations_c.h"
+#include "catalogs/manager_c.h"
 #include "menuNdata/statistics.h"
 #include "IO/parser.h"
 #include "IO/input.h"
@@ -47,6 +45,33 @@ char* concat(const char *s1, const char *s2) {
     return result;
 }
 
+int isFileEmpty(FILE *file) {
+
+    //File is empty
+    if (file == NULL) {
+        printf("Invalid csv.\n");
+        return -1;
+    }
+
+    size_t lsize = 0;
+    char *line = NULL;
+    int lines = 0;
+
+    while (getline(&line, &lsize, file) != -1) {
+        lines++;
+
+        // File isn't empty
+        if (lines > 1) {
+            free(line);
+            return 0;
+        }
+    }
+
+    free(line);
+
+    return 1;
+}
+
 /**
  * @brief Function main that receives the arguments from the command line
  *
@@ -65,6 +90,9 @@ int main(int argc, char** argsv){
     FLIGHTS_C flights_catalog = create_flight_c();
     USERS_C users_catalog = create_user_c();
     RESERV_C reservations_catalog = create_reservations_c();
+    PASS_C passengers_catalog = create_passengers_c();
+    MANAGER manager_catalog = create_manager_c(users_catalog,flights_catalog,reservations_catalog,passengers_catalog);
+    (void) manager_catalog;
 
     STATS statistics = NULL;
     if(argc == 2) {
@@ -79,10 +107,10 @@ int main(int argc, char** argsv){
         users_error_file = fopen("users_errors.csv", "w");
         reservations_error_file = fopen("reservations_errors.csv", "w");
 
-        parseF(users_file, 12, build_user, users_catalog, users_catalog, statistics, users_error_file);
-        parseF(passengers_file, 2, build_passengers, users_catalog, flights_catalog, statistics, passengers_error_file);
-        parseF(flights_file, 13, build_flight, flights_catalog, flights_catalog, statistics, flights_error_file);
-        parseF(reservations_file, 14, build_reservations, reservations_catalog, users_catalog, statistics, reservations_error_file);
+        parseF(users_file, 12, build_user, users_catalog, statistics, users_error_file);
+        parseF(passengers_file, 2, build_passengers, manager_catalog, statistics, passengers_error_file);
+        parseF(flights_file, 13, build_flight, flights_catalog, statistics, flights_error_file);
+        parseF(reservations_file, 14, build_reservations, manager_catalog, statistics, reservations_error_file);
         (void) queries_file;
 
         fclose(flights_file);
@@ -97,16 +125,16 @@ int main(int argc, char** argsv){
         fclose(reservations_error_file);
 
         // Verifies if the error files contain any data
-        if (isFileEmpty("flights_errors.csv")) {
+        if (isFileEmpty(flights_error_file)) {
             remove("flights_errors.csv");
         }
-        if (isFileEmpty("passengers_errors.csv")) {
+        if (isFileEmpty(passengers_error_file)) {
             remove("passengers_errors.csv");
         }
-        if (isFileEmpty("users_errors.csv")) {
+        if (isFileEmpty(users_error_file)) {
             remove("users_errors.csv");
         }
-        if (isFileEmpty("reservations_errors.csv")) {
+        if (isFileEmpty(reservations_error_file)) {
             remove("reservations_errors.csv");
         }
 
@@ -117,7 +145,7 @@ int main(int argc, char** argsv){
         return 0;
     }
     else{
-        printf("Invalid number of arguments, must be either 0 or 2");
+        printf("Invalid number of arguments, must be either 0 or 2\n");
         //perror("Error");
         return 0;
     }

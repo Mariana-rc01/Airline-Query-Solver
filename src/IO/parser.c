@@ -25,15 +25,15 @@
 #include <string.h>
 #include <stdlib.h>
 
-void parseF (FILE* f, int max_fields, void_function func, void *catalog1, void *catalog2, STATS statistics, FILE* error_f){
+void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS statistics, FILE* error_f){
 
     int verify = 0;
     char* line = NULL;
     size_t lsize = 0;
 
-    // Ignore first line
-    if (getline(&line,&lsize,f) == -1) {
-        printf("Invalid csv.\n");
+    // Write first line of the error csv
+    if (getline(&line,&lsize,f) != -1) {
+            fprintf(error_f, "%s\n", line);
     }
 
     while(getline(&line,&lsize,f) != -1){
@@ -42,7 +42,7 @@ void parseF (FILE* f, int max_fields, void_function func, void *catalog1, void *
         line[strlen(line)-1] = '\0';
 
         char **fields = parseL(line, max_fields);
-        verify = func(fields,catalog1, catalog2,statistics);
+        verify = func(fields,catalog,statistics);
 
         if (verify == 0) {
             // Write the current line on the error file
