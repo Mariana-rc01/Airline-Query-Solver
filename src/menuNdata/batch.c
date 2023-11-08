@@ -36,6 +36,7 @@
 
 
 
+
 void batch (char* path1, char* path2) {
     FILE *flights_file, *passengers_file, *users_file, *reservations_file, *queries_file;
     FILE *flights_error_file, *passengers_error_file, *users_error_file, *reservations_error_file;
@@ -68,7 +69,7 @@ void batch (char* path1, char* path2) {
     parseF(passengers_file, 2, build_passengers, manager_catalog, statistics, passengers_error_file);
     parseF(flights_file, 13, build_flight, flights_catalog, statistics, flights_error_file);
     parseF(reservations_file, 14, build_reservations, manager_catalog, statistics, reservations_error_file);
-    (void) queries_file;
+    interpreter (queries_file);
 
     fclose(flights_file);
     fclose(passengers_file);
