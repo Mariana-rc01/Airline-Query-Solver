@@ -23,50 +23,48 @@
 
 #include "menuNdata/statistics.h"
 #include "IO/input.h"
-#include "catalogs/passengers_c.h"
-#include "catalogs/users_c.h"
+#include "catalogs/manager_c.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 /**
- * @struct passengers
- * @brief Represents passenger information related to a flight.
+ * @struct passengersF
+ * @brief Represents total passengers information related to a flight.
  */
 struct passengers {
-    char* flight_id; /**< Unique flight ID associated with the passenger. */
-    char* user_id; /**< Unique user ID of the passenger. */
+    char* flight; /**< Flight ID associated with the passenger. */
+    char* user; /**< User ID associated with the passenger. */
 };
 
 PASS create_passengers(void){
     PASS new = malloc(sizeof(struct passengers));
 
-    new->flight_id = NULL;
-    new->user_id = NULL;;
+    new->flight = NULL;
+    new->user = NULL;
 
     return new;
 }
 
-void set_flight_id_P(PASS pass, char* f_id){
-    pass->flight_id = strdup(f_id);
+void set_flight_P(PASS pass, char* id){
+    pass->flight = strdup(id);
 }
 
-void set_user_id_P(PASS pass, char* u_id){
-    pass->user_id = strdup(u_id);
+void set_user_P(PASS pass, char* id){
+    pass->user = strdup(id);
 }
 
-char* get_flight_id_P(PASS pass){
-    return strdup(pass->flight_id);
+char* get_flight_P(PASS pass){
+    return (strdup(pass->flight));
 }
 
-char* get_user_id_P(PASS pass){
-    return strdup(pass->user_id);
+char* get_user_P(PASS pass){
+    return (strdup(pass->user));
 }
-
 
 void free_passengers(PASS pass){
-    free(pass->flight_id);
-    free(pass->user_id);
+    free(pass->flight);
+    free(pass->user);
 
     free(pass);
 }
@@ -79,18 +77,21 @@ int verify_passengers(char** passengers_fields, USERS_C users){
 
 int build_passengers(char** passengers_fields, void* catalog, STATS stats){
 
-    if (!verify_passengers(passengers_fields, catalog)) return 0;
+    MANAGER managerC = (MANAGER) catalog;
+    USERS_C usersC = get_users_c(managerC);
+    PASS_C passengersC = get_pass_c(managerC);
+
+    if (!verify_passengers(passengers_fields, usersC)) return 0;
 
     PASS pass = create_passengers();
 
-    set_flight_id_P(pass,passengers_fields[0]);
-    set_user_id_P(pass,passengers_fields[1]);
+    set_flight_P(pass,passengers_fields[0]);
+    set_user_P(pass,passengers_fields[1]);
 
-    insert_passengers_c(pass,catalog);
+    insert_passenger_c(pass, passengersC);
+
     (void) stats;
 
     return 1;
 }
-
-
 

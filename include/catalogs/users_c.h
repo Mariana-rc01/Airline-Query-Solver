@@ -22,7 +22,6 @@
 #ifndef USERS_C_H
 #define USERS_C_H
 
-#include "entities/users.h"
 
 #include <glib.h>
 
@@ -32,6 +31,7 @@
  */
 typedef struct users_catalog *USERS_C;
 
+#include "entities/users.h"
 /**
  * @brief Create a new instance of USERS_C.
  *

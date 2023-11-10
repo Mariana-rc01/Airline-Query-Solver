@@ -20,10 +20,10 @@
 */
 
 #include "entities/flights.h"
+#include "catalogs/manager_c.h"
 
 #include "menuNdata/statistics.h"
 #include "IO/input.h"
-#include "catalogs/flights_c.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -187,7 +187,7 @@ void free_flight(FLIGHT flight){
     free(flight);
 }
 
-int verify_flight(char** fields){
+int verify_flight(char** fields, PASS_C catalog){
     if (!(fields[0]) || !(fields[1]) || !(fields[2]) ||
         !(fields[10]) || !(fields[11])) return 0;
 
@@ -199,10 +199,8 @@ int verify_flight(char** fields){
     if (!(compare_date_time(fields[6],fields[7]))) return 0;
     if (!(compare_date_time(fields[8],fields[9]))) return 0;
 
-   /* comparação entre os lugares e os passageiros, a info dos passageiros não está aqui
-    if (!(validate_total_seats(fields[3],))) return 0;
-    Completar quando todas as entidades estiverem feitas
-    */
+    int total_passengers = get_total_passengers_c(catalog, fields[0]);
+    if (!(validate_total_seats(fields[3], total_passengers))) return 0;
 
    if (!(validate_airports(fields[4]))) return 0;
    if (!(validate_airports(fields[5]))) return 0;
@@ -212,7 +210,12 @@ int verify_flight(char** fields){
 
 int build_flight(char **flight_fields, void *catalog, STATS stats){
 
-    if (!verify_flight(flight_fields)) return 0;
+    MANAGER managerC = (MANAGER) catalog;
+    FLIGHTS_C flightsC = get_flights_c(managerC);
+    PASS_C passC = get_pass_c(managerC);
+
+    //Se voo não válido, adicionar ao ficheiro de erros o passengers
+    if (!verify_flight(flight_fields, passC)) return 0;
 
     FLIGHT flight = create_flight();
 
@@ -230,7 +233,7 @@ int build_flight(char **flight_fields, void *catalog, STATS stats){
     set_flight_copilot(flight,flight_fields[11]);
     set_flight_notes(flight,flight_fields[12]);
 
-    insert_flight_c(flight,catalog);
+    insert_flight_c(flight,flightsC);
     (void) stats;
 
     return 1;

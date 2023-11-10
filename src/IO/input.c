@@ -261,14 +261,12 @@ int validate_account_status(char* status){
         status[i] = toupper(status[i]);
         i++;
     }
-    if(status[i] != '\0') return 0;
-    if(strcmp(status,"ACTIVE") != 0 || strcmp(status,"INACTIVE") != 0) return 0;
 
     return 1;
 }
 
-int validate_total_seats(char* seats, char* passengers){
-    return(ourAtoi(passengers) <= ourAtoi(seats));
+int validate_total_seats(char* seats, int passengers){
+    return(passengers <= ourAtoi(seats));
 }
 
 int validate_airports(char* airport){

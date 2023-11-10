@@ -33,12 +33,12 @@ void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS s
 
     // Write first line of the error csv
     if (getline(&line,&lsize,f) != -1) {
-            fprintf(error_f, "%s\n", line);
+        fprintf(error_f, "%s\n", line);
     }
 
     while(getline(&line,&lsize,f) != -1){
 
-        //Replace \n for \0
+        // Replace \n for \0
         line[strlen(line)-1] = '\0';
 
         char **fields = parseL(line, max_fields);

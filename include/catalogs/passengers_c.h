@@ -22,7 +22,6 @@
 #ifndef PASSENGERS_C_H
 #define PASSENGERS_C_H
 
-#include "entities/passengers.h"
 #include <glib.h>
 
 /**
@@ -31,32 +30,26 @@
  */
 typedef struct passengers_catalog *PASS_C;
 
+#include "entities/passengers.h"
+
 /**
  * @brief Creates a new passengers catalog.
  * @return A pointer to the newly created passengers catalog.
  */
 PASS_C create_passengers_c(void);
 
-/**
- * @brief Inserts a passenger record into the passengers catalog.
- * @param pass A pointer to the passenger record.
- * @param catalog A pointer to the passengers catalog.
- */
-void insert_passengers_c(PASS pass, PASS_C catalog);
+void insert_passenger_c(PASS pass, PASS_C catalog);
 
-/**
- * @brief Gets a passenger record by flight ID.
- * @param catalog A pointer to the passengers catalog.
- * @param flight_id The flight ID.
- * @return A pointer to the passenger record associated with the specified flight ID.
- */
-PASS get_c_passengers(PASS_C catalog, char* flight_id);
+int get_total_passengers_c(PASS_C catalog, char* flight_id);
+
+GArray* get_users_for_flight(PASS_C catalog, char *flight_id);
+
+GArray* get_flights_for_user(PASS_C catalog, char *user_id);
 
 /**
  * @brief Frees the memory used by the passengers catalog.
  * @param catalog A pointer to the passengers catalog.
  */
 void free_passengers_c(PASS_C catalog);
-
 
 #endif

@@ -96,10 +96,10 @@ int validate_account_status(char* status);
  * @brief Function that validates if the number of total seats is greater than the number of passengers
  *
  * @param seats String with the number of seats
- * @param passengers String with the number of passengers
+ * @param passengers Number of passengers
  * @return 0 if it's valid or 1 if it's not
  */
-int validate_total_seats(char* seats, char* passengers);
+int validate_total_seats(char* seats, int passengers);
 
 /**
  * @brief Function that validates the airport reference

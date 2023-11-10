@@ -20,7 +20,6 @@
 */
 
 #include "catalogs/flights_c.h"
-#include "entities/flights.h"
 
 /**
  * @struct flights_catalog

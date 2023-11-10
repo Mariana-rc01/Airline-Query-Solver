@@ -266,6 +266,7 @@ int build_reservations(char** reservations_fields, void* catalog, STATS stats){
     endD[2] = '\0';
 
     int nNights = ourAtoi(endD) - ourAtoi(beginD);
+
     int price_per_night = ourAtoi(reservations_fields[9]);
     int city_tax = ourAtoi(reservations_fields[5]);
     cost = price_per_night * nNights + ((price_per_night * nNights) / 100) * city_tax;
