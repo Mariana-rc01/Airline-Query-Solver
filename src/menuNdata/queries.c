@@ -53,3 +53,39 @@ void* query1(MANAGER catalog, STATS stats, char** args){
     return;
 }
 
+void* query2(MANAGER catalog, STATS stats, char** args){
+    return;
+}
+
+void* query3(MANAGER catalog, STATS stats, char** args){
+    return;
+}
+
+void* query4(MANAGER catalog, STATS stats, char** args){
+    return;
+}
+
+void* query5(MANAGER catalog, STATS stats, char** args){
+    return;
+}
+
+void* query6(MANAGER catalog, STATS stats, char** args){
+    return;
+}
+
+void* query7(MANAGER catalog, STATS stats, char** args){
+    return;
+}
+
+void* query8(MANAGER catalog, STATS stats, char** args){
+    return;
+}
+
+void* query9(MANAGER catalog, STATS stats, char** args){
+    return;
+}
+
+void* query10(MANAGER catalog, STATS stats, char** args){
+    return;
+}
+
