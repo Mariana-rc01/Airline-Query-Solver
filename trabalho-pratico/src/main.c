@@ -27,6 +27,9 @@
 #include "menuNdata/statistics.h"
 #include "IO/parser.h"
 #include "IO/input.h"
+#include "menuNdata/batch.h"
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,10 +44,10 @@
  * @param argsv Array containing the arguments
  */
 
-int main(int argc, char** argsv){   
+int main(int argc, char** argsv){
     if(argc == 2) {
         batch(argsv[0], argsv[1]);
-        
+
         return 0;
     }
     if(argc == 0) {

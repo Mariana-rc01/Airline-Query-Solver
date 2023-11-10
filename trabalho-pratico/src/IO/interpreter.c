@@ -19,6 +19,8 @@
  *   limitations under the License.
  */
 
+#include "IO/interpreter.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,32 +50,33 @@ void divideInToArguments(char* line) {
 
 void removeQuotationMarks(char* s) {
     s[strlen(s) - 1] = '\0';
-    for(int i = 0; s[i]!= NULL; i++) {
+    for(int i = 0; s[i]!= '\0'; i++) {
         s[i] = s[i+1];
     }
 }
 
 
-void interpreter(FILE queries_file) {
-    char *query = NULL;
-    size_t lsize = 0;
-    int isField;
-    char** arguments;
-    int query_n;
-    while(getline(&query,&lsize, queries_file)) {
-        query[strlen(query)-1] = '\0';
-        divideInToArguments(arguments);
-        if(strchr(arguments[0], 'F') != NULL) {isField = 1; arguments[0][strlen(arguments[0])-1] = '\0';}
-        else {isField = 0;}
-        if(arguments[0] == '1') {query_1(isField, &arguments[1]);}
-        if(arguments[0] == '2') {query_2(isField, &arguments[1]);}
-        if(arguments[0] == '3') {query_3(isField, &arguments[1]);}
-        if(arguments[0] == '4') {query_4(isField, &arguments[1]);}
-        if(arguments[0] == '5') {query_5(isField, &arguments[1]);}
-        if(arguments[0] == '6') {query_6(isField, &arguments[1]);}
-        if(arguments[0] == '7') {query_7(isField, &arguments[1]);}
-        if(arguments[0] == '8') {query_8(isField, &arguments[1]);}
-        if(arguments[0] == '9') {query_9(isField, &arguments[1]);}
-        if(arguments[0] == '10') {query_10(isField, &arguments[1]);}
-    }
+void interpreter(FILE* queries_file) {
+    //char *query = NULL;
+    //size_t lsize = 0;
+    //int isField;
+    //char** arguments;
+    //int query_n;
+    //while(getline(&query,&lsize, queries_file)) {
+    //    query[strlen(query)-1] = '\0';
+    //    divideInToArguments(arguments);
+    //    if(strchr(arguments[0], 'F') != NULL) {isField = 1; arguments[0][strlen(arguments[0])-1] = '\0';}
+    //    else {isField = 0;}
+    //    if(arguments[0] == '1') {query_1(isField, &arguments[1]);}
+    //    if(arguments[0] == '2') {query_2(isField, &arguments[1]);}
+    //    if(arguments[0] == '3') {query_3(isField, &arguments[1]);}
+    //    if(arguments[0] == '4') {query_4(isField, &arguments[1]);}
+    //    if(arguments[0] == '5') {query_5(isField, &arguments[1]);}
+    //    if(arguments[0] == '6') {query_6(isField, &arguments[1]);}
+    //    if(arguments[0] == '7') {query_7(isField, &arguments[1]);}
+    //    if(arguments[0] == '8') {query_8(isField, &arguments[1]);}
+    //    if(arguments[0] == '9') {query_9(isField, &arguments[1]);}
+    //    if(arguments[0] == '10') {query_10(isField, &arguments[1]);}
+    //}
+    (void) queries_file;
 }

@@ -24,7 +24,7 @@
 #include "catalogs/manager_c.h"
 #include "menuNdata/statistics.h"
 
-#define MAX_ARGS 4;
+#define MAX_ARGS 4
 
 /**
  * @typedef queries_func
@@ -48,7 +48,7 @@ typedef void* (*queries_func)(MANAGER catalog, STATS stats, char** query_args);
  *
  * @note This function allocates memory for the 'query_args' array, which should be freed after query execution. The query identifier is expected to be a single character ('1', '2', '3', etc.).
  */
-void parser_query(MANAGER catalog, STATS stats, char* line);
+void* parser_query(MANAGER catalog, STATS stats, char* line);
 
 void* query1(MANAGER catalog, STATS stats, char** args);
 

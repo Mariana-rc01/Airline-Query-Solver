@@ -27,6 +27,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 /**
  * @struct flight
@@ -237,19 +238,19 @@ int build_flight(char** flight_fields, void* catalog, STATS stats){
     PASS_C passC = get_pass_c(managerC);
 
     if (!verify_flight(flight_fields, passC)){
-        
+
         if(flight_fields[0] != NULL){
             FILE* passengers_error_file;
             passengers_error_file = fopen("Resultados/passengers_error.csv", "a");
-            
-            GArray* usersForFlight = get_users_for_flight(passC->flights, flight_id);
+
+            GArray* usersForFlight = get_users_for_flight(passC, flight_fields[0]);
             print_users_for_flight_to_file(passengers_error_file, usersForFlight, flight_fields[0]);
-            
+
             fclose(passengers_error_file);
         }
 
         return 0;
-    } 
+    }
 
     FLIGHT flight = create_flight();
 

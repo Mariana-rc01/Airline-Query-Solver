@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void parser_query(MANAGER catalog, STATS stats, char* line){
+void* parser_query(MANAGER catalog, STATS stats, char* line){
     char** query_args = malloc(sizeof(char*) * MAX_ARGS);
 
     char* token = strtok(line, " ");
@@ -50,42 +50,62 @@ void parser_query(MANAGER catalog, STATS stats, char* line){
 }
 
 void* query1(MANAGER catalog, STATS stats, char** args){
-    return;
+    (void) catalog;
+    (void) stats;
+    return args;
 }
 
 void* query2(MANAGER catalog, STATS stats, char** args){
-    return;
+    (void) catalog;
+    (void) stats;
+    return args;
 }
 
 void* query3(MANAGER catalog, STATS stats, char** args){
-    return;
+    (void) catalog;
+    (void) stats;
+    return args;
 }
 
 void* query4(MANAGER catalog, STATS stats, char** args){
-    return;
+    (void) catalog;
+    (void) stats;
+    return args;
 }
 
 void* query5(MANAGER catalog, STATS stats, char** args){
-    return;
+    (void) catalog;
+    (void) stats;
+    return args;
 }
 
 void* query6(MANAGER catalog, STATS stats, char** args){
-    return;
+    (void) catalog;
+    (void) stats;
+    return args;
 }
 
 void* query7(MANAGER catalog, STATS stats, char** args){
-    return;
+    (void) catalog;
+    (void) stats;
+    return args;
 }
 
 void* query8(MANAGER catalog, STATS stats, char** args){
-    return;
+    (void) catalog;
+    (void) stats;
+    return args;
 }
 
 void* query9(MANAGER catalog, STATS stats, char** args){
-    return;
+    (void) catalog;
+    (void) stats;
+    return args;
 }
 
 void* query10(MANAGER catalog, STATS stats, char** args){
-    return;
+    (void) catalog;
+    (void) stats;
+    return args;
 }
 

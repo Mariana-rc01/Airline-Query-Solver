@@ -26,7 +26,7 @@
 
 
 void output_query(FILE* output_file, void* output, char query_id) {
-  
+
   if (output == NULL){
     return;
   }
@@ -41,42 +41,52 @@ void output_query(FILE* output_file, void* output, char query_id) {
 }
 
 void output_query1(FILE* file, void* output){
-    return;
+    (void) file;
+    (void) output;
 }
 
 void output_query2(FILE* file, void* output){
-    return;
+    (void) file;
+    (void) output;
 }
 
 void output_query3(FILE* file, void* output){
-    return;
+    (void) file;
+    (void) output;
 }
 
 void output_query4(FILE* file, void* output){
-    return;
+    (void) file;
+    (void) output;
 }
 
 void output_query5(FILE* file, void* output){
-    return;
+    (void) file;
+    (void) output;
 }
 
 void output_query6(FILE* file, void* output){
-    return;
+    (void) file;
+    (void) output;
 }
 
 void output_query7(FILE* file, void* output){
-    return;
+    (void) file;
+    (void) output;
 }
 
 void output_query8(FILE* file, void* output){
-    return;
+    (void) file;
+    (void) output;
 }
 
 void output_query9(FILE* file, void* output){
-    return;
+    (void) file;
+    (void) output;
 }
 
 void output_query10(FILE* file, void* output){
-    return;
+    (void) file;
+    (void) output;
 }
 

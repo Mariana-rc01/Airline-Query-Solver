@@ -27,9 +27,9 @@
 /**
  * @brief Function that divides a single query in to its parts
  *
- * We need to create a function that divides a string by spaces(" ") having in 
+ * We need to create a function that divides a string by spaces(" ") having in
  * mind that anything in between quotation marks should be a single argument
- * 
+ *
  * @param line String with the query
  * @return An array with each argument in string format
  */
@@ -37,7 +37,7 @@ void divideInToArguments(char* line);
 
 /**
  * @brief Function that removes quotation marks at the beginning and end of a string
- * 
+ *
  * @param s String with quotation marks
  * @return The same string without quotation marks
  */
@@ -45,10 +45,10 @@ void removeQuotationMarks(char* s);
 
 /**
  * @brief Function that interprets the queries file
- * 
+ *
  * @param queries_file Text file containing the queries
  */
-void interpreter(FILE queries_file);
+void interpreter(FILE* queries_file);
 
 #endif
 

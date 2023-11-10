@@ -22,6 +22,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int isDigit(char c){
     return(c >= '0' && c <= '9');

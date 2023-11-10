@@ -21,6 +21,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <stdio.h>
+
 #define SYSTEM_DATE "2023/10/01";
 
 /**

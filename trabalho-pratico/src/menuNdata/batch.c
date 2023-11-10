@@ -29,6 +29,8 @@
 #include "IO/parser.h"
 #include "IO/input.h"
 #include "utils/utils.h"
+#include "IO/interpreter.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

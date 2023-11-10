@@ -28,11 +28,11 @@
  * @typedef output_query_func
  * @brief Function pointer type for outputting query results to a file.
  *
- * This typedef defines a function pointer type 'output_query_func' 
- * that represents a function used to output query results to a file. 
+ * This typedef defines a function pointer type 'output_query_func'
+ * that represents a function used to output query results to a file.
  * This functions print the result of the query functions.
  */
-typedef void (*output_query_func)(FILE*, int);
+typedef void (*output_query_func)(FILE*, void*);
 
 /**
  * @brief Output the result of a specific query to a file.
