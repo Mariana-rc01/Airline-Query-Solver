@@ -33,9 +33,9 @@ int isLetter(char c){
 
 int ourAtoi(char* string){
     int i, r = 0;
-    double n = pow(10.0,(double)(strlen(string)-2));
+    double n = pow(10.0,(double)(strlen(string)-1));
     for(i = 0; string[i] != '\0'; i++){
-        r = (string[i] - '0') * (int) n;
+        r += (string[i] - '0') * (int) n;
         n /= 10;
     }
 

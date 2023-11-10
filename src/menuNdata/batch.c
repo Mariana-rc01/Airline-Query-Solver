@@ -33,10 +33,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-
-
-
 void batch (char* path1, char* path2) {
     FILE *flights_file, *passengers_file, *users_file, *reservations_file, *queries_file;
     FILE *flights_error_file, *passengers_error_file, *users_error_file, *reservations_error_file;
@@ -60,10 +56,10 @@ void batch (char* path1, char* path2) {
 
     queries_file = fopen(path2, "r");
 
-    flights_error_file = fopen("flights_errors.csv", "w");
-    passengers_error_file = fopen("passengers_errors.csv", "w");
-    users_error_file = fopen("users_errors.csv", "w");
-    reservations_error_file = fopen("reservations_errors.csv", "w");
+    flights_error_file = fopen("Resultados/flights_errors.csv", "w");
+    passengers_error_file = fopen("Resultados/passengers_errors.csv", "w");
+    users_error_file = fopen("Resultados/users_errors.csv", "w");
+    reservations_error_file = fopen("Resultados/reservations_errors.csv", "w");
 
     parseF(users_file, 12, build_user, users_catalog, statistics, users_error_file);
     parseF(passengers_file, 2, build_passengers, manager_catalog, statistics, passengers_error_file);

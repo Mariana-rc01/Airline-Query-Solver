@@ -31,13 +31,16 @@
 // YYYY/MM/DD
 int validate_date_timeless(char* date_string){
 
+    if (strlen(date_string) != 10) return 0;
+
     // validate years
-    if(!isDigit(date_string[0]) &&
-       !isDigit(date_string[1]) &&
-       !isDigit(date_string[2]) &&
-       !isDigit(date_string[3]) && 
-       (date_string[4] != '/')  &&
+    if(!isDigit(date_string[0]) ||
+       !isDigit(date_string[1]) ||
+       !isDigit(date_string[2]) ||
+       !isDigit(date_string[3]) ||
+       (date_string[4] != '/')  ||
        (date_string[7] != '/')) return 0;
+
     // validate months
     int aux;
     if(isDigit(date_string[5]) && isDigit(date_string[6]))
@@ -59,8 +62,14 @@ int validate_date_timeless(char* date_string){
 // YYYY/MM/DD hh:mm:ss
 int validate_date_time(char* date_string){
 
-    if(validate_date_timeless(date_string) == 0 && (date_string[10] != ' ') &&
-    (date_string[13] != ':') && (date_string[16] != ':'))  return 0;
+    if (strlen(date_string) != 19) return 0;
+
+    char temp[11];
+    strncpy(temp,date_string,10);
+    temp[10] = '\0';
+
+    if(validate_date_timeless(temp) == 0 || (date_string[10] != ' ') ||
+    (date_string[13] != ':') || (date_string[16] != ':'))  return 0;
 
     // Validate hours
     int aux;
@@ -144,7 +153,7 @@ int compare_date_timeless(char* date_string_start , char* date_string_end){
             int dayS = ourAtoi(start);
             int dayE = ourAtoi(end);
 
-            if((dayS - dayE) >= 0) {
+            if((dayS - dayE) > 0) {
                 free(start);
                 free(end);
                 return 0;
@@ -181,7 +190,7 @@ int compare_date_time(char* date_string_start, char* date_string_end){
         free(end);
         return 0;
     }
-    else if(hourS - hourE == 0){
+    else if((hourS - hourE) == 0){
 
         for(i = 0; i < 2; i++){
             start[i] = date_string_start[i+14];
@@ -256,12 +265,19 @@ int validate_country_code(char* code){
 }
 
 int validate_account_status(char* status){
+    char *temp = strdup(status);
     int i = 0;
-    while(status[i] != '\0' && isLetter(status[i])){
-        status[i] = toupper(status[i]);
+    while(temp[i] != '\0' && isLetter(temp[i])){
+        temp[i] = toupper(temp[i]);
         i++;
     }
 
+    if(temp[i] != '\0' || (strcmp(temp,"ACTIVE") != 0 && strcmp(temp,"INACTIVE") != 0)){
+        free(temp);
+        return 0;
+    }
+
+    free(temp);
     return 1;
 }
 
@@ -273,7 +289,6 @@ int validate_airports(char* airport){
     if(strlen(airport) != 3) return 0;
     int i = 0;
     while(airport[i] != '\0' && isLetter(airport[i])){
-        airport[i] = toupper(airport[i]);
         i++;
     }
 
@@ -284,8 +299,7 @@ int validate_airports(char* airport){
 
 int validate_hotel_stars(char* stars){
     int i = 0;
-    while(stars[i] != '.'  || stars[i] != '-' || stars[i] != ',' ||
-          stars[i] != '\0' || !isDigit(stars[i])) i++;
+    while(stars[i] != '\0' && !isDigit(stars[i])) i++;
 
     if (stars[i] != '\0' && (ourAtoi(stars) < 1 || ourAtoi(stars) > 5)) return 0;
     return 1;
@@ -293,8 +307,7 @@ int validate_hotel_stars(char* stars){
 
 int validate_city_tax(char* tax){
     int i = 0;
-    while(tax[i] != '.'  || tax[i] != '-' || tax[i] != ',' ||
-          tax[i] != '\0' || !isDigit(tax[i])) i++;
+    while(tax[i] != '\0' && !isDigit(tax[i])) i++;
 
     if (tax[i] != '\0' && ourAtoi(tax) < 0) return 0;
     return 1;
@@ -302,29 +315,30 @@ int validate_city_tax(char* tax){
 
 int validate_price_per_night(char* price){
     int i = 0;
-    while(price[i] != '.'  || price[i] != '-' || price[i] != ',' ||
-          price[i] != '\0' || !isDigit(price[i])) i++;
+    while(price[i] != '\0' && !isDigit(price[i])) i++;
 
     if (price[i] != '\0' && ourAtoi(price) <= 0) return 0;
     return 1;
 }
 
 int validate_includes_breakfast(char* boolean){
+    char *temp = strdup(boolean);
 
-    if(strlen(boolean) == 0) return 1;
+    if(strlen(temp) == 0) return 1;
 
-    if(strlen(boolean) == 1 &&
-       (boolean[0] == '1' || boolean[0] == '0' ||
-        boolean[0] == 't' || boolean[0] == 'f')) return 1;
-
+    if(strlen(temp) == 1 && (temp[0] == '1' || temp[0] == '0')) return 1;
 
     int i = 0;
-    while(boolean[i] != '\0' && isLetter(boolean[i])){
-        boolean[i] = toupper(boolean[i]);
+    while(temp[i] != '\0' && isLetter(temp[i])){
+        temp[i] = toupper(temp[i]);
         i++;
     }
-    if(boolean[i] != '\0') return 0;
-    if(strcmp(boolean,"TRUE") != 0 || strcmp(boolean,"FALSE") != 0) return 0;
+
+    if(strlen(temp) == 1 &&
+       (temp[0] == 'T' || temp[0] == 'F')) return 1;
+
+    if(temp[i] != '\0') return 0;
+    if(strcmp(temp,"TRUE") != 0 && strcmp(temp,"FALSE") != 0) return 0;
 
     return 1;
 }
@@ -339,5 +353,4 @@ int validate_rating(char* rating){
 int validate_existence(char* string){
     return(strlen(string));
 }
-
 
