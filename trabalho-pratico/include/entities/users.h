@@ -29,6 +29,7 @@
 typedef struct user *USER;
 
 #include "menuNdata/statistics.h"
+#include "catalogs/users_c.h"
 
 /**
  * @brief Creates a new user struct with default values.
@@ -229,7 +230,7 @@ void free_user(USER user);
  * @param fields An array of user data fields.
  * @return 1 if the user data is valid, 0 otherwise.
  */
-int verify_user(char** fields);
+int verify_user(char** fields, USERS_C users);
 
 /**
  * @brief Builds a user struct from user data fields.

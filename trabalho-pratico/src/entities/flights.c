@@ -51,11 +51,12 @@ struct flight {
 
 FLIGHT create_flight(void){
     FLIGHT new = malloc(sizeof(struct flight));
-    new->id = 0;
+    new->id = NULL;
     new->airline = NULL;
     new->plane_model = NULL;
     new->total_seats = 0;
     new->origin = NULL;
+    new->destination = NULL;
     new->schedule_departure_date = NULL;
     new->schedule_arrival_date = NULL;
     new->real_departure_date = NULL;
@@ -190,7 +191,8 @@ void free_flight(FLIGHT flight){
 
 int verify_flight(char** fields, PASS_C catalog){
     if (!(fields[0]) || !(fields[1]) || !(fields[2]) ||
-        !(fields[10]) || !(fields[11])) return 0;
+        !(fields[10]) || !(fields[11]) || !(fields[6]) || !(fields[7]) ||
+        !(fields[8] || !(fields[9]))) return 0;
 
     if (!(validate_date_time(fields[6]))) return 0;
     if (!(validate_date_time(fields[7]))) return 0;
@@ -200,7 +202,9 @@ int verify_flight(char** fields, PASS_C catalog){
     if (!(compare_date_time(fields[6],fields[7]))) return 0;
     if (!(compare_date_time(fields[8],fields[9]))) return 0;
 
-    int total_passengers = get_total_passengers_c(catalog, fields[0]);
+    int total_passengers;
+    if((get_total_passengers_c(catalog, fields[0])) == 0) total_passengers = 0;
+    else total_passengers = get_total_passengers_c(catalog,fields[0]);
     if (!(validate_total_seats(fields[3], total_passengers))) return 0;
 
    if (!(validate_airports(fields[4]))) return 0;
@@ -234,14 +238,14 @@ void print_users_for_flight_to_file(FILE* file, GArray* usersForFlight, char* fl
 int build_flight(char** flight_fields, void* catalog, STATS stats){
 
     MANAGER managerC = (MANAGER) catalog;
-    FLIGHTS_C flightsC = get_flights_c(managerC);
     PASS_C passC = get_pass_c(managerC);
+    FLIGHTS_C flightsC = get_flights_c(managerC);
 
     if (!verify_flight(flight_fields, passC)){
 
         if(flight_fields[0] != NULL){
             FILE* passengers_error_file;
-            passengers_error_file = fopen("Resultados/passengers_error.csv", "a");
+            passengers_error_file = fopen("Resultados/passengers_errors.csv", "a");
 
             GArray* usersForFlight = get_users_for_flight(passC, flight_fields[0]);
             print_users_for_flight_to_file(passengers_error_file, usersForFlight, flight_fields[0]);

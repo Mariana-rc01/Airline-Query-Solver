@@ -74,7 +74,7 @@ void insert_passenger_c(PASS pass, PASS_C catalog){
 int get_total_passengers_c(PASS_C catalog, char* flight_id){
     int *countPassengers = g_hash_table_lookup(catalog->totalPassengers,flight_id);
     if (countPassengers != NULL) {
-        return *countPassengers;
+        return ((int)*countPassengers);
     }
     return 0;
 }

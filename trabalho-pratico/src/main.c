@@ -46,7 +46,7 @@
 
 int main(int argc, char** argsv){
     if(argc == 3) {
-        batch(argsv[0], argsv[1]);
+        batch(argsv[1], argsv[2]);
 
         return 0;
     }

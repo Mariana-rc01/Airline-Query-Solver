@@ -62,7 +62,7 @@ int validate_date_timeless(char* date_string){
 // YYYY/MM/DD hh:mm:ss
 int validate_date_time(char* date_string){
 
-    if (strlen(date_string) != 19) return 0;
+    if (date_string == NULL || strlen(date_string) != 19) return 0;
 
     char temp[11];
     strncpy(temp,date_string,10);
@@ -236,17 +236,19 @@ int compare_date_time(char* date_string_start, char* date_string_end){
 
 // “<username>@<domain>.<TLD>” hugo@domain.pt
 int validate_email(char* email){
+    if(strlen(email) == 0) return 0;
+
     int i = 0;
     int email_length = strlen(email);
 
     // validates username (at least 1 char)
-    while(email[i] != '@' || email[i] == '\0') i++;
+    while(email[i] != '@' && i < email_length) i++;
     if(i < 1 || i == email_length) return 0;
 
     // validates domain (at least 1 char)
     int j = i;
     i++;
-    while(email[i] != '.' || email[i] == '\0') i++;
+    while(email[i] != '.' && i < email_length) i++;
     if((i - j) <= 1 || i == email_length) return 0;
 
     // validates TLD (at least 2 chars)
@@ -306,6 +308,7 @@ int validate_hotel_stars(char* stars){
 }
 
 int validate_city_tax(char* tax){
+    if(tax == NULL) return 0;
     int i = 0;
     while(tax[i] != '\0' && !isDigit(tax[i])) i++;
 
@@ -314,6 +317,7 @@ int validate_city_tax(char* tax){
 }
 
 int validate_price_per_night(char* price){
+    if(price == NULL) return 0;
     int i = 0;
     while(price[i] != '\0' && !isDigit(price[i])) i++;
 
@@ -322,9 +326,10 @@ int validate_price_per_night(char* price){
 }
 
 int validate_includes_breakfast(char* boolean){
-    char *temp = strdup(boolean);
 
-    if(strlen(temp) == 0) return 1;
+    if(boolean == NULL) return 1;
+
+    char *temp = strdup(boolean);
 
     if(strlen(temp) == 1 && (temp[0] == '1' || temp[0] == '0')) return 1;
 

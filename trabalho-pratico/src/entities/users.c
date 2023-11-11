@@ -22,6 +22,7 @@
 #include "entities/users.h"
 
 #include "IO/input.h"
+#include "utils/utils.h"
 #include "menuNdata/statistics.h"
 #include "catalogs/users_c.h"
 
@@ -62,7 +63,7 @@ USER create_user(void){
     new->account_creation = NULL;
     new->pay_method = NULL;
     new->account_status = NULL;
-    new->total_spent = 0;
+    new->total_spent = 0.0;
 
     return new;
 }
@@ -168,7 +169,7 @@ char* get_user_account_status(USER user){
 }
 
 double get_user_total_spent(USER user){
-    return user->total_spent;
+    return (user->total_spent);
 }
 
 void free_user(USER user){
@@ -187,16 +188,19 @@ void free_user(USER user){
     free(user);
 }
 
-int verify_user(char** fields){
+int verify_user(char** fields, USERS_C users){
     if (!(fields[0]) || !(fields[1]) || !(fields[3]) ||
         !(fields[5]) || !(fields[6]) || !(fields[8]) ||
-        !(fields[10])) return 0;
+        !(fields[10])|| !(fields[4]) || !(fields[9])) return 0;
+
+    //if ((get_user_by_id(users, fields[0]) != NULL)) return 0;
+    (void) users;
 
     if (!(validate_email(fields[2]))) return 0;
 
     if (!(validate_date_timeless(fields[4]))) return 0;
 
-   if (!(validate_country_code(fields[7]))) return 0;
+    if (!(validate_country_code(fields[7]))) return 0;
 
     if (!(validate_date_time(fields[9]))) return 0;
 
@@ -209,7 +213,8 @@ int verify_user(char** fields){
 
 int build_user(char  **user_fields, void *catalog, STATS stats){
 
-    if (!verify_user(user_fields)) return 0;
+    USERS_C usersC = (USERS_C) catalog;
+    if (!verify_user(user_fields, usersC)) return 0;
 
     USER user = create_user();
 
@@ -226,7 +231,7 @@ int build_user(char  **user_fields, void *catalog, STATS stats){
     set_user_pay_method(user,user_fields[10]);
     set_user_account_status(user,user_fields[11]);
 
-    insert_user_c(user,catalog);
+    insert_user_c(user,usersC,get_user_id(user));
     (void) stats;
 
     return 1;

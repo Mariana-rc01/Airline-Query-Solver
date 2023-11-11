@@ -47,7 +47,7 @@ USERS_C create_user_c(void);
  * @param user The user to be inserted.
  * @param catalog The user catalog.
  */
-void insert_user_c(USER user, USERS_C catalog);
+void insert_user_c(USER user, USERS_C catalog,char* key);
 
 /**
  * @brief Get a user based on the user ID.

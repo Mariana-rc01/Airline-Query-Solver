@@ -33,13 +33,12 @@ struct users_catalog {
 USERS_C create_user_c(void){
     USERS_C new = malloc(sizeof(struct users_catalog));
 
-    new->users = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify) free_user);
+    new->users = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_user);
 
     return new;
 }
 
-void insert_user_c(USER user, USERS_C catalog){
-    char* key = get_user_id(user);
+void insert_user_c(USER user, USERS_C catalog, char* key){
     g_hash_table_insert(catalog->users, key, user);
 }
 
@@ -49,8 +48,10 @@ USER get_user_by_id(USERS_C catalog, char* id){
 
 void update_user_c(USERS_C catalog, char* id, double cost){
     USER user = get_user_by_id(catalog, id);
+    if (user == NULL) return;
+    double total = get_user_total_spent(user);
 
-    set_user_total_spent(user, get_user_total_spent(user) + cost);
+    set_user_total_spent(user, total + cost);
 }
 
 void free_user_c(USERS_C catalog){

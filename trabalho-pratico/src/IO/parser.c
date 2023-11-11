@@ -26,29 +26,37 @@
 #include <stdlib.h>
 
 void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS statistics, FILE* error_f){
-
     int verify = 0;
     char* line = NULL;
     size_t lsize = 0;
 
+    // Check if file is opened successfully
+    if (f == NULL) {
+        fprintf(stderr, "Error opening file\n");
+        return;
+    }
+
     // Write first line of the error csv
-    if (getline(&line,&lsize,f) != -1) {
-        fprintf(error_f, "%s\n", line);
+    if (getline(&line, &lsize, f) != -1) {
+        fprintf(error_f, "%s", line);
+    } else {
+        fprintf(stderr, "Error reading first line from file\n");
+        free(line);
+        return;
     }
 
     while(getline(&line,&lsize,f) != -1){
-
         // Replace \n for \0
         line[strlen(line)-1] = '\0';
+        char* temp;
+        temp = strdup(line);
 
         char **fields = parseL(line, max_fields);
         verify = func(fields,catalog,statistics);
 
         if (verify == 0) {
-            // Write the current line on the error file
-            fprintf(error_f, "%s\n", line);
+            fprintf(error_f,"%s\n",temp);
         }
-
         free(fields);
     }
 
@@ -62,8 +70,7 @@ char** parseL (char* line, int max_fields){
 
     int i;
     for (i = 0; temp != NULL; (temp = strstr(line, ";")), i++) {
-        if (temp != line) field = temp;
-        else field = NULL;
+        field = temp != line ? line : NULL;
 
         fields[i] = field;
         line = temp + 1;

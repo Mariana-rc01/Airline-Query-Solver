@@ -22,8 +22,7 @@
 #ifndef FLIGHTS_C_H
 #define FLIGHTS_C_H
 
-
-#include <glib.h>
+#include "entities/flights.h"
 
 /**
  * @typedef FLIGHTS_C
@@ -31,7 +30,6 @@
  */
 typedef struct flights_catalog *FLIGHTS_C;
 
-#include "entities/flights.h"
 
 /**
  * @brief Create a new instance of FLIGHTS_C.

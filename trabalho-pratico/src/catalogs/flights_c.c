@@ -20,6 +20,10 @@
 */
 
 #include "catalogs/flights_c.h"
+#include "entities/flights.h"
+
+#include <glib.h>
+#include <stdio.h>
 
 /**
  * @struct flights_catalog
@@ -30,12 +34,13 @@ struct flights_catalog {
 };
 
 FLIGHTS_C create_flight_c(void){
-    FLIGHTS_C new = malloc(sizeof(struct flights_catalog));
+    FLIGHTS_C new_catalog = malloc(sizeof(struct flights_catalog));
 
-    new->flights = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify) free_user);
+    new_catalog->flights = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify) free_flight);
 
-    return new;
+    return new_catalog;
 }
+
 
 void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog){
     char* key = get_flight_id(flight);

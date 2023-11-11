@@ -61,8 +61,8 @@ RESERV create_reservation(void){
     new->hotel_stars = 0;
     new->city_tax = NULL;
     new->address = NULL;
-    new->begin_date = 0;
-    new->end_date = 0;
+    new->begin_date = NULL;
+    new->end_date = NULL;
     new->price_per_night = NULL;
     new->includes_breakfast = NULL;
     new->room_details = NULL;
@@ -114,7 +114,8 @@ void set_price_per_night(RESERV res, char* price){
 }
 
 void set_includes_breakfast(RESERV res, char* inc_breakfast){
-    res->includes_breakfast = strdup(inc_breakfast);
+    if (inc_breakfast == NULL) res->includes_breakfast = NULL;
+    else res->includes_breakfast = strdup(inc_breakfast);
 }
 
 void set_room_details(RESERV res, char* r_details){
@@ -122,7 +123,8 @@ void set_room_details(RESERV res, char* r_details){
 }
 
 void set_rating(RESERV res, char* ratin){
-    res->rating = strdup(ratin);
+    if (!ratin) res->rating = NULL;
+    else res->rating = strdup(ratin);
 }
 
 void set_comment(RESERV res, char* comm){
@@ -174,7 +176,8 @@ char* get_price_per_night(RESERV res){
 }
 
 char* get_includes_breakfast(RESERV res){
-    return strdup(res->includes_breakfast);
+    if (!res->includes_breakfast) return NULL;
+    else return strdup(res->includes_breakfast);
 }
 
 char* get_room_details(RESERV res){
@@ -182,7 +185,8 @@ char* get_room_details(RESERV res){
 }
 
 char* get_rating(RESERV res){
-    return strdup(res->rating);
+    if (!res->rating) return NULL;
+    else return strdup(res->rating);
 }
 
 char* get_comment(RESERV res){
@@ -214,7 +218,7 @@ void free_reservations(RESERV res){
 
 int verify_reservations(char** fields, USERS_C users){
     if (!(fields[0]) || !(fields[1]) || !(fields[2]) ||
-        !(fields[3]) || !(fields[6])) return 0;
+        !(fields[3]) || !(fields[6]) || !(fields[7]) || !(fields[8])) return 0;
 
     if (!validate_hotel_stars(fields[4])) return 0;
     if (!validate_city_tax(fields[5])) return 0;
@@ -225,7 +229,7 @@ int verify_reservations(char** fields, USERS_C users){
     if (!validate_includes_breakfast(fields[10])) return 0;
     if (!validate_rating(fields[12])) return 0;
     if (!(get_user_by_id(users, fields[1]))) return 0;
-
+    //(void) users;
     return 1;
 }
 
@@ -255,12 +259,12 @@ int build_reservations(char** reservations_fields, void* catalog, STATS stats){
     set_comment(res,reservations_fields[13]);
 
     double cost = 0;
-    char* beginD = NULL;
+    char beginD[3];
     beginD[0] = reservations_fields[7][8];
     beginD[1] = reservations_fields[7][9];
     beginD[2] = '\0';
 
-    char* endD = NULL;
+    char endD[3];
     endD[0] = reservations_fields[8][8];
     endD[1] = reservations_fields[8][9];
     endD[2] = '\0';
