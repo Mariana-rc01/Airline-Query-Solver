@@ -45,7 +45,7 @@
  */
 
 int main(int argc, char** argsv){
-    if(argc == 2) {
+    if(argc == 3) {
         batch(argsv[0], argsv[1]);
 
         return 0;
@@ -55,8 +55,7 @@ int main(int argc, char** argsv){
         return 0;
     }
     else{
-        printf("Invalid number of arguments, must be either 0 or 2\n");
-        //perror("Error");
+        printf("Invalid number of arguments, must be either 0 or 3\n");
         return 0;
     }
 }

@@ -67,7 +67,7 @@ int ourAtoi(char* string);
  * @param result string we want to change
  * @return result
  */
-char* concat(char* s1, char* s2, char* result);
+char* concat(char* s1, char* s2);
 
 /**
  * @brief This function verifies if a given fil is empty

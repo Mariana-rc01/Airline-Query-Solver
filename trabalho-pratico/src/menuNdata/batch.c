@@ -44,17 +44,13 @@ void batch (char* path1, char* path2) {
     RESERV_C reservations_catalog = create_reservations_c();
     PASS_C passengers_catalog = create_passengers_c();
     MANAGER manager_catalog = create_manager_c(users_catalog,flights_catalog,reservations_catalog,passengers_catalog);
-    (void) manager_catalog;
 
     STATS statistics = NULL;
-    char *result = malloc(strlen(path1) + strlen("reservations.csv") + 1);
 
-    flights_file = fopen(concat(path1, "flights.csv", result), "r");
-    passengers_file = fopen(concat(path1, "passengers.csv", result), "r");
-    users_file = fopen(concat(path1, "users.csv", result), "r");
-    reservations_file = fopen(concat(path1, "reservations.csv", result), "r");
-
-    free(result);
+    flights_file = fopen(concat(path1, "/flights.csv"), "r");
+    passengers_file = fopen(concat(path1, "/passengers.csv"), "r");
+    users_file = fopen(concat(path1, "/users.csv"), "r");
+    reservations_file = fopen(concat(path1, "/reservations.csv"), "r");
 
     queries_file = fopen(path2, "r");
 
