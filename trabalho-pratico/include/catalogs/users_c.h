@@ -47,7 +47,7 @@ USERS_C create_user_c(void);
  * @param user The user to be inserted.
  * @param catalog The user catalog.
  */
-void insert_user_c(USER user, USERS_C catalog,char* key);
+void insert_user_c(USER user, USERS_C catalog, gpointer key);
 
 /**
  * @brief Get a user based on the user ID.
@@ -58,6 +58,8 @@ void insert_user_c(USER user, USERS_C catalog,char* key);
  * @return The user corresponding to the specified ID or NULL if not found.
  */
 USER get_user_by_id(USERS_C catalog, char* id);
+
+USER get_user_by_gpointer(USERS_C catalog, gpointer user_id);
 
 void update_user_c(USERS_C catalog, char* id, double cost);
 

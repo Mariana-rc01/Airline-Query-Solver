@@ -158,6 +158,12 @@ int compare_date_timeless(char* date_string_start , char* date_string_end){
                 free(end);
                 return 0;
             }
+
+            if ((dayS-dayE) == 0){
+                free(start);
+                free(end);
+                return 2;
+            }
         }
     }
     free(start);
@@ -167,72 +173,74 @@ int compare_date_timeless(char* date_string_start , char* date_string_end){
 
 int compare_date_time(char* date_string_start, char* date_string_end){
 
-    if (compare_date_timeless(date_string_start, date_string_end) == 0) return 0;
+    if(!compare_date_timeless(date_string_start, date_string_end)) return 0;
+    if (compare_date_timeless(date_string_start,date_string_end) == 2) {
 
-    int i;
-    char* start = (char*)malloc(5);
-    char* end = (char*)malloc(5);
-    for(i = 0; i < 2; i++){
-        start[i] = date_string_start[i+11];
-    }
-    start[i] = '\0';
-
-    for(i = 0; i < 2; i++){
-        end[i] = date_string_end[i+11];
-    }
-    end[i] = '\0';
-
-    int hourS = ourAtoi(start);
-    int hourE = ourAtoi(end);
-
-    if((hourS - hourE) > 0) {
-        free(start);
-        free(end);
-        return 0;
-    }
-    else if((hourS - hourE) == 0){
-
+        int i;
+        char* start = (char*)malloc(5);
+        char* end = (char*)malloc(5);
         for(i = 0; i < 2; i++){
-            start[i] = date_string_start[i+14];
+            start[i] = date_string_start[i+11];
         }
         start[i] = '\0';
 
         for(i = 0; i < 2; i++){
-            end[i] = date_string_end[i+14];
+            end[i] = date_string_end[i+11];
         }
         end[i] = '\0';
 
-        int minuteS = ourAtoi(start);
-        int minuteE = ourAtoi(end);
+        int hourS = ourAtoi(start);
+        int hourE = ourAtoi(end);
 
-        if((minuteS - minuteE) > 0) {
+        if((hourS - hourE) > 0) {
             free(start);
             free(end);
             return 0;
         }
-        else if((minuteS - minuteE) == 0){
+        else if((hourS - hourE) == 0){
+
             for(i = 0; i < 2; i++){
-                start[i] = date_string_start[i+17];
+                start[i] = date_string_start[i+14];
             }
             start[i] = '\0';
 
             for(i = 0; i < 2; i++){
-                end[i] = date_string_end[i+17];
+                end[i] = date_string_end[i+14];
             }
             end[i] = '\0';
 
-            int secondS = ourAtoi(start);
-            int secondE = ourAtoi(end);
+            int minuteS = ourAtoi(start);
+            int minuteE = ourAtoi(end);
 
-            if((secondS - secondE) >= 0) {
+            if((minuteS - minuteE) > 0) {
                 free(start);
                 free(end);
                 return 0;
             }
+            else if((minuteS - minuteE) == 0){
+                for(i = 0; i < 2; i++){
+                    start[i] = date_string_start[i+17];
+                }
+                start[i] = '\0';
+
+                for(i = 0; i < 2; i++){
+                    end[i] = date_string_end[i+17];
+                }
+                end[i] = '\0';
+
+                int secondS = ourAtoi(start);
+                int secondE = ourAtoi(end);
+
+                if((secondS - secondE) >= 0) {
+                    free(start);
+                    free(end);
+                    return 0;
+                }
+            }
         }
+        free(start);
+        free(end);
     }
-    free(start);
-    free(end);
     return 1;
 }
 
@@ -286,6 +294,11 @@ int validate_account_status(char* status){
 }
 
 int validate_total_seats(char* seats, int passengers){
+    int i;
+    int length = strlen(seats);
+    for (i = 0; i < length; i++){
+        if (!(isDigit(seats[i]))) return 0;
+    }
     return(passengers <= ourAtoi(seats));
 }
 
