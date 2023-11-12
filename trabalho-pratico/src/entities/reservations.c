@@ -229,7 +229,7 @@ int verify_reservations(char** fields, USERS_C users){
     if (!validate_includes_breakfast(fields[10])) return 0;
     if (!validate_rating(fields[12])) return 0;
     if (!(get_user_by_id(users, fields[1]))) return 0;
-    //(void) users;
+
     return 1;
 }
 

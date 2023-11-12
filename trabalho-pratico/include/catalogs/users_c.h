@@ -61,6 +61,8 @@ USER get_user_by_id(USERS_C catalog, char* id);
 
 void update_user_c(USERS_C catalog, char* id, double cost);
 
+void set_catalog_user(USERS_C catalog, USER user, char* id);
+
 /**
  * @brief Free the allocated memory for the user catalog.
  *

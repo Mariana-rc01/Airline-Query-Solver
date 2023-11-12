@@ -57,9 +57,9 @@ void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS s
         if (verify == 0) {
             fprintf(error_f,"%s\n",temp);
         }
+        free(temp);
         free(fields);
     }
-
     free(line);
 }
 

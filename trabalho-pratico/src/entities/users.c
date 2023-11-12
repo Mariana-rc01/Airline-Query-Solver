@@ -34,7 +34,7 @@
  * @brief Represents user information.
  */
 struct user {
-    char* id; /**< Unique user ID. */
+    gpointer id; /**< Unique user ID. */
     char* name; /**< User's name. */
     char* email; /**< User's email address. */
     char* phone_number; /**< User's phone number. */
@@ -51,7 +51,6 @@ struct user {
 
 USER create_user(void){
     USER new = malloc(sizeof(struct user));
-    new->id = NULL;
     new->name = NULL;
     new->email = NULL;
     new->phone_number = NULL;
@@ -68,8 +67,8 @@ USER create_user(void){
     return new;
 }
 
-void set_user_id(USER user, char* id){
-    user->id = strdup(id);
+void set_user_id(USER user, gpointer id){
+    user->id = id;
 }
 
 void set_user_name(USER user, char* name){
@@ -120,8 +119,8 @@ void set_user_total_spent(USER user, double cost){
     user->total_spent = cost;
 }
 
-char* get_user_id(USER user){
-    return strdup(user->id);
+int get_user_id(USER user){
+    return GPOINTER_TO_INT(user->id);
 }
 
 char* get_user_name(USER user){
@@ -173,7 +172,6 @@ double get_user_total_spent(USER user){
 }
 
 void free_user(USER user){
-    free(user->id);
     free(user->name);
     free(user->email);
     free(user->phone_number);
@@ -188,13 +186,10 @@ void free_user(USER user){
     free(user);
 }
 
-int verify_user(char** fields, USERS_C users){
+int verify_user(char** fields){
     if (!(fields[0]) || !(fields[1]) || !(fields[3]) ||
         !(fields[5]) || !(fields[6]) || !(fields[8]) ||
         !(fields[10])|| !(fields[4]) || !(fields[9])) return 0;
-
-    //if ((get_user_by_id(users, fields[0]) != NULL)) return 0;
-    (void) users;
 
     if (!(validate_email(fields[2]))) return 0;
 
@@ -213,12 +208,12 @@ int verify_user(char** fields, USERS_C users){
 
 int build_user(char  **user_fields, void *catalog, STATS stats){
 
-    USERS_C usersC = (USERS_C) catalog;
-    if (!verify_user(user_fields, usersC)) return 0;
+    USERS_C usersC = (USERS_C)catalog;
+    if (!verify_user(user_fields)) return 0;
 
     USER user = create_user();
 
-    set_user_id(user,user_fields[0]);
+    set_catalog_user(usersC, user, user_fields[0]);
     set_user_name(user,user_fields[1]);
     set_user_email(user,user_fields[2]);
     set_user_phone_number(user,user_fields[3]);
@@ -230,8 +225,9 @@ int build_user(char  **user_fields, void *catalog, STATS stats){
     set_user_account_creation(user,user_fields[9]);
     set_user_pay_method(user,user_fields[10]);
     set_user_account_status(user,user_fields[11]);
+    set_user_total_spent(user,0.0);
 
-    insert_user_c(user,usersC,get_user_id(user));
+    insert_user_c(user,usersC,user->id);
     (void) stats;
 
     return 1;

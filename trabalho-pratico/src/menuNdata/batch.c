@@ -47,10 +47,17 @@ void batch (char* path1, char* path2) {
 
     STATS statistics = NULL;
 
-    flights_file = fopen(concat(path1, "/flights.csv"), "r");
-    passengers_file = fopen(concat(path1, "/passengers.csv"), "r");
-    users_file = fopen(concat(path1, "/users.csv"), "r");
-    reservations_file = fopen(concat(path1, "/reservations.csv"), "r");
+    char* flight_path = concat(path1, "/flights.csv");
+    flights_file = fopen(flight_path, "r");
+
+    char* passenger_path = concat(path1, "/passengers.csv");
+    passengers_file = fopen(passenger_path, "r");
+
+    char* user_path = concat(path1, "/users.csv");
+    users_file = fopen(user_path, "r");
+
+    char* reservation_path = concat(path1, "/reservations.csv");
+    reservations_file = fopen(reservation_path, "r");
 
     queries_file = fopen(path2, "r");
 
@@ -59,11 +66,18 @@ void batch (char* path1, char* path2) {
     users_error_file = fopen("Resultados/users_errors.csv", "w");
     reservations_error_file = fopen("Resultados/reservations_errors.csv", "w");
 
-    parseF(users_file, 12, build_user, get_users_c(manager_catalog), statistics, users_error_file);
+    USERS_C users = get_users_c(manager_catalog);
+    parseF(users_file, 12, build_user, users, statistics, users_error_file);
     parseF(passengers_file, 2, build_passengers, manager_catalog, statistics, passengers_error_file);
     parseF(reservations_file, 14, build_reservations, manager_catalog, statistics, reservations_error_file);
     parseF(flights_file, 13, build_flight, manager_catalog, statistics, flights_error_file);
     interpreter (queries_file);
+
+
+    free(flight_path);
+    free(passenger_path);
+    free(user_path);
+    free(reservation_path);
 
     fclose(flights_file);
     fclose(passengers_file);
@@ -85,15 +99,17 @@ void batch (char* path1, char* path2) {
         remove("reservations_errors.csv");
     }
 
+
     fclose(flights_error_file);
     fclose(passengers_error_file);
     fclose(users_error_file);
     fclose(reservations_error_file);
 
     free_reservations_c(reservations_catalog);
-    free_user_c(users_catalog);
+    //free_user_c(users_catalog);
     free_flight_c(flights_catalog);
-    free_passengers_c(passengers_catalog);
+    //free_passengers_c(passengers_catalog);
+    free_manager_c(manager_catalog);
 }
 
 

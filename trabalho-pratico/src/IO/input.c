@@ -231,6 +231,8 @@ int compare_date_time(char* date_string_start, char* date_string_end){
             }
         }
     }
+    free(start);
+    free(end);
     return 1;
 }
 
@@ -331,7 +333,10 @@ int validate_includes_breakfast(char* boolean){
 
     char *temp = strdup(boolean);
 
-    if(strlen(temp) == 1 && (temp[0] == '1' || temp[0] == '0')) return 1;
+    if(strlen(temp) == 1 && (temp[0] == '1' || temp[0] == '0')){
+        free(temp);
+        return 1;
+    }
 
     int i = 0;
     while(temp[i] != '\0' && isLetter(temp[i])){
@@ -340,11 +345,20 @@ int validate_includes_breakfast(char* boolean){
     }
 
     if(strlen(temp) == 1 &&
-       (temp[0] == 'T' || temp[0] == 'F')) return 1;
+       (temp[0] == 'T' || temp[0] == 'F')){
+        free(temp);
+        return 1;
+    }
 
-    if(temp[i] != '\0') return 0;
-    if(strcmp(temp,"TRUE") != 0 && strcmp(temp,"FALSE") != 0) return 0;
-
+    if(temp[i] != '\0') {
+        free(temp);
+        return 0;
+    }
+    if(strcmp(temp,"TRUE") != 0 && strcmp(temp,"FALSE") != 0){
+        free(temp);
+        return 0;
+    }
+    free(temp);
     return 1;
 }
 

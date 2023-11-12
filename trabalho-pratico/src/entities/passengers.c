@@ -72,7 +72,7 @@ void free_passengers(PASS pass){
 int verify_passengers(char** passengers_fields, USERS_C users){
     if (!(passengers_fields[0])) return 0;
     if (!(passengers_fields[1])) return 0;
-    //if ((get_user_by_id(users, passengers_fields[1])) == NULL) return 0;
+    if (!(get_user_by_id(users, passengers_fields[1]))) return 0;
     (void) users;
     return 1;
 }

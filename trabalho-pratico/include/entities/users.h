@@ -42,7 +42,7 @@ USER create_user(void);
  * @param user A pointer to the user struct.
  * @param id The user ID.
  */
-void set_user_id(USER user, char* id);
+void set_user_id(USER user, gpointer id);
 
 /**
  * @brief Sets the user's name.
@@ -133,7 +133,7 @@ void set_user_total_spent(USER user, double total_spent);
  * @param user A pointer to the user struct.
  * @return The user ID.
  */
-char* get_user_id(USER user);
+int get_user_id(USER user);
 
 /**
  * @brief Gets the user's name.
@@ -230,7 +230,7 @@ void free_user(USER user);
  * @param fields An array of user data fields.
  * @return 1 if the user data is valid, 0 otherwise.
  */
-int verify_user(char** fields, USERS_C users);
+int verify_user(char** fields);
 
 /**
  * @brief Builds a user struct from user data fields.
