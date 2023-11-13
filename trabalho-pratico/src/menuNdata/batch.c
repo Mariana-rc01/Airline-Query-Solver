@@ -111,6 +111,7 @@ int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2) {
         fclose(output_file);
     }
     free(line);
+    fclose(queries_file);
     return 0;
 }
 void batch (char* path1, char* path2) {
@@ -126,12 +127,6 @@ void batch (char* path1, char* path2) {
     if (setup_catalog_and_stats(manager_catalog,statistics,path1) == -1){
         return;
     }
-
-    FILE* queries_file = fopen(path2, "r");
-
-    interpreter(queries_file);
-
-    fclose(queries_file);
 
     //free_user_c(users_catalog);
     //free_reservations_c(reservations_catalog);
