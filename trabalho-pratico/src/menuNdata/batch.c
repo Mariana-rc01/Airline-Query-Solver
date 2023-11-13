@@ -58,7 +58,7 @@ int setup_catalog_and_stats(MANAGER manager_catalog, STATS statistics, char* pat
 
     USERS_C users = get_users_c(manager_catalog);
     parseF(users_file, 12, build_user, users, statistics, users_error_file);
-    parseF(passengers_file, 2, build_passengers, manager_catalog, statistics, passengers_error_file);
+    //parseF(passengers_file, 2, build_passengers, manager_catalog, statistics, passengers_error_file);
     parseF(reservations_file, 14, build_reservations, manager_catalog, statistics, reservations_error_file);
     parseF(flights_file, 13, build_flight, manager_catalog, statistics, flights_error_file);
 
@@ -114,10 +114,10 @@ void batch (char* path1, char* path2) {
 
     fclose(queries_file);
 
-    //free_reservations_c(reservations_catalog);
     //free_user_c(users_catalog);
+    //free_reservations_c(reservations_catalog);
     //free_flight_c(flights_catalog);
-    //free_passengers_c(passengers_catalog);
+    free_passengers_c(passengers_catalog);
     free_manager_c(manager_catalog);
 }
 

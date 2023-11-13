@@ -46,7 +46,7 @@ FLIGHTS_C create_flight_c(void);
  * @param flight The flight to be inserted.
  * @param catalog The flight catalog.
  */
-void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog);
+void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog, gpointer key);
 
 /**
  * @brief Get a flight by its ID.
@@ -56,7 +56,11 @@ void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog);
  *
  * @return The flight corresponding to the specified ID or NULL if not found.
  */
-FLIGHT get_flight_by_id(FLIGHTS_C catalog, FLIGHT flight);
+FLIGHT get_flight_by_id(FLIGHTS_C catalog, char* id);
+
+FLIGHT get_flight_by_gpointer(FLIGHTS_C catalog, gpointer flight_id);
+
+void set_catalog_flight(FLIGHTS_C catalog, FLIGHT flight, char* id);
 
 /**
  * @brief Free the allocated memory for the flight catalog.

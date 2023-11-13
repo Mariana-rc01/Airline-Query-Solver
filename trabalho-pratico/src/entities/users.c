@@ -176,6 +176,7 @@ void free_user(USER user){
     free(user->email);
     free(user->phone_number);
     free(user->birth_date);
+    free(user->sex);
     free(user->passport);
     free(user->country_code);
     free(user->address);

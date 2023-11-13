@@ -60,5 +60,8 @@ PASS_C get_pass_c(MANAGER catalog){
 }
 
 void free_manager_c(MANAGER catalog){
+    free_user_c(catalog->users);
+    free_flight_c(catalog->flights);
+    free_reservations_c(catalog->reservations);
     free(catalog);
 }

@@ -31,28 +31,46 @@
  */
 struct flights_catalog {
     GHashTable* flights; /**< Hash table that maps flight IDs to flight objects.*/
+    GHashTable* flights_id;
 };
 
 FLIGHTS_C create_flight_c(void){
     FLIGHTS_C new_catalog = malloc(sizeof(struct flights_catalog));
 
     new_catalog->flights = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify) free_flight);
-
+    new_catalog->flights_id = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
     return new_catalog;
 }
 
-void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog){
-    char* key = get_flight_id(flight);
+void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog, gpointer key){
     g_hash_table_insert(catalog->flights, key, flight);
-    free(key);
 }
 
-FLIGHT get_flight_by_id(FLIGHTS_C catalog, FLIGHT flight){
-    char* id = get_flight_id(flight);
-    return g_hash_table_lookup(catalog->flights, id);
+FLIGHT get_flight_by_id(FLIGHTS_C catalog, char* id){
+    gpointer flight_id = g_hash_table_lookup(catalog->flights_id, id);
+    if (flight_id == NULL) return NULL;
+    return get_flight_by_gpointer(catalog,flight_id);
+}
+
+FLIGHT get_flight_by_gpointer(FLIGHTS_C catalog, gpointer flight_id){
+    return g_hash_table_lookup(catalog->flights, flight_id);
+}
+
+void set_catalog_flight(FLIGHTS_C catalog, FLIGHT flight, char* id){
+
+    static int number_flights = 1;
+
+    char* copy_id = g_strdup(id);
+    gpointer flight_id = GINT_TO_POINTER(number_flights);
+    g_hash_table_insert(catalog->flights_id, copy_id, flight_id);
+
+    set_flight_id(flight, flight_id);
+
+    number_flights++;
 }
 
 void free_flight_c(FLIGHTS_C catalog){
     g_hash_table_destroy(catalog->flights);
+    g_hash_table_destroy(catalog->flights_id);
     free(catalog);
 }

@@ -35,7 +35,7 @@ USERS_C create_user_c(void){
     USERS_C new = malloc(sizeof(struct users_catalog));
 
     new->users = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_user);
-    new->users_id = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
+    new->users_id = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
     return new;
 }
 
@@ -63,7 +63,7 @@ void update_user_c(USERS_C catalog, char* id, double cost){
 
 void set_catalog_user(USERS_C catalog, USER user, char* id){
 
-    static int number_users = 0;
+    static int number_users = 1;
 
     char* copy_id = g_strdup(id);
     gpointer user_id = GINT_TO_POINTER(number_users);

@@ -55,7 +55,7 @@ RESERV get_reservations_by_gpointer(RESERV_C catalog, gpointer reserv_id){
 }
 
 void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id){
-    static int number_reservs = 0;
+    static int number_reservs = 1;
 
     char* copy_id = g_strdup(id);
     gpointer reserv_id = GINT_TO_POINTER(number_reservs);

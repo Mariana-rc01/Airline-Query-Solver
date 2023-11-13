@@ -34,7 +34,7 @@
  * @brief Represents flight information.
  */
 struct flight {
-    char* id; /**< Unique flight ID. */
+    gpointer id; /**< Unique flight ID. */
     char* airline; /**< Airline name. */
     char* plane_model; /**< Model of the plane. */
     int total_seats; /**< Total number of seats in the plane. */
@@ -51,7 +51,6 @@ struct flight {
 
 FLIGHT create_flight(void){
     FLIGHT new = malloc(sizeof(struct flight));
-    new->id = NULL;
     new->airline = NULL;
     new->plane_model = NULL;
     new->total_seats = 0;
@@ -68,8 +67,8 @@ FLIGHT create_flight(void){
     return new;
 }
 
-void set_flight_id(FLIGHT flight, char* id){
-    flight->id = strdup(id);
+void set_flight_id(FLIGHT flight, gpointer id){
+    flight->id = id;
 }
 
 void set_flight_airline(FLIGHT flight, char* airline){
@@ -120,8 +119,8 @@ void set_flight_notes(FLIGHT flight, char* notes){
     flight->notes = strdup(notes);
 }
 
-char* get_flight_id(FLIGHT flight){
-    return strdup(flight->id);
+int get_flight_id(FLIGHT flight){
+    return GPOINTER_TO_INT(flight->id);
 }
 
 char* get_flight_airline(FLIGHT flight){
@@ -173,7 +172,6 @@ char* get_flight_notes(FLIGHT flight){
 }
 
 void free_flight(FLIGHT flight){
-    free(flight->id);
     free(flight->airline);
     free(flight->plane_model);
     free(flight->origin);
@@ -202,13 +200,14 @@ int verify_flight(char** fields, PASS_C catalog){
     if (!(compare_date_time(fields[6],fields[7]))) return 0;
     if (!(compare_date_time(fields[8],fields[9]))) return 0;
 
-    int total_passengers;
-    if((get_total_passengers_c(catalog, fields[0])) == 0) total_passengers = 0;
-    else total_passengers = get_total_passengers_c(catalog,fields[0]);
-    if (!(validate_total_seats(fields[3], total_passengers))) return 0;
+    //int total_passengers;
+    //if((get_total_passengers_c(catalog, fields[0])) == 0) total_passengers = 0;
+    //else total_passengers = get_total_passengers_c(catalog,fields[0]);
+    //if (!(validate_total_seats(fields[3], total_passengers))) return 0;
 
    if (!(validate_airports(fields[4]))) return 0;
    if (!(validate_airports(fields[5]))) return 0;
+   (void) catalog;
 
     return 1;
 }
@@ -226,14 +225,14 @@ int verify_flight(char** fields, PASS_C catalog){
  *
  * @note If usersForFlight is NULL, no information will be printed.
  */
-void print_users_for_flight_to_file(FILE* file, GArray* usersForFlight, char* flight_id) {
-    if (usersForFlight != NULL) {
-        for (guint i = 0; i < usersForFlight->len; i++) {
-            char* user_id = g_array_index(usersForFlight, char*, i);
-            fprintf(file, "%s, %s\n", flight_id, user_id);
-        }
-    }
-}
+//void print_users_for_flight_to_file(FILE* file, GArray* usersForFlight, char* flight_id) {
+//    if (usersForFlight != NULL) {
+//        for (guint i = 0; i < usersForFlight->len; i++) {
+//            char* user_id = g_array_index(usersForFlight, char*, i);
+//            fprintf(file, "%s, %s\n", flight_id, user_id);
+//        }
+//    }
+//}
 
 int build_flight(char** flight_fields, void* catalog, STATS stats){
 
@@ -243,22 +242,21 @@ int build_flight(char** flight_fields, void* catalog, STATS stats){
 
     if (!verify_flight(flight_fields, passC)){
 
-        if(flight_fields[0] != NULL){
-            FILE* passengers_error_file;
-            passengers_error_file = fopen("Resultados/passengers_errors.csv", "a");
-
-            GArray* usersForFlight = get_users_for_flight(passC, flight_fields[0]);
-            print_users_for_flight_to_file(passengers_error_file, usersForFlight, flight_fields[0]);
-
-            fclose(passengers_error_file);
-        }
+        //if(flight_fields[0] != NULL){
+        //    FILE* passengers_error_file;
+        //    passengers_error_file = fopen("Resultados/passengers_errors.csv", "a");
+//
+        //    //GArray* usersForFlight = get_users_for_flight(passC, flight_fields[0]);
+        //    //print_users_for_flight_to_file(passengers_error_file, usersForFlight, flight_fields[0]);
+        //    fclose(passengers_error_file);
+        //}
 
         return 0;
     }
 
     FLIGHT flight = create_flight();
 
-    set_flight_id(flight,flight_fields[0]);
+    set_catalog_flight(flightsC, flight,flight_fields[0]);
     set_flight_airline(flight,flight_fields[1]);
     set_flight_plane_model(flight,flight_fields[2]);
     set_flight_total_seats(flight,flight_fields[3]);
@@ -272,7 +270,7 @@ int build_flight(char** flight_fields, void* catalog, STATS stats){
     set_flight_copilot(flight,flight_fields[11]);
     set_flight_notes(flight,flight_fields[12]);
 
-    insert_flight_c(flight,flightsC);
+    insert_flight_c(flight,flightsC,flight->id);
     (void) stats;
 
     return 1;
