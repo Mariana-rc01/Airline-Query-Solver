@@ -26,8 +26,10 @@
 #include "entities/users.h"
 #include "catalogs/manager_c.h"
 #include "menuNdata/statistics.h"
+#include "menuNdata/queries.h"
 #include "IO/parser.h"
 #include "IO/input.h"
+#include "IO/output.h"
 #include "utils/utils.h"
 #include "IO/interpreter.h"
 

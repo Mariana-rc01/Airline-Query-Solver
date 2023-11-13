@@ -78,3 +78,10 @@ int isFileEmpty(FILE *file) {
 
     return 1;
 }
+
+void removeQuotes(char* s) {
+    s[strlen(s) - 1] = '\0';
+    for(int i = 0; s[i]!= '\0'; i++) {
+        s[i] = s[i+1];
+    }
+}

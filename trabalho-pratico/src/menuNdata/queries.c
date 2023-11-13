@@ -21,6 +21,7 @@
 #include "menuNdata/queries.h"
 #include "catalogs/manager_c.h"
 #include "menuNdata/statistics.h"
+#include "utils/utils.h"
 
 #include <glib.h>
 #include <stdio.h>
