@@ -94,6 +94,25 @@ int setup_catalog_and_stats(MANAGER manager_catalog, STATS statistics, char* pat
     return 0;
 }
 
+int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2) {
+    char *line = NULL;
+    size_t lsize = 0;
+    int cmd_n = 1;
+    char* output_path = "Resultados/command1_output.txt";
+    void* result;
+    FILE* queries_file = fopen(path2, "r");
+    FILE* output_file;
+    while(getline(&line,&lsize, queries_file)) {
+        result = parser_query(manager_catalog, statistics, line);
+        output_path[18] = cmd_n;
+        cmd_n++;
+        output_file = fopen(output_path, "w");
+        output_query(output_file, result, line[0]);
+        fclose(output_file);
+    }
+    free(line);
+    return 0;
+}
 void batch (char* path1, char* path2) {
 
     USERS_C users_catalog = create_user_c();

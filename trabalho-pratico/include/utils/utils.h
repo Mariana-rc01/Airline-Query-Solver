@@ -76,4 +76,11 @@ char* concat(char* s1, char* s2);
  * @return Bool
  */
 int isFileEmpty(FILE *file);
+
+/**
+ * @brief This function removes quotation marks from a string
+ *
+ * @param s String with quotes at the beggining and end
+ */
+void removeQuotes(char* s);
 #endif
