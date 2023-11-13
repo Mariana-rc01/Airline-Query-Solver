@@ -127,6 +127,9 @@ void batch (char* path1, char* path2) {
     if (setup_catalog_and_stats(manager_catalog,statistics,path1) == -1){
         return;
     }
+    if (execute_queries(manager_catalog,statistics,path2) == -1){
+        return;
+    }
 
     //free_user_c(users_catalog);
     //free_reservations_c(reservations_catalog);
