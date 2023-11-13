@@ -325,9 +325,9 @@ int validate_hotel_stars(char* stars){
 int validate_city_tax(char* tax){
     if(tax == NULL) return 0;
     int i = 0;
-    while(tax[i] != '\0' && !isDigit(tax[i])) i++;
+    while(tax[i] != '\0' && isDigit(tax[i])) i++;
 
-    if (tax[i] != '\0' && ourAtoi(tax) < 0) return 0;
+    if (tax[i] != '\0' || ourAtoi(tax) < 0) return 0;
     return 1;
 }
 

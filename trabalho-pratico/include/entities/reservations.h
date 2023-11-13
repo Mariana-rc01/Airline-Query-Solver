@@ -42,7 +42,7 @@ RESERV create_reservation(void);
  * @param res A pointer to the reservations struct.
  * @param i The reservation ID.
  */
-void set_reservation_id(RESERV res, char* i);
+void set_reservation_id(RESERV res, gpointer i);
 
 /**
  * @brief Sets the user ID associated with the reservation.
@@ -147,7 +147,7 @@ void set_cost(RESERV res, double cost);
  * @param res A pointer to the reservations struct.
  * @return The reservation ID.
  */
-char* get_reservation_id(RESERV res);
+int get_reservation_id(RESERV res);
 
 /**
  * @brief Gets the user ID associated with the reservation.

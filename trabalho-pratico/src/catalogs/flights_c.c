@@ -41,7 +41,6 @@ FLIGHTS_C create_flight_c(void){
     return new_catalog;
 }
 
-
 void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog){
     char* key = get_flight_id(flight);
     g_hash_table_insert(catalog->flights, key, flight);

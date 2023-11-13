@@ -28,30 +28,48 @@
  * @brief A catalog for storing reservation records.
  */
 struct reservations_catalog {
-    GHashTable *reservations; /**< Hash table to store reservation records. */
+    GHashTable* reserv; /**< Hash table to store reservation records. */
+    GHashTable* reserv_id;
 };
 
 RESERV_C create_reservations_c(void){
     RESERV_C new = malloc(sizeof(struct reservations_catalog));
 
-    new->reservations = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify) free_reservations);
-
+    new->reserv = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_reservations);
+    new->reserv_id = g_hash_table_new_full(g_str_hash,g_str_equal, free, NULL);
     return new;
 }
 
-void insert_reservations_c(RESERV reserv, RESERV_C catalog){
-    char* key = get_reservation_id(reserv);
-    g_hash_table_insert(catalog->reservations, key, reserv);
+void insert_reservations_c(RESERV reserv, RESERV_C catalog, gpointer key){
+    g_hash_table_insert(catalog->reserv, key, reserv);
 }
 
 RESERV get_reservations_by_id(RESERV_C catalog, char* id){
-    return g_hash_table_lookup(catalog->reservations, id);
+    gpointer reserv_id = g_hash_table_lookup(catalog->reserv_id, id);
+    if (reserv_id == NULL) return NULL;
+    return get_reservations_by_gpointer(catalog, reserv_id);
+}
+
+RESERV get_reservations_by_gpointer(RESERV_C catalog, gpointer reserv_id){
+    return g_hash_table_lookup(catalog->reserv, reserv_id);
+}
+
+void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id){
+    static int number_reservs = 0;
+
+    char* copy_id = g_strdup(id);
+    gpointer reserv_id = GINT_TO_POINTER(number_reservs);
+    g_hash_table_insert(catalog->reserv_id, copy_id, reserv_id);
+
+    set_reservation_id(reserv, reserv_id);
+
+    number_reservs++;
+
 }
 
 void free_reservations_c(RESERV_C catalog){
-    g_hash_table_destroy(catalog->reservations);
+    g_hash_table_destroy(catalog->reserv);
+    g_hash_table_destroy(catalog->reserv_id);
     free(catalog);
 }
-
-
 

@@ -34,7 +34,7 @@
  * @brief Represents a reservation record.
  */
 struct reservations {
-    char* id; /**< Unique reservation ID. */
+    gpointer id; /**< Unique reservation ID. */
     char* user_id; /**< User's ID associated with the reservation. */
     char* hotel_id; /**< Hotel's ID associated with the reservation. */
     char* hotel_name; /**< Name of the hotel. */
@@ -54,7 +54,6 @@ struct reservations {
 RESERV create_reservation(void){
     RESERV new = malloc(sizeof(struct reservations));
 
-    new->id = NULL;
     new->user_id = NULL;
     new->hotel_id = NULL;
     new->hotel_name = NULL;
@@ -73,8 +72,8 @@ RESERV create_reservation(void){
     return new;
 }
 
-void set_reservation_id(RESERV res, char* i){
-    res->id = strdup(i);
+void set_reservation_id(RESERV res, gpointer id){
+    res->id = id;
 }
 
 void set_user_id_R(RESERV res, char* u_id){
@@ -135,8 +134,8 @@ void set_cost(RESERV res, double cost){
     res->cost = cost;
 }
 
-char* get_reservation_id(RESERV res){
-    return strdup(res->id);
+int get_reservation_id(RESERV res){
+    return GPOINTER_TO_INT(res->id);
 }
 
 char* get_user_id_R(RESERV res){
@@ -243,7 +242,7 @@ int build_reservations(char** reservations_fields, void* catalog, STATS stats){
 
     RESERV res = create_reservation();
 
-    set_reservation_id(res,reservations_fields[0]);
+    set_catalog_reserv(reservsC,res,reservations_fields[0]);
     set_user_id_R(res,reservations_fields[1]);
     set_hotel_id(res,reservations_fields[2]);
     set_hotel_name(res,reservations_fields[3]);
@@ -276,7 +275,7 @@ int build_reservations(char** reservations_fields, void* catalog, STATS stats){
     cost = price_per_night * nNights + ((price_per_night * nNights) / 100) * city_tax;
     set_cost(res,cost);
 
-    insert_reservations_c(res, reservsC);
+    insert_reservations_c(res, reservsC, res->id);
     update_user_c(usersC,reservations_fields[1],cost);
     (void) stats;
 
