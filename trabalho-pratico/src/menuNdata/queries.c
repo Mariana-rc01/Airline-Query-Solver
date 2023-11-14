@@ -29,158 +29,57 @@
 #include <string.h>
 
 void* parser_query(MANAGER catalog, STATS stats, char* line){
-    char** query_args = malloc(sizeof(char*) * MAX_ARGS);
-
-    char* token = strtok(line, " ");
-    int query;
-    if (line[1] == '0') query = 10;
-    else query = line[0] - '0';
     int i = 0;
-    //char* temp;
-    /*while (token != NULL) {
+    char** args = malloc(sizeof(char*) * MAX_ARGS);
+    char* copia = strdup(line);
+    char* token = strtok(copia, " ");
+
+    while (token != NULL && i < MAX_ARGS) {
         if (token[0] == '"') {
-            do {
-                temp = strdup(token);
-                token = strtok(NULL, " ");
-                temp = (char *) realloc(temp, sizeof(query_args[i]) + sizeof(token) + 3);
-                query_args[i] = strcat(temp, " ");
-                query_args[i] = strcat(temp, token);
-            } while (token != NULL && token[strlen(token) - 1] != '"');
+            char temp[100];
+            strcpy(temp, token);
+            temp[strlen(temp)-1] = ' ';
             removeQuotes(temp);
-            query_args[i] = temp;
+
+            token = strtok(NULL,"\"");
+            char* temp1 = concat(temp,token);
+            args[i] = strdup(temp1);
+            free(temp1);
             i++;
         } else {
-            query_args[i] = token;
+            args[i] = strdup(token);
             i++;
         }
 
         token = strtok(NULL, " ");
     }
-    */
 
-    while (token != NULL) {
-        token = strtok(NULL, " ");
-        query_args[i] = token;
-        i++;
+    free(copia);
+    free(token);
+
+    for (int j = 0; args[0][j] != '\0'; j++) {
+        if (!isDigit(args[0][j])) {
+            for (int k = 0; k < i; k++) free(args[k]);
+            free(args);
+            return NULL;
+        }
+    }
+
+    int query = ourAtoi(args[0]);
+    if ((query < 1) || (query > 10)){
+        for (int k = 0; k < i; k++) free(args[k]);
+        free(args);
+        return NULL;
     }
 
     static queries_func queries[] = {query1, query2, query3,
                                     query4, query5, query6,
                                     query7, query8, query9, query10};
 
-    void* result = queries[query - 1](catalog, stats, query_args);
+    void* result = queries[query-1](catalog, stats, args+1);
 
-    free(query_args);
+    for (int k = 0; k < i; k++) free(args[k]);
+    free(args);
 
     return result;
 }
-
-void* query1(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
-    (void) stats;
-    return args;
-}
-
-void* query2(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
-    (void) stats;
-    return args;
-}
-
-void* query3(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
-    (void) stats;
-    return args;
-}
-
-void* query4(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
-    (void) stats;
-    return args;
-}
-
-void* query5(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
-    (void) stats;
-    return args;
-}
-
-void* query6(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
-    (void) stats;
-    return args;
-}
-
-void* query7(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
-    (void) stats;
-    return args;
-}
-
-void* query8(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
-    (void) stats;
-    return args;
-}
-
-void* query9(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
-    (void) stats;
-    return args;
-}
-
-void* query10(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
-    (void) stats;
-    return args;
-}
-
-void free_query(void* result, char query_id){
-
-    static free_queries_func queries[] = {free_query1, free_query2, free_query3,
-                                        free_query4, free_query5, free_query6,
-                                        free_query7, free_query8, free_query9, free_query10};
-
-    queries[query_id - '1'](result);
-}
-
-void free_query1(void* result){
-    (void) result;
-}
-
-void free_query2(void* result){
-    (void) result;
-}
-
-void free_query3(void* result){
-    (void) result;
-}
-
-void free_query4(void* result){
-    (void) result;
-}
-
-void free_query5(void* result){
-    (void) result;
-}
-
-void free_query6(void* result){
-    (void) result;
-}
-
-void free_query7(void* result){
-    (void) result;
-}
-
-void free_query8(void* result){
-    (void) result;
-}
-
-void free_query9(void* result){
-    (void) result;
-}
-
-void free_query10(void* result){
-    (void) result;
-}
-

@@ -59,3 +59,4 @@ void set_catalog_passenger(PASS_C catalog, PASS pass, char* user_id, char* fligh
 void free_passengers_c(PASS_C catalog);
 
 #endif
+

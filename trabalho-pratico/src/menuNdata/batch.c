@@ -102,18 +102,18 @@ int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2){
     char *line = NULL;
     size_t lsize = 0;
     int cmd_n = 1;
-    //void* result;
+    void* result;
 
     FILE* queries_file = fopen(path2, "r");
     FILE* output_file;
 
     while(getline(&line,&lsize, queries_file) != -1){
         line[strlen(line)-1] = '\0';
-        //result = parser_query(manager_catalog, statistics, line);
+        result = parser_query(manager_catalog, statistics, line);
         output_file = create_output_file(cmd_n);
         if (output_file == NULL) return -1;
 
-        //output_query(output_file, result, line);
+        output_query(output_file, result, line);
 
         //free_query(result, cmd_n);
         fclose(output_file);
@@ -146,5 +146,4 @@ void batch (char* path1, char* path2) {
 
     free_manager_c(manager_catalog);
 }
-
 
