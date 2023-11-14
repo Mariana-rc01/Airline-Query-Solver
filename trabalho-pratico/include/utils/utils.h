@@ -21,9 +21,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <glib.h>
 #include <stdio.h>
 
-#define SYSTEM_DATE "2023/10/01";
+#define SYSTEM_DATE "2023/10/01"
 
 /**
  * @brief Verifies if a character is a digit

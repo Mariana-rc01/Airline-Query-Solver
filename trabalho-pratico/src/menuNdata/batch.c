@@ -111,7 +111,7 @@ int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2){
     while(getline(&line,&lsize, queries_file) != -1){
         line[strlen(line)-1] = '\0';
         result = parser_query(manager_catalog, statistics, line);
-        FILE* output_file = create_output_file(cmd_n);
+        output_file = create_output_file(cmd_n);
         output_query(output_file, result, line[0]);
         free_query(result);
         fclose(output_file);

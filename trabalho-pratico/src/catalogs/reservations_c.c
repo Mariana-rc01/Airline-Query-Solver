@@ -80,7 +80,7 @@ GPtrArray* get_user_reserv_array_by_id(RESERV_C catalog, char* user_id){
 }
 
 GPtrArray* get_user_reserv_array_by_gpointer(RESERV_C catalog, gpointer user_id){
-    return g_hash_table_lookup(catalog->users, user_id);
+    return g_hash_table_lookup(catalog->user, user_id);
 }
 
 void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id){

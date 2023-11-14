@@ -72,4 +72,26 @@ void* query9(MANAGER catalog, STATS stats, char** args);
 
 void* query10(MANAGER catalog, STATS stats, char** args);
 
+void free_query(void* result, char query_id);
+
+void free_query1(void* result);
+
+void free_query2(void* result);
+
+void free_query3(void* result);
+
+void free_query4(void* result);
+
+void free_query5(void* result);
+
+void free_query6(void* result);
+
+void free_query7(void* result);
+
+void free_query8(void* result);
+
+void free_query9(void* result);
+
+void free_query10(void* result);
+
 #endif

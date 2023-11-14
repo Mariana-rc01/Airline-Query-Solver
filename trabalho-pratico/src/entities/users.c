@@ -212,7 +212,7 @@ int build_user(char  **user_fields, void *catalog, STATS stats){
     if (!verify_user(user_fields)) return 0;
 
     USER user = create_user();
-    int age = calculate_user_age(SYSTEM_DATE, users_fields[4]);
+    int age = calculate_user_age(SYSTEM_DATE, user_fields[4]);
     char* acc_status = case_insensitive(user_fields[11]);
 
     set_catalog_user(usersC, user, user_fields[0]);

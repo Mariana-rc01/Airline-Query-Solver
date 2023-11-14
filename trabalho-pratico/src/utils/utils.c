@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <glib.h>
 
 int isDigit(char c){
     return(c >= '0' && c <= '9');
@@ -135,14 +136,11 @@ int calculate_flight_delay(char* scheduleDate, char* actualDate){
     int scheduleYear, scheduleMonth, scheduleDay, scheduleHour, scheduleMinute, scheduleSecond;
     int actualYear, actualMonth, actualDay, actualHour, actualMinute, actualSecond;
 
-    // Parse das strings
     sscanf(scheduleDate, "%d/%d/%d %d:%d:%d", &scheduleYear, &scheduleMonth, &scheduleDay, &scheduleHour, &scheduleMinute, &scheduleSecond);
     sscanf(actualDate, "%d/%d/%d %d:%d:%d", &actualYear, &actualMonth, &actualDay, &actualHour, &actualMinute, &actualSecond);
 
-    // Calcular a diferença em segundos
     int delay = 0;
 
-    // Converter dias, horas, minutos e segundos para segundos
     delay += (actualDay - scheduleDay) * 24 * 60 * 60;
     delay += (actualHour - scheduleHour) * 60 * 60;
     delay += (actualMinute - scheduleMinute) * 60;
