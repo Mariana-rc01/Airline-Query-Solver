@@ -35,7 +35,7 @@
  */
 struct reservations {
     gpointer id; /**< Unique reservation ID. */
-    char* user_id; /**< User's ID associated with the reservation. */
+    gpointer user_id; /**< User's ID associated with the reservation. */
     char* hotel_id; /**< Hotel's ID associated with the reservation. */
     char* hotel_name; /**< Name of the hotel. */
     char* hotel_stars; /**< Number of stars rating for the hotel. */
@@ -54,7 +54,6 @@ struct reservations {
 RESERV create_reservation(void){
     RESERV new = malloc(sizeof(struct reservations));
 
-    new->user_id = NULL;
     new->hotel_id = NULL;
     new->hotel_name = NULL;
     new->hotel_stars = 0;
@@ -76,8 +75,8 @@ void set_reservation_id(RESERV res, gpointer id){
     res->id = id;
 }
 
-void set_user_id_R(RESERV res, char* u_id){
-    res->user_id = strdup(u_id);
+void set_user_id_R(RESERV res, gpointer u_id){
+    res->user_id = u_id;
 }
 
 void set_hotel_id(RESERV res, char* h_id){
@@ -138,8 +137,8 @@ int get_reservation_id(RESERV res){
     return GPOINTER_TO_INT(res->id);
 }
 
-char* get_user_id_R(RESERV res){
-    return strdup(res->user_id);
+int get_user_id_R(RESERV res){
+    return GPOINTER_TO_INT(res->user_id);
 }
 
 char* get_hotel_id(RESERV res){
@@ -197,7 +196,6 @@ double get_cost(RESERV res){
 }
 
 void free_reservations(RESERV res){
-    free(res->user_id);
     free(res->hotel_id);
     free(res->hotel_name);
     free(res->hotel_stars);
@@ -241,8 +239,7 @@ int build_reservations(char** reservations_fields, void* catalog, STATS stats){
 
     RESERV res = create_reservation();
 
-    set_catalog_reserv(reservsC,res,reservations_fields[0]);
-    set_user_id_R(res,reservations_fields[1]);
+    set_catalog_reserv(reservsC,res,reservations_fields[0],reservations_fields[1]);
     set_hotel_id(res,reservations_fields[2]);
     set_hotel_name(res,reservations_fields[3]);
     set_hotel_stars(res,reservations_fields[4]);

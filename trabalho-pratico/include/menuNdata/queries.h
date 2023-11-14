@@ -35,6 +35,8 @@
  */
 typedef void* (*queries_func)(MANAGER catalog, STATS stats, char** query_args);
 
+typedef void* (*free_queries_func)(void* result);
+
 /**
  * @brief Parse and execute a query based on input line.
  *

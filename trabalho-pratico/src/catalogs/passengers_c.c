@@ -21,6 +21,7 @@
 
 #include "catalogs/passengers_c.h"
 #include "entities/passengers.h"
+#include "utils/utils.h"
 
 /**
  * @struct passengers_catalog
@@ -123,15 +124,6 @@ void set_catalog_passenger(PASS_C catalog, PASS pass, char* user_id, char* fligh
         set_user_P(pass, pass_id3);
         number_users++;
     }
-}
-
-void free_ptr_array(gpointer data) {
-    GPtrArray *array = (GPtrArray *)data;
-    for (guint i = 0; i < array->len; i++) {
-        g_free(g_ptr_array_index(array, i));
-    }
-
-    g_ptr_array_free(array, TRUE);
 }
 
 void free_passengers_c(PASS_C catalog){

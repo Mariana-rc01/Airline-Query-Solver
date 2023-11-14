@@ -52,8 +52,6 @@ GPtrArray* get_user_array_by_gpointer(PASS_C catalog, gpointer user_id);
 
 void set_catalog_passenger(PASS_C catalog, PASS pass, char* user_id, char* flight_id);
 
-void free_ptr_array(gpointer data);
-
 /**
  * @brief Frees the memory used by the passengers catalog.
  * @param catalog A pointer to the passengers catalog.

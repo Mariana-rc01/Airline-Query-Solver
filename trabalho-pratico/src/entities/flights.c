@@ -24,6 +24,7 @@
 
 #include "menuNdata/statistics.h"
 #include "IO/input.h"
+#include "utils/utils.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -216,12 +217,15 @@ int build_flight(char** flight_fields, void* catalog, STATS stats){
 
     FLIGHT flight = create_flight();
 
+    char* origin = case_insensitive(flight_fields[4]);
+    char* destination = case_insensitive(flight_fields[5]);
+
     set_catalog_flight(flightsC, flight,flight_fields[0]);
     set_flight_airline(flight,flight_fields[1]);
     set_flight_plane_model(flight,flight_fields[2]);
     set_flight_total_seats(flight,flight_fields[3]);
-    set_flight_origin(flight,flight_fields[4]);
-    set_flight_destination(flight,flight_fields[5]);
+    set_flight_origin(flight,origin);
+    set_flight_destination(flight,destination);
     set_flight_schedule_departure_date(flight,flight_fields[6]);
     set_flight_schedule_arrival_date(flight,flight_fields[7]);
     set_flight_real_departure_date(flight,flight_fields[8]);

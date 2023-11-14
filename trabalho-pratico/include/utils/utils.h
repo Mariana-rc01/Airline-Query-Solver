@@ -83,4 +83,13 @@ int isFileEmpty(FILE *file);
  * @param s String with quotes at the beggining and end
  */
 void removeQuotes(char* s);
+
+FILE* create_output_file(int n);
+
+void free_ptr_array(gpointer data);
+
+int calculate_user_age(char* currentDate, char* birthDate);
+
+char* case_insensitive(char* string);
+
 #endif

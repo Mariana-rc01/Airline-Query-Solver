@@ -23,6 +23,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 int isDigit(char c){
     return(c >= '0' && c <= '9');
@@ -84,4 +85,69 @@ void removeQuotes(char* s) {
     for(int i = 0; s[i]!= '\0'; i++) {
         s[i] = s[i+1];
     }
+}
+
+FILE* create_output_file(int n){
+
+    char* path = malloc(sizeof(char*)*512);
+    sprintf(path, "Resultados/comand%d_output.txt", n);
+    FILE* f = fopen(path, "w");
+    free(path);
+    
+    return f;
+}
+
+void free_ptr_array(gpointer data){
+    GPtrArray *array = (GPtrArray *)data;
+    for (guint i = 0; i < array->len; i++) {
+        g_free(g_ptr_array_index(array, i));
+    }
+
+    g_ptr_array_free(array, TRUE);
+}
+
+int calculate_user_age(char* currentDate, char* birthDate){
+    int currentYear, currentMonth, currentDay;
+    int birthYear, birthMonth, birthDay;
+
+    sscanf(currentDate, "%d/%d/%d", &currentYear, &currentMonth, &currentDay);
+    sscanf(birthDate, "%d/%d/%d", &birthYear, &birthMonth, &birthDay);
+
+    int age = currentYear - birthYear;
+
+    // Making sure if the user's birthday has already occured this year
+    if (birthMonth > currentMonth || (birthMonth == currentMonth && birthDay > currentDay)) {
+        age--;
+    }
+
+    return age;
+}
+
+char* case_insensitive(char* string){
+    for(int i = 0; string[i] != '\0'; i++){
+        tolower(string[i]);
+    }
+
+    return string;
+}
+
+int calculate_flight_delay(char* scheduleDate, char* actualDate){
+    int scheduleYear, scheduleMonth, scheduleDay, scheduleHour, scheduleMinute, scheduleSecond;
+    int actualYear, actualMonth, actualDay, actualHour, actualMinute, actualSecond;
+
+    // Parse das strings
+    sscanf(scheduleDate, "%d/%d/%d %d:%d:%d", &scheduleYear, &scheduleMonth, &scheduleDay, &scheduleHour, &scheduleMinute, &scheduleSecond);
+    sscanf(actualDate, "%d/%d/%d %d:%d:%d", &actualYear, &actualMonth, &actualDay, &actualHour, &actualMinute, &actualSecond);
+
+    // Calcular a diferença em segundos
+    int delay = 0;
+
+    // Converter dias, horas, minutos e segundos para segundos
+    delay += (actualDay - scheduleDay) * 24 * 60 * 60;
+    delay += (actualHour - scheduleHour) * 60 * 60;
+    delay += (actualMinute - scheduleMinute) * 60;
+    delay += actualSecond - scheduleSecond;
+
+    return delay;
+
 }

@@ -98,26 +98,29 @@ int setup_catalog_and_stats(MANAGER manager_catalog, STATS statistics, char* pat
     return 0;
 }
 
-//int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2) {
-//    char *line = NULL;
-//    size_t lsize = 0;
-//    int cmd_n = 1;
-//    char* output_path = "Resultados/command1_output.txt";
-//    void* result;
-//    FILE* queries_file = fopen(path2, "r");
-//    FILE* output_file;
-//    while(getline(&line,&lsize, queries_file)) {
-//        result = parser_query(manager_catalog, statistics, line);
-//        output_path[18] = cmd_n;
-//        cmd_n++;
-//        output_file = fopen(output_path, "w");
-//        output_query(output_file, result, line[0]);
-//        fclose(output_file);
-//    }
-//    free(line);
-//    fclose(queries_file);
-//    return 0;
-//}
+int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2){
+
+    char *line = NULL;
+    size_t lsize = 0;
+    int cmd_n = 1;
+    void* result;
+
+    FILE* queries_file = fopen(path2, "r");
+    FILE* output_file;
+
+    while(getline(&line,&lsize, queries_file) != -1){
+        line[strlen(line)-1] = '\0';
+        result = parser_query(manager_catalog, statistics, line);
+        FILE* output_file = create_output_file(cmd_n);
+        output_query(output_file, result, line[0]);
+        free_query(result);
+        fclose(output_file);
+        cmd_n++;
+    }
+    free(line);
+    fclose(queries_file);
+    return 0;
+}
 
 void batch (char* path1, char* path2) {
 
@@ -132,9 +135,10 @@ void batch (char* path1, char* path2) {
     if (setup_catalog_and_stats(manager_catalog,statistics,path1) == -1){
         return;
     }
-    //if (execute_queries(manager_catalog,statistics,path2) == -1){
-    //    return;
-    //}
+    
+    if (execute_queries(manager_catalog,statistics,path2) == -1){
+        return;
+    }
     (void)path2;
 
     free_manager_c(manager_catalog);

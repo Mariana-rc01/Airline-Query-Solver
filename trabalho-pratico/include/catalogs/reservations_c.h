@@ -43,6 +43,8 @@ RESERV_C create_reservations_c(void);
  */
 void insert_reservations_c(RESERV reserv, RESERV_C catalog, gpointer key);
 
+void insert_usersReservations_c(char* reserv_id, RESERV_C catalog, gpointer key);
+
 /**
  * @brief Gets a reservation record by its ID.
  * @param catalog A pointer to the reservations catalog.
@@ -53,13 +55,16 @@ RESERV get_reservations_by_id(RESERV_C catalog, char* id);
 
 RESERV get_reservations_by_gpointer(RESERV_C catalog, gpointer reserv_id);
 
-void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id);
+GPtrArray* get_user_reserv_array_by_id(RESERV_C catalog, char* user_id);
+
+GPtrArray* get_user_reserv_array_by_gpointer(RESERV_C catalog, gpointer user_id);
+
+void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id);
 
 /**
  * @brief Frees the memory used by the reservations catalog.
  * @param catalog A pointer to the reservations catalog.
  */
 void free_reservations_c(RESERV_C catalog);
-
 
 #endif
