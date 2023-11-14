@@ -113,7 +113,7 @@ int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2){
         result = parser_query(manager_catalog, statistics, line);
         output_file = create_output_file(cmd_n);
         output_query(output_file, result, line[0]);
-        free_query(result);
+        free_query(result, cmd_n);
         fclose(output_file);
         cmd_n++;
     }
