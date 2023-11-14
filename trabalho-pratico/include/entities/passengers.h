@@ -30,6 +30,7 @@ typedef struct passengers *PASS;
 
 #include "menuNdata/statistics.h"
 #include "catalogs/users_c.h"
+#include "catalogs/flights_c.h"
 
 /**
  * @brief Creates a new passengers struct with default values.
@@ -42,28 +43,28 @@ PASS create_passengers(void);
  * @param pass A pointer to the passenger struct.
  * @param id The flight ID.
  */
-void set_flight_P(PASS pass, char* id);
+void set_flight_P(PASS pass, gpointer id);
 
 /**
  * @brief Sets the user ID of the passenger.
  * @param pass A pointer to the passenger struct.
  * @param id The user ID of the passenger.
  */
-void set_user_P(PASS pass, char* id);
+void set_user_P(PASS pass, gpointer id);
 
 /**
  * @brief Gets the flight ID associated with the passenger.
  * @param pass A pointer to the passenger struct.
  * @return The flight ID.
  */
-char* get_flight_P(PASS pass);
+int get_flight_P(PASS pass);
 
 /**
  * @brief Gets the user ID of the passenger.
  * @param pass A pointer to the passenger struct.
  * @return The user ID of the passenger.
  */
-char* get_user_P(PASS pass);
+int get_user_P(PASS pass);
 
 /**
  * @brief Frees memory associated with a passenger struct.
@@ -76,7 +77,7 @@ void free_passengers(PASS pass);
  * @param passengers_fields An array of passenger data fields.
  * @return 1 if the passenger data is valid, 0 otherwise.
  */
-int verify_passengers(char** passengers_fields, USERS_C users);
+int verify_passengers(char** passengers_fields, USERS_C users, FLIGHTS_C flights);
 
 /**
  * @brief Builds a passenger struct from passenger data fields.

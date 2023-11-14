@@ -60,9 +60,11 @@ int setup_catalog_and_stats(MANAGER manager_catalog, STATS statistics, char* pat
 
     USERS_C users = get_users_c(manager_catalog);
     parseF(users_file, 12, build_user, users, statistics, users_error_file);
-    //parseF(passengers_file, 2, build_passengers, manager_catalog, statistics, passengers_error_file);
+
+    FLIGHTS_C flights = get_flights_c(manager_catalog);
+    parseF(flights_file, 13, build_flight, flights, statistics, flights_error_file);
     parseF(reservations_file, 14, build_reservations, manager_catalog, statistics, reservations_error_file);
-    parseF(flights_file, 13, build_flight, manager_catalog, statistics, flights_error_file);
+    parseF(passengers_file, 2, build_passengers, manager_catalog, statistics, passengers_error_file);
 
     free(flight_path);
     free(passenger_path);
@@ -96,26 +98,27 @@ int setup_catalog_and_stats(MANAGER manager_catalog, STATS statistics, char* pat
     return 0;
 }
 
-int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2) {
-    char *line = NULL;
-    size_t lsize = 0;
-    int cmd_n = 1;
-    char* output_path = "Resultados/command1_output.txt";
-    void* result;
-    FILE* queries_file = fopen(path2, "r");
-    FILE* output_file;
-    while(getline(&line,&lsize, queries_file)) {
-        result = parser_query(manager_catalog, statistics, line);
-        output_path[18] = cmd_n;
-        cmd_n++;
-        output_file = fopen(output_path, "w");
-        output_query(output_file, result, line[0]);
-        fclose(output_file);
-    }
-    free(line);
-    fclose(queries_file);
-    return 0;
-}
+//int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2) {
+//    char *line = NULL;
+//    size_t lsize = 0;
+//    int cmd_n = 1;
+//    char* output_path = "Resultados/command1_output.txt";
+//    void* result;
+//    FILE* queries_file = fopen(path2, "r");
+//    FILE* output_file;
+//    while(getline(&line,&lsize, queries_file)) {
+//        result = parser_query(manager_catalog, statistics, line);
+//        output_path[18] = cmd_n;
+//        cmd_n++;
+//        output_file = fopen(output_path, "w");
+//        output_query(output_file, result, line[0]);
+//        fclose(output_file);
+//    }
+//    free(line);
+//    fclose(queries_file);
+//    return 0;
+//}
+
 void batch (char* path1, char* path2) {
 
     USERS_C users_catalog = create_user_c();
@@ -129,14 +132,11 @@ void batch (char* path1, char* path2) {
     if (setup_catalog_and_stats(manager_catalog,statistics,path1) == -1){
         return;
     }
-    if (execute_queries(manager_catalog,statistics,path2) == -1){
-        return;
-    }
+    //if (execute_queries(manager_catalog,statistics,path2) == -1){
+    //    return;
+    //}
+    (void)path2;
 
-    //free_user_c(users_catalog);
-    //free_reservations_c(reservations_catalog);
-    //free_flight_c(flights_catalog);
-    free_passengers_c(passengers_catalog);
     free_manager_c(manager_catalog);
 }
 

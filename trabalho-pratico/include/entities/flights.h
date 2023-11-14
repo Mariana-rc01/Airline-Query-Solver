@@ -29,7 +29,7 @@
 typedef struct flight *FLIGHT;
 
 #include "menuNdata/statistics.h"
-#include "catalogs/passengers_c.h"
+#include <glib.h>
 
 /**
  * @brief Creates a new flight struct with default values.
@@ -229,15 +229,14 @@ void free_flight(FLIGHT flight);
 /**
  * @brief Verifies the validity of flight data.
  * @param fields An array of flight data fields.
- * @param catalog Catalog of passengers.
  * @return 1 if the flight data is valid, 0 otherwise.
  */
-int verify_flight(char** fields, PASS_C catalog);
+int verify_flight(char** fields);
 
 /**
  * @brief Builds a flight struct from flight data fields.
  * @param flight_fields An array of flight data fields.
- * @param catalog A pointer to the manager catalog.
+ * @param catalog A pointer to the flight catalog.
  * @param stats A pointer to the statistics.
  *
  * @return 1 if the flight is added to the catalog 0 if not

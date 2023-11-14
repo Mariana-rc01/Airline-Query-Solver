@@ -293,12 +293,16 @@ int validate_account_status(char* status){
     return 1;
 }
 
-int validate_total_seats(char* seats, int passengers){
+int validate_seats(char* seats){
     int i;
-    int length = strlen(seats);
-    for (i = 0; i < length; i++){
-        if (!(isDigit(seats[i]))) return 0;
+    for(i=0; seats[i] != '\0';i++){
+        if (!(isdigit(seats[i]))) return 0;
     }
+    return 1;
+}
+
+int validate_total_seats(char* seats, int passengers){
+
     return(passengers <= ourAtoi(seats));
 }
 

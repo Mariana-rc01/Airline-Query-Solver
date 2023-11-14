@@ -33,9 +33,9 @@ void* parser_query(MANAGER catalog, STATS stats, char* line){
 
     char* token = strtok(line, " ");
     char query_id = line[0];
-    char* temp;
+    //char* temp;
     int i = 0;
-     while (token != NULL) {
+    /*while (token != NULL) {
         if (token[0] == '"') {
             do {
                 temp = strdup(token);
@@ -54,6 +54,14 @@ void* parser_query(MANAGER catalog, STATS stats, char* line){
 
         token = strtok(NULL, " ");
     }
+    */
+
+    while (token != NULL) {
+        token = strtok(NULL, " ");
+        query_args[i] = token;
+        i++;
+    }
+
     static queries_func queries[] = {query1, query2, query3, query4, query5, query6, query7, query8, query9, query10};
 
     void* result = queries[query_id - '1'](catalog, stats, query_args);

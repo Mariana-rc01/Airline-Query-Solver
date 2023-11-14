@@ -92,6 +92,8 @@ int validate_country_code(char* code);
  */
 int validate_account_status(char* status);
 
+int validate_seats(char* seats);
+
 /**
  * @brief Function that validates if the number of total seats is greater than the number of passengers
  *

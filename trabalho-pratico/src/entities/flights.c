@@ -187,7 +187,7 @@ void free_flight(FLIGHT flight){
     free(flight);
 }
 
-int verify_flight(char** fields, PASS_C catalog){
+int verify_flight(char** fields){
     if (!(fields[0]) || !(fields[1]) || !(fields[2]) ||
         !(fields[10]) || !(fields[11]) || !(fields[6]) || !(fields[7]) ||
         !(fields[8] || !(fields[9]))) return 0;
@@ -200,59 +200,19 @@ int verify_flight(char** fields, PASS_C catalog){
     if (!(compare_date_time(fields[6],fields[7]))) return 0;
     if (!(compare_date_time(fields[8],fields[9]))) return 0;
 
-    //int total_passengers;
-    //if((get_total_passengers_c(catalog, fields[0])) == 0) total_passengers = 0;
-    //else total_passengers = get_total_passengers_c(catalog,fields[0]);
-    //if (!(validate_total_seats(fields[3], total_passengers))) return 0;
+    if (!(validate_seats(fields[3]))) return 0;
 
-   if (!(validate_airports(fields[4]))) return 0;
-   if (!(validate_airports(fields[5]))) return 0;
-   (void) catalog;
+    if (!(validate_airports(fields[4]))) return 0;
+    if (!(validate_airports(fields[5]))) return 0;
 
     return 1;
 }
 
-/**
- * @brief Print user information for a given flight to a file.
- *
- * This function prints user information for a given flight to a file in the
- * format "flight_id, user_id". It iterates through the array of user IDs and
- * appends the information to the file.
- *
- * @param file The file where the user information will be printed.
- * @param usersForFlight An array containing user IDs for the flight.
- * @param flight_id The ID of the flight for which user information is printed.
- *
- * @note If usersForFlight is NULL, no information will be printed.
- */
-//void print_users_for_flight_to_file(FILE* file, GArray* usersForFlight, char* flight_id) {
-//    if (usersForFlight != NULL) {
-//        for (guint i = 0; i < usersForFlight->len; i++) {
-//            char* user_id = g_array_index(usersForFlight, char*, i);
-//            fprintf(file, "%s, %s\n", flight_id, user_id);
-//        }
-//    }
-//}
-
 int build_flight(char** flight_fields, void* catalog, STATS stats){
 
-    MANAGER managerC = (MANAGER) catalog;
-    PASS_C passC = get_pass_c(managerC);
-    FLIGHTS_C flightsC = get_flights_c(managerC);
+    FLIGHTS_C flightsC = (FLIGHTS_C) catalog;
 
-    if (!verify_flight(flight_fields, passC)){
-
-        //if(flight_fields[0] != NULL){
-        //    FILE* passengers_error_file;
-        //    passengers_error_file = fopen("Resultados/passengers_errors.csv", "a");
-//
-        //    //GArray* usersForFlight = get_users_for_flight(passC, flight_fields[0]);
-        //    //print_users_for_flight_to_file(passengers_error_file, usersForFlight, flight_fields[0]);
-        //    fclose(passengers_error_file);
-        //}
-
-        return 0;
-    }
+    if (!verify_flight(flight_fields)) return 0;
 
     FLIGHT flight = create_flight();
 
