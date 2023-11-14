@@ -30,7 +30,7 @@
 struct reservations_catalog {
     GHashTable* reserv; /**< Hash table to store reservation records. */
     GHashTable* reserv_id; /**< Hash table to link the key to the reserv_id*/
-    
+
     GHashTable* user; /**< Hash table to store all user's reservations*/
     GHashTable* user_id; /**< Hash table to link the key to the user_id*/
 };

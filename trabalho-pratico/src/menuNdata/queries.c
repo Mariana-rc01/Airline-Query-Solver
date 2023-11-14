@@ -32,9 +32,11 @@ void* parser_query(MANAGER catalog, STATS stats, char* line){
     char** query_args = malloc(sizeof(char*) * MAX_ARGS);
 
     char* token = strtok(line, " ");
-    char query_id = line[0];
-    //char* temp;
+    int query;
+    if (line[1] == '0') query = 10;
+    else query = line[0] - '0';
     int i = 0;
+    //char* temp;
     /*while (token != NULL) {
         if (token[0] == '"') {
             do {
@@ -62,16 +64,15 @@ void* parser_query(MANAGER catalog, STATS stats, char* line){
         i++;
     }
 
-    static queries_func queries[] = {query1, query2, query3, 
-                                    query4, query5, query6, 
+    static queries_func queries[] = {query1, query2, query3,
+                                    query4, query5, query6,
                                     query7, query8, query9, query10};
 
-    void* result = queries[query_id - '1'](catalog, stats, query_args);
+    void* result = queries[query - 1](catalog, stats, query_args);
 
     free(query_args);
 
     return result;
-
 }
 
 void* query1(MANAGER catalog, STATS stats, char** args){
@@ -136,12 +137,11 @@ void* query10(MANAGER catalog, STATS stats, char** args){
 
 void free_query(void* result, char query_id){
 
-    static free_queries_func queries[] = {free_query1, free_query2, free_query3, 
-                                        free_query4, free_query5, free_query6, 
+    static free_queries_func queries[] = {free_query1, free_query2, free_query3,
+                                        free_query4, free_query5, free_query6,
                                         free_query7, free_query8, free_query9, free_query10};
 
     queries[query_id - '1'](result);
-
 }
 
 void free_query1(void* result){

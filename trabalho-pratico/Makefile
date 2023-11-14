@@ -84,6 +84,7 @@ clean:
 	@rm $(TEST_EXE_NAME) > /dev/null 2>&1 ||:
 	@rm -r $(DOCSDIR)    > /dev/null 2>&1 ||:
 	@rm Resultados/*.csv > /dev/null 2>&1 ||:
+	@rm Resultados/*.txt > /dev/null 2>&1 ||:
 
 # END MAKEFILE RULES
 

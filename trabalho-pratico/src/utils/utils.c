@@ -94,7 +94,7 @@ FILE* create_output_file(int n){
     sprintf(path, "Resultados/comand%d_output.txt", n);
     FILE* f = fopen(path, "w");
     free(path);
-    
+
     return f;
 }
 
@@ -126,7 +126,7 @@ int calculate_user_age(char* currentDate, char* birthDate){
 
 char* case_insensitive(char* string){
     for(int i = 0; string[i] != '\0'; i++){
-        tolower(string[i]);
+        string[i] = tolower(string[i]);
     }
 
     return string;
