@@ -83,3 +83,112 @@ void* parser_query(MANAGER catalog, STATS stats, char* line){
 
     return result;
 }
+
+void* query1(MANAGER catalog, STATS stats, char** args){
+    (void) catalog;
+    (void) stats;
+    return args;
+}
+
+void* query2(MANAGER catalog, STATS stats, char** args){
+    (void) catalog;
+    (void) stats;
+    return args;
+}
+
+void* query3(MANAGER catalog, STATS stats, char** args){
+    (void) catalog;
+    (void) stats;
+    return args;
+}
+
+void* query4(MANAGER catalog, STATS stats, char** args){
+    (void) catalog;
+    (void) stats;
+    return args;
+}
+
+void* query5(MANAGER catalog, STATS stats, char** args){
+    (void) catalog;
+    (void) stats;
+    return args;
+}
+
+void* query6(MANAGER catalog, STATS stats, char** args){
+    (void) catalog;
+    (void) stats;
+    return args;
+}
+
+void* query7(MANAGER catalog, STATS stats, char** args){
+    (void) catalog;
+    (void) stats;
+    return args;
+}
+
+void* query8(MANAGER catalog, STATS stats, char** args){
+    (void) catalog;
+    (void) stats;
+    return args;
+}
+
+void* query9(MANAGER catalog, STATS stats, char** args){
+    (void) catalog;
+    (void) stats;
+    return args;
+}
+
+void* query10(MANAGER catalog, STATS stats, char** args){
+    (void) catalog;
+    (void) stats;
+    return args;
+}
+
+void free_query(void* result, char query_id){
+
+    static free_queries_func queries[] = {free_query1, free_query2, free_query3,
+                                        free_query4, free_query5, free_query6,
+                                        free_query7, free_query8, free_query9, free_query10};
+
+    queries[query_id - '1'](result);
+}
+
+void free_query1(void* result){
+    (void) result;
+}
+
+void free_query2(void* result){
+    (void) result;
+}
+
+void free_query3(void* result){
+    (void) result;
+}
+
+void free_query4(void* result){
+    (void) result;
+}
+
+void free_query5(void* result){
+    (void) result;
+}
+
+void free_query6(void* result){
+    (void) result;
+}
+
+void free_query7(void* result){
+    (void) result;
+}
+
+void free_query8(void* result){
+    (void) result;
+}
+
+void free_query9(void* result){
+    (void) result;
+}
+
+void free_query10(void* result){
+    (void) result;
+}
