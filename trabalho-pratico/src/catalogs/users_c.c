@@ -53,6 +53,33 @@ USER get_user_by_gpointer(USERS_C catalog, gpointer user_id){
     return g_hash_table_lookup(catalog->users,user_id);
 }
 
+char* get_key_by_value(USERS_C catalog, gpointer value){
+    GHashTableIter iter;
+    gpointer key, val;
+
+    g_hash_table_iter_init(&iter, catalog->users_id);
+    while (g_hash_table_iter_next(&iter, &key, &val)) {
+        if (val == value) {
+            return key;
+        }
+    }
+
+    return NULL;
+}
+
+int calculate_array_length(USERS_C catalog) {
+    guint size = g_hash_table_size(catalog->users_id);
+
+    return (int)size-4721;
+}
+
+
+gpointer* get_keys_as_array(USERS_C catalog){
+    guint size = g_hash_table_size(catalog->users);
+    gpointer* keys = g_hash_table_get_keys_as_array(catalog->users, &size);
+    return keys;
+}
+
 void update_user_c(USERS_C catalog, char* id, double cost){
     USER user = get_user_by_id(catalog, id);
     if (user == NULL) return;

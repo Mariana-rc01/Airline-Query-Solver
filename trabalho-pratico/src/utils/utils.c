@@ -84,10 +84,10 @@ int isFileEmpty(FILE *file) {
 }
 
 void removeQuotes(char* s) {
-    s[strlen(s) - 1] = ' ';
     for(int i = 0; s[i]!= '\0'; i++) {
         s[i] = s[i+1];
     }
+    s[strlen(s)] = ' ';
 }
 
 FILE* create_output_file(int n){
@@ -158,6 +158,9 @@ int get_flight_delay(FLIGHT flight){
 
     int result = calculate_flight_delay(scheduleDate, arrivalDate);
 
+    free(scheduleDate);
+    free(arrivalDate);
+
     return result;
 }
 
@@ -168,6 +171,9 @@ int get_number_of_nights(RESERV reserv){
 
     sscanf(begin,"%d/%d/%d",&yearB, &monthB, &dayB);
     sscanf(end,"%d/%d/%d",&yearE, &monthE, &dayE);
+
+    free(begin);
+    free(end);
 
     return (dayE - dayB);
 }

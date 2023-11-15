@@ -41,7 +41,7 @@ RESERV_C create_reservations_c(void){
     new->reserv = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_reservations);
     new->reserv_id = g_hash_table_new_full(g_str_hash,g_str_equal, free, NULL);
 
-    new->user = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_ptr_array);
+    new->user = g_hash_table_new_full(NULL, g_direct_equal, NULL, free_ptr_array);
     new->user_id = g_hash_table_new_full(g_str_hash,g_str_equal, free, NULL);
 
     return new;
@@ -107,7 +107,7 @@ void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id
         char* copy_user = g_strdup(user_id);
         gpointer user = GINT_TO_POINTER(number_users);
         g_hash_table_insert(catalog->user_id, copy_user, user);
-        set_user_id_R(reserv,user);\
+        set_user_id_R(reserv,user);
         number_users++;
     }
 
@@ -119,7 +119,7 @@ void free_reservations_c(RESERV_C catalog){
     g_hash_table_destroy(catalog->reserv);
     g_hash_table_destroy(catalog->reserv_id);
 
-    g_hash_table_destroy(catalog->user);
+    //g_hash_table_destroy(catalog->user);
     g_hash_table_destroy(catalog->user_id);
 
     free(catalog);

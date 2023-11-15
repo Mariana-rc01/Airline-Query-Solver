@@ -22,6 +22,7 @@
 #ifndef USERS_C_H
 #define USERS_C_H
 
+#include "entities/users.h"
 
 #include <glib.h>
 
@@ -31,7 +32,6 @@
  */
 typedef struct users_catalog *USERS_C;
 
-#include "entities/users.h"
 /**
  * @brief Create a new instance of USERS_C.
  *
@@ -61,9 +61,15 @@ USER get_user_by_id(USERS_C catalog, char* id);
 
 USER get_user_by_gpointer(USERS_C catalog, gpointer user_id);
 
+char* get_key_by_value(USERS_C catalog, gpointer value);
+
 void update_user_c(USERS_C catalog, char* id, double cost);
 
 void set_catalog_user(USERS_C catalog, USER user, char* id);
+
+int calculate_array_length(USERS_C catalog);
+
+gpointer* get_keys_as_array(USERS_C catalog);
 
 /**
  * @brief Free the allocated memory for the user catalog.

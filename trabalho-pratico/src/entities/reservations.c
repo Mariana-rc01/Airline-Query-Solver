@@ -272,6 +272,8 @@ int build_reservations(char** reservations_fields, void* catalog, STATS stats){
     set_cost(res,cost);
 
     insert_reservations_c(res, reservsC, res->id);
+    insert_usersReservations_c(res->id, reservsC, res->user_id);
+
     update_user_c(usersC,reservations_fields[1],cost);
     (void) stats;
 

@@ -42,8 +42,14 @@ void output_query(FILE* output_file, void* output, int query_id) {
 }
 
 void output_query1(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result = (char**) output;
+    for (int i = 0; result[i] != NULL; i++) {
+        fprintf(file, "%s", result[i]);
+
+        if (result[i + 1] != NULL) {
+            fprintf(file, ";");
+        }
+    }
 }
 
 void output_query2(FILE* file, void* output){
@@ -82,8 +88,16 @@ void output_query8(FILE* file, void* output){
 }
 
 void output_query9(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result_array = (char**)output;
+    int length = ourAtoi(result_array[0]);
+
+    for (int i = 1; i < length; i++) {
+        if (result_array[i] != NULL) {
+            fprintf(file, "%s", result_array[i]);
+        } else {
+            break;
+        }
+    }
 }
 
 void output_query10(FILE* file, void* output){
