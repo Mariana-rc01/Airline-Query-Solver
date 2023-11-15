@@ -93,7 +93,7 @@ void removeQuotes(char* s) {
 FILE* create_output_file(int n){
 
     char* path = malloc(sizeof(char*)*512);
-    sprintf(path, "Resultados/comand%d_output.txt", n);
+    sprintf(path, "Resultados/command%d_output.txt", n);
     FILE* f = fopen(path, "w");
     free(path);
 
