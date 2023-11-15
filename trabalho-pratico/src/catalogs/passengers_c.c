@@ -74,6 +74,7 @@ void insert_pass_user_c(char* flight_id, PASS_C catalog, gpointer key){
 //--------------------------------------------
 
 //--------------------------------------------
+
 GPtrArray* get_flight_array_by_id(PASS_C catalog, char* id){
     gpointer flight_id = g_hash_table_lookup(catalog->flights_id, id);
     if (flight_id == NULL) return NULL;
@@ -82,6 +83,11 @@ GPtrArray* get_flight_array_by_id(PASS_C catalog, char* id){
 
 GPtrArray* get_flight_array_by_gpointer(PASS_C catalog, gpointer flight_id){
     return g_hash_table_lookup(catalog->flights, flight_id);
+}
+
+int get_flight_array_number_by_id(PASS_C catalog, char* id){
+    GPtrArray* flight_array = get_flight_array_by_id(catalog,id);
+    return flight_array->len;
 }
 //--------------------------------------------
 
@@ -94,6 +100,11 @@ GPtrArray* get_user_array_by_id(PASS_C catalog, char* id){
 
 GPtrArray* get_user_array_by_gpointer(PASS_C catalog, gpointer user_id){
     return g_hash_table_lookup(catalog->users, user_id);
+}
+
+int get_user_array_number_id(PASS_C catalog, char* id){
+    GPtrArray* user_array = get_user_array_by_id(catalog, id);
+    return user_array->len;
 }
 //--------------------------------------------
 

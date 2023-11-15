@@ -52,6 +52,12 @@ typedef void (*free_queries_func)(void* result);
  */
 void* parser_query(MANAGER catalog, STATS stats, char* line);
 
+typedef char* (*flight_table_getters)(FLIGHT flight);
+
+typedef char* (*reservation_table_getters)(RESERV reserv);
+
+typedef char* (*user_table_getters)(USER user);
+
 void* query1(MANAGER catalog, STATS stats, char** args);
 
 void* query2(MANAGER catalog, STATS stats, char** args);
@@ -72,7 +78,7 @@ void* query9(MANAGER catalog, STATS stats, char** args);
 
 void* query10(MANAGER catalog, STATS stats, char** args);
 
-void free_query(void* result, char query_id);
+void free_query(void* result, int query_id);
 
 void free_query1(void* result);
 

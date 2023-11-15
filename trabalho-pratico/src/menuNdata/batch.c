@@ -108,14 +108,19 @@ int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2){
     FILE* output_file;
 
     while(getline(&line,&lsize, queries_file) != -1){
+        int query_id;
         line[strlen(line)-1] = '\0';
         result = parser_query(manager_catalog, statistics, line);
         output_file = create_output_file(cmd_n);
         if (output_file == NULL) return -1;
 
-        output_query(output_file, result, line);
+        if(line[1] == ' ') query_id = line[0] - '0';
+        else query_id = 10;
 
-        //free_query(result, cmd_n);
+        if(result != NULL){
+            output_query(output_file, result, query_id);
+            free_query(result, query_id);
+        }
         fclose(output_file);
         cmd_n++;
     }
@@ -126,7 +131,7 @@ int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2){
     return 0;
 }
 
-void batch (char* path1, char* path2) {
+void batch (char* path1, char* path2){
 
     USERS_C users_catalog = create_user_c();
     FLIGHTS_C flights_catalog = create_flight_c();

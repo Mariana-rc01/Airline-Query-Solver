@@ -83,6 +83,12 @@ GPtrArray* get_user_reserv_array_by_gpointer(RESERV_C catalog, gpointer user_id)
     return g_hash_table_lookup(catalog->user, user_id);
 }
 
+int get_user_array_reserv_id(RESERV_C catalog, char* id){
+    GPtrArray* user_array = get_user_reserv_array_by_id(catalog, id);
+    if (!user_array) return 0;
+    return user_array->len;
+}
+
 void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id){
     static int number_reservs = 1;
     static int number_users = 1;

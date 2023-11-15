@@ -70,7 +70,7 @@ void set_user_phone_number(USER user, char* phone_number);
  * @param user A pointer to the user struct.
  * @param birth_date The user's birth date.
  */
-void set_user_birth_date(USER user, char* birth_date);
+void set_user_age(USER user, int age);
 
 /**
  * @brief Sets the user's gender.
@@ -161,7 +161,7 @@ char* get_user_phone_number(USER user);
  * @param user A pointer to the user struct.
  * @return The user's birth date.
  */
-char* get_user_birth_date(USER user);
+int get_user_age(USER user);
 
 /**
  * @brief Gets the user's gender.

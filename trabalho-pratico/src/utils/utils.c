@@ -19,6 +19,8 @@
  *   limitations under the License.
  */
 
+#include "utils/utils.h"
+
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
@@ -148,4 +150,36 @@ int calculate_flight_delay(char* scheduleDate, char* actualDate){
 
     return delay;
 
+}
+
+int get_flight_delay(FLIGHT flight){
+    char* scheduleDate = get_flight_schedule_departure_date(flight);
+    char* arrivalDate = get_flight_real_departure_date(flight);
+
+    int result = calculate_flight_delay(scheduleDate, arrivalDate);
+
+    return result;
+}
+
+int get_number_of_nights(RESERV reserv){
+    char* begin = get_begin_date(reserv);
+    char* end = get_end_date(reserv);
+    int yearB, monthB, dayB, dayE, monthE, yearE;
+
+    sscanf(begin,"%d/%d/%d",&yearB, &monthB, &dayB);
+    sscanf(end,"%d/%d/%d",&yearE, &monthE, &dayE);
+
+    return (dayE - dayB);
+}
+
+char* int_to_string(int number){
+    char* result = malloc(20 * sizeof(char));
+    snprintf(result, 20, "%d", number);
+    return result;
+}
+
+char* double_to_string(double number){
+    char* result = malloc(20 * sizeof(char));
+    snprintf(result, 20, "%.3f", number);
+    return result;
 }

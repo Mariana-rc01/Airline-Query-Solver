@@ -20,6 +20,9 @@
  */
 #include "menuNdata/queries.h"
 #include "catalogs/manager_c.h"
+#include "entities/flights.h"
+#include "entities/users.h"
+#include "entities/reservations.h"
 #include "menuNdata/statistics.h"
 #include "utils/utils.h"
 
@@ -84,10 +87,82 @@ void* parser_query(MANAGER catalog, STATS stats, char* line){
     return result;
 }
 
-void* query1(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
+void* query1(MANAGER manager, STATS stats, char** args){
+    char* entity = args[0];
+    char** result = malloc(sizeof(char*) * 8);
+    int i = 0;
+    while (isDigit(entity[i]) && entity[i] != '\0') i++;
+
+    // o id do flight é formado apenas por digitos
+    if ((i == (int)strlen(entity)) && get_flight_by_id(get_flights_c(manager),entity)) {
+        FLIGHT flight = get_flight_by_id(get_flights_c(manager),entity);
+        static flight_table_getters flight_functions[] = {
+            get_flight_airline, get_flight_plane_model, get_flight_origin,
+            get_flight_destination, get_flight_schedule_departure_date,
+            get_flight_schedule_arrival_date
+        };
+
+        for(i = 0; i < 6; i++){
+            result[i] = flight_functions[i](flight);
+        }
+
+        int flight_array_number = get_flight_array_number_by_id(get_pass_c(manager), entity);
+        result[6] = strdup(int_to_string(flight_array_number));
+
+        int flight_delay = get_flight_delay(flight);
+        result[7] = strdup(int_to_string(flight_delay));
+    }
+
+    //o id das reservas começa sempre com book
+    else if (strncmp(entity,"Book", 4) == 0 && get_reservations_by_id(get_reserv_c(manager),entity)){
+        RESERV reserv = get_reservations_by_id(get_reserv_c(manager), entity);
+        static reservation_table_getters reservation_functions[] = {
+            get_hotel_id, get_hotel_name, get_hotel_stars, get_begin_date, get_end_date,
+            get_includes_breakfast
+        };
+
+        for(i = 0; i < 6; i++){
+            result[i] = reservation_functions[i](reserv);
+        }
+
+        int nNight = get_number_of_nights(reserv);
+        result[6] = strdup(int_to_string(nNight));
+
+        int cost = get_cost(reserv);
+        result[7] = strdup(int_to_string(cost));
+    }
+
+    //se n for nem flight nem reserv pode ser user
+    else if (get_user_by_id(get_users_c(manager),entity)){
+        USER user = get_user_by_id(get_users_c(manager),entity);
+
+        if (strcmp(get_user_account_status(user),"inactive") == 0) return NULL;
+
+        static user_table_getters user_functions[] = {
+            get_user_name, get_user_sex, get_user_sex,
+            get_user_country_code, get_user_passport
+        };
+
+        for(i = 0; i < 5; i++){
+            result[i] = user_functions[i](user);
+        }
+
+        int age = get_user_age(user);
+        result[2] = strdup(int_to_string(age));
+
+        int array_flight = get_user_array_number_id(get_pass_c(manager), entity);
+        result[5] = strdup(int_to_string(array_flight));
+
+        int array_reserv = get_user_array_reserv_id(get_reserv_c(manager), entity);
+        result[6] = strdup(int_to_string(array_reserv));
+
+        double total_spent = get_user_total_spent(user);
+        result[7] = strdup(double_to_string(total_spent));
+
+    }
+    else return NULL;
     (void) stats;
-    return args;
+    return result;
 }
 
 void* query2(MANAGER catalog, STATS stats, char** args){
@@ -144,13 +219,14 @@ void* query10(MANAGER catalog, STATS stats, char** args){
     return args;
 }
 
-void free_query(void* result, char query_id){
+void free_query(void* result, int query_id){
 
     static free_queries_func queries[] = {free_query1, free_query2, free_query3,
                                         free_query4, free_query5, free_query6,
                                         free_query7, free_query8, free_query9, free_query10};
 
-    queries[query_id - '1'](result);
+    queries[query_id - 1](result);
+
 }
 
 void free_query1(void* result){

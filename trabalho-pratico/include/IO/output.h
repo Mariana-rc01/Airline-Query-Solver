@@ -45,7 +45,7 @@ typedef void (*output_query_func)(FILE*, void*);
  *
  * @note If the 'output' parameter is NULL, no output is performed.
  */
-void output_query(FILE* output_file, void* output, char* query_id);
+void output_query(FILE* output_file, void* output, int query_id);
 
 /**
  * @brief Output the result of query 1 to a file.

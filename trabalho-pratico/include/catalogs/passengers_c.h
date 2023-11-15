@@ -46,9 +46,13 @@ GPtrArray* get_flight_array_by_id(PASS_C catalog, char* id);
 
 GPtrArray* get_flight_array_by_gpointer(PASS_C catalog, gpointer flight_id);
 
+int get_flight_array_number_by_id(PASS_C catalog, char* id);
+
 GPtrArray* get_user_array_by_id(PASS_C catalog, char* id);
 
 GPtrArray* get_user_array_by_gpointer(PASS_C catalog, gpointer user_id);
+
+int get_user_array_number_id(PASS_C catalog, char* id);
 
 void set_catalog_passenger(PASS_C catalog, PASS pass, char* user_id, char* flight_id);
 

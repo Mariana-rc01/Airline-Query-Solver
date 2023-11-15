@@ -21,6 +21,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "entities/flights.h"
+#include "entities/reservations.h"
+
 #include <glib.h>
 #include <stdio.h>
 
@@ -92,5 +95,15 @@ void free_ptr_array(gpointer data);
 int calculate_user_age(char* currentDate, char* birthDate);
 
 char* case_insensitive(char* string);
+
+int calculate_flight_delay(char* scheduleDate, char* actualDate);
+
+int get_flight_delay(FLIGHT flight);
+
+int get_number_of_nights(RESERV reserv);
+
+char* int_to_string(int number);
+
+char* double_to_string(double number);
 
 #endif

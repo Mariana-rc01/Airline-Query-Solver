@@ -26,16 +26,11 @@
 #include <stdio.h>
 
 
-void output_query(FILE* output_file, void* output, char* query_id) {
+void output_query(FILE* output_file, void* output, int query_id) {
 
     if (output == NULL){
         return;
     }
-
-    int query;
-
-    if (query_id[1] == '0') query = 10;
-    else query = query_id[0] - '0';
 
     static output_query_func output_queries[] = {
         output_query1, output_query2, output_query3,
@@ -43,7 +38,7 @@ void output_query(FILE* output_file, void* output, char* query_id) {
         output_query7, output_query8, output_query9,
         output_query10};
 
-    output_queries[query - 1](output_file, output);
+    output_queries[query_id - 1](output_file, output);
 }
 
 void output_query1(FILE* file, void* output){
