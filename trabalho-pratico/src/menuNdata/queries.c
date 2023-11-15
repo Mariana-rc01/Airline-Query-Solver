@@ -131,7 +131,7 @@ void* query1(MANAGER manager, STATS stats, char** args){
         result[6] = int_to_string(nNight);
 
         int cost = get_cost(reserv);
-        result[7] = int_to_string(cost);
+        result[7] = double_to_string(cost);
     }
 
     //se n for nem flight nem reserv pode ser user
@@ -219,7 +219,9 @@ void* query3(MANAGER catalog, STATS stats, char** args){
     return args;
 }
 
+// id da reserva, begin reserva, end reserva, user_id, rating, cost
 void* query4(MANAGER catalog, STATS stats, char** args){
+    //char* hotel_id = args[0];
     (void) catalog;
     (void) stats;
     return args;
@@ -316,7 +318,7 @@ void* query9(MANAGER catalog, STATS stats, char** args) {
         USER user = get_user_by_gpointer(usersC, key);
 
         if (user != NULL){
-            if(strcoll(get_user_account_status(user),"active") == 0) {
+            if(strcmp(get_user_account_status(user),"ACTIVE") == 0) {
                 char* user_name = get_user_name(user);
                 char *truncatedString = strndup(user_name, strlen(prefix));
 

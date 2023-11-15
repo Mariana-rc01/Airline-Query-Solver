@@ -20,13 +20,39 @@
 */
 
 #include "menuNdata/statistics.h"
+#include "utils/utils.h"
 
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-struct stats{
-    int n;
+struct statistics{
+    GHashTable* hotels;
 };
+
+STATS create_stats(void){
+    STATS new = malloc(sizeof(struct statistics));
+
+    new->hotels = g_hash_table_new_full(NULL,g_direct_equal,NULL,free);
+
+    return new;
+}
+
+void insert_hotel_c(char* reserv_id, STATS stats, char* hotel_id){
+    if (g_hash_table_contains(stats->hotels,hotel_id)){
+        GPtrArray* reservs = g_hash_table_lookup(stats->hotels, hotel_id);
+        g_ptr_array_add(reservs, reserv_id);
+    }
+    else{
+        GPtrArray* reservs = g_ptr_array_new();
+        g_ptr_array_add(reservs,reserv_id);
+        g_hash_table_insert(stats->hotels, hotel_id, reservs);
+    }
+}
+
+GPtrArray* get_hotel_reserv_by_id(STATS stats, char* hotel_id){
+    return g_hash_table_lookup(stats->hotels, hotel_id);
+}
+
 

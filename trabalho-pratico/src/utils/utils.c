@@ -128,9 +128,15 @@ int calculate_user_age(char* currentDate, char* birthDate){
 
 char* case_insensitive(char* string){
     for(int i = 0; string[i] != '\0'; i++){
-        string[i] = tolower(string[i]);
+        string[i] = toupper(string[i]);
     }
 
+    return string;
+}
+
+char* first_letter_to_upper(char* string){
+    if(string == NULL || string[0] == '\0') return NULL;
+    string[0] = toupper(string[0]);
     return string;
 }
 

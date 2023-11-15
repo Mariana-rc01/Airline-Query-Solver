@@ -28,6 +28,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 /**
  * @struct reservations
@@ -238,6 +239,7 @@ int build_reservations(char** reservations_fields, void* catalog, STATS stats){
     if (!verify_reservations(reservations_fields, usersC)) return 0;
 
     RESERV res = create_reservation();
+    char* breakfast = first_letter_to_upper(reservations_fields[10]);
 
     set_catalog_reserv(reservsC,res,reservations_fields[0],reservations_fields[1]);
     set_hotel_id(res,reservations_fields[2]);
@@ -248,7 +250,7 @@ int build_reservations(char** reservations_fields, void* catalog, STATS stats){
     set_begin_date(res,reservations_fields[7]);
     set_end_date(res,reservations_fields[8]);
     set_price_per_night(res,reservations_fields[9]);
-    set_includes_breakfast(res,reservations_fields[10]);
+    set_includes_breakfast(res,breakfast);
     set_room_details(res,reservations_fields[11]);
     set_rating(res,reservations_fields[12]);
     set_comment(res,reservations_fields[13]);
@@ -268,14 +270,16 @@ int build_reservations(char** reservations_fields, void* catalog, STATS stats){
 
     int price_per_night = ourAtoi(reservations_fields[9]);
     int city_tax = ourAtoi(reservations_fields[5]);
-    cost = price_per_night * nNights + ((price_per_night * nNights) / 100) * city_tax;
+    cost = price_per_night * nNights + ((price_per_night * nNights) / (double)100) * city_tax;
     set_cost(res,cost);
 
     insert_reservations_c(res, reservsC, res->id);
     insert_usersReservations_c(res->id, reservsC, res->user_id);
 
     update_user_c(usersC,reservations_fields[1],cost);
-    (void) stats;
+
+    char* res_id = get_key_by_value_R(reservsC, res->id);
+    insert_hotel_c(res_id,stats,res->hotel_id);
 
     return 1;
 }

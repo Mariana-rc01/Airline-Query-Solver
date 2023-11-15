@@ -96,6 +96,8 @@ int calculate_user_age(char* currentDate, char* birthDate);
 
 char* case_insensitive(char* string);
 
+char* first_letter_to_upper(char* string);
+
 int calculate_flight_delay(char* scheduleDate, char* actualDate);
 
 int get_flight_delay(FLIGHT flight);

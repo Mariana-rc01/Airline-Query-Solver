@@ -36,7 +36,9 @@ void output_query(FILE* output_file, void* output, int query_id) {
         output_query1, output_query2, output_query3,
         output_query4, output_query5, output_query6,
         output_query7, output_query8, output_query9,
-        output_query10};
+        output_query10, output_query1F, output_query2F, output_query3F,
+        output_query4F, output_query5F, output_query6F, output_query7F,
+        output_query8F, output_query9F, output_query10F};
 
     output_queries[query_id - 1](output_file, output);
 }
@@ -52,7 +54,17 @@ void output_query1(FILE* file, void* output){
     }
 }
 
+void output_query1F(FILE* file, void* output){
+    (void) file;
+    (void) output;
+}
+
 void output_query2(FILE* file, void* output){
+    (void) file;
+    (void) output;
+}
+
+void output_query2F(FILE* file, void* output){
     (void) file;
     (void) output;
 }
@@ -62,7 +74,17 @@ void output_query3(FILE* file, void* output){
     (void) output;
 }
 
+void output_query3F(FILE* file, void* output){
+    (void) file;
+    (void) output;
+}
+
 void output_query4(FILE* file, void* output){
+    (void) file;
+    (void) output;
+}
+
+void output_query4F(FILE* file, void* output){
     (void) file;
     (void) output;
 }
@@ -72,7 +94,17 @@ void output_query5(FILE* file, void* output){
     (void) output;
 }
 
+void output_query5F(FILE* file, void* output){
+    (void) file;
+    (void) output;
+}
+
 void output_query6(FILE* file, void* output){
+    (void) file;
+    (void) output;
+}
+
+void output_query6F(FILE* file, void* output){
     (void) file;
     (void) output;
 }
@@ -82,7 +114,17 @@ void output_query7(FILE* file, void* output){
     (void) output;
 }
 
+void output_query7F(FILE* file, void* output){
+    (void) file;
+    (void) output;
+}
+
 void output_query8(FILE* file, void* output){
+    (void) file;
+    (void) output;
+}
+
+void output_query8F(FILE* file, void* output){
     (void) file;
     (void) output;
 }
@@ -90,7 +132,6 @@ void output_query8(FILE* file, void* output){
 void output_query9(FILE* file, void* output){
     char** result_array = (char**)output;
     int length = ourAtoi(result_array[0]);
-
     for (int i = 1; i < length; i++) {
         if (result_array[i] != NULL) {
             fprintf(file, "%s", result_array[i]);
@@ -100,7 +141,17 @@ void output_query9(FILE* file, void* output){
     }
 }
 
+void output_query9F(FILE* file, void* output){
+    (void) file;
+    (void) output;
+}
+
 void output_query10(FILE* file, void* output){
+    (void) file;
+    (void) output;
+}
+
+void output_query10F(FILE* file, void* output){
     (void) file;
     (void) output;
 }

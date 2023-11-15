@@ -115,6 +115,8 @@ int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2){
         if (output_file == NULL) return -1;
 
         if(line[1] == ' ') query_id = line[0] - '0';
+        else if (line[1] == 'F') query_id = (line[0] -'0') + (line[0] - '0') * 10;
+        else if (line[2] == 'F' && line[1] == '0') query_id = 20;
         else query_id = 10;
 
         if(result != NULL){
@@ -139,7 +141,7 @@ void batch (char* path1, char* path2){
     PASS_C passengers_catalog = create_passengers_c();
     MANAGER manager_catalog = create_manager_c(users_catalog,flights_catalog,reservations_catalog,passengers_catalog);
 
-    STATS statistics = NULL;
+    STATS statistics = create_stats();
 
     if (setup_catalog_and_stats(manager_catalog,statistics,path1) == -1){
         return;

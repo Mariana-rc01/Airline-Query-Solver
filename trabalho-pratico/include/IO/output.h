@@ -57,6 +57,8 @@ void output_query(FILE* output_file, void* output, int query_id);
  */
 void output_query1(FILE* file, void* output);
 
+void output_query1F(FILE* file, void* output);
+
 /**
  * @brief Output the result of query 2 to a file.
  *
@@ -66,6 +68,8 @@ void output_query1(FILE* file, void* output);
  * @param output A pointer to the query result data.
  */
 void output_query2(FILE* file, void* output);
+
+void output_query2F(FILE* file, void* output);
 
 /**
  * @brief Output the result of query 3 to a file.
@@ -77,6 +81,8 @@ void output_query2(FILE* file, void* output);
  */
 void output_query3(FILE* file, void* output);
 
+void output_query3F(FILE* file, void* output);
+
 /**
  * @brief Output the result of query 4 to a file.
  *
@@ -86,6 +92,8 @@ void output_query3(FILE* file, void* output);
  * @param output A pointer to the query result data.
  */
 void output_query4(FILE* file, void* output);
+
+void output_query4F(FILE* file, void* output);
 
 /**
  * @brief Output the result of query 5 to a file.
@@ -97,6 +105,8 @@ void output_query4(FILE* file, void* output);
  */
 void output_query5(FILE* file, void* output);
 
+void output_query5F(FILE* file, void* output);
+
 /**
  * @brief Output the result of query 6 to a file.
  *
@@ -106,6 +116,8 @@ void output_query5(FILE* file, void* output);
  * @param output A pointer to the query result data.
  */
 void output_query6(FILE* file, void* output);
+
+void output_query6F(FILE* file, void* output);
 
 /**
  * @brief Output the result of query 7 to a file.
@@ -117,6 +129,8 @@ void output_query6(FILE* file, void* output);
  */
 void output_query7(FILE* file, void* output);
 
+void output_query7F(FILE* file, void* output);
+
 /**
  * @brief Output the result of query 8 to a file.
  *
@@ -126,6 +140,8 @@ void output_query7(FILE* file, void* output);
  * @param output A pointer to the query result data.
  */
 void output_query8(FILE* file, void* output);
+
+void output_query8F(FILE* file, void* output);
 
 /**
  * @brief Output the result of query 9 to a file.
@@ -137,6 +153,8 @@ void output_query8(FILE* file, void* output);
  */
 void output_query9(FILE* file, void* output);
 
+void output_query9F(FILE* file, void* output);
+
 /**
  * @brief Output the result of query 10 to a file.
  *
@@ -146,5 +164,7 @@ void output_query9(FILE* file, void* output);
  * @param output A pointer to the query result data.
  */
 void output_query10(FILE* file, void* output);
+
+void output_query10F(FILE* file, void* output);
 
 #endif

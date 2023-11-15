@@ -27,5 +27,15 @@ typedef struct statistics* STATS;
 #include "entities/users.h"
 #include "entities/flights.h"
 
+#include <glib.h>
+
+typedef struct hotel *HOTEL;
+
+STATS create_stats(void);
+
+void insert_hotel_c(char* reserv_id, STATS stats, char* hotel_id);
+
+GPtrArray* get_hotel_reserv_by_id(STATS stats, char* hotel_id);
+
 
 #endif

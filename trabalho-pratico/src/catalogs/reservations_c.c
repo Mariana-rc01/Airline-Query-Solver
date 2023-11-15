@@ -89,6 +89,20 @@ int get_user_array_reserv_id(RESERV_C catalog, char* id){
     return user_array->len;
 }
 
+char* get_key_by_value_R(RESERV_C catalog, gpointer value){
+    GHashTableIter iter;
+    gpointer key, val;
+
+    g_hash_table_iter_init(&iter, catalog->reserv_id);
+    while (g_hash_table_iter_next(&iter, &key, &val)) {
+        if (val == value) {
+            return key;
+        }
+    }
+
+    return NULL;
+}
+
 void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id){
     static int number_reservs = 1;
     static int number_users = 1;
