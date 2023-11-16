@@ -113,6 +113,15 @@ void output_query3F(FILE* file, void* output){
 }
 
 void output_query4(FILE* file, void* output){
+    /*char** result_array = (char**)output;
+    int length = ourAtoi(result_array[0]);
+    for (int i = 1; i < length; i++) {
+        if (result_array[i] != NULL) {
+            fprintf(file, "%s", result_array[i]);
+        } else {
+            break;
+        }
+    }*/
     (void) file;
     (void) output;
 }

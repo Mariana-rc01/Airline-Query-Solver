@@ -66,7 +66,7 @@ GPtrArray* get_hotel_reserv_by_gpointer(STATS stats, gpointer hotel_id){
 }
 
 char* get_hotel_from_key(STATS catalog, gpointer hotel) {
-    return g_ptr_array_index(catalog->hotel_key, GPOINTER_TO_INT(hotel));
+    return g_ptr_array_index(catalog->hotel_key, GPOINTER_TO_INT(hotel) - 1);
 }
 
 void set_stats_hotel(STATS catalog, RESERV reserv, char* hotel_id){

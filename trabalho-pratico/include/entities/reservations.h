@@ -61,7 +61,7 @@ void set_user_id_R(RESERV res, gpointer u_id);
  * @param res A pointer to the reservations struct.
  * @param h_id The hotel ID.
  */
-void set_hotel_id(RESERV res, gpointer h_id);
+void set_hotel_id(RESERV res, char* h_id);
 
 /**
  * @brief Sets the name of the hotel.
@@ -166,7 +166,7 @@ int get_user_id_R(RESERV res);
  * @param res A pointer to the reservations struct.
  * @return The hotel ID.
  */
-int get_hotel_id(RESERV res);
+char* get_hotel_id(RESERV res);
 
 /**
  * @brief Gets the name of the hotel.

@@ -119,7 +119,7 @@ void* query1(MANAGER manager, STATS stats, char** args){
             result[i] = reservation_functions[i](reserv);
         }
 
-        result[0] = get_hotel_from_key(stats,GINT_TO_POINTER(get_hotel_id(reserv)-1));
+        result[0] = get_hotel_id(reserv);
 
         int nNight = get_number_of_nights(reserv);
         result[6] = int_to_string(nNight);
@@ -166,7 +166,7 @@ void* query1(MANAGER manager, STATS stats, char** args){
         free(result);
         return NULL;
     }
-
+    (void) stats;
     return result;
 }
 
@@ -187,7 +187,7 @@ void* query2(MANAGER manager, STATS stats, char** args){
         return NULL;
     }
     else if (args[1] == NULL){ //listar todos com os tipos
-
+        return NULL;
     }
     else if (strcmp(args[1],"reservations") == 0){
         GPtrArray* reservations = get_user_reserv_array_by_id(get_reserv_c(manager),user);
@@ -250,7 +250,6 @@ void sort_reserv(char** begin_date, char** ids, int count){
 
 }
 
-// id da reserva, begin reserva, end reserva, user_id, rating, cost
 void* query4(MANAGER catalog, STATS stats, char** args){
     /*char* hotel_id = args[0];
     GPtrArray* array = get_hotel_reserv_by_id(stats,hotel_id);
@@ -288,24 +287,25 @@ void* query4(MANAGER catalog, STATS stats, char** args){
     sort_reserv(begin_date,reservations,count);
 
     char** finalResult = malloc(sizeof(char*)*512);
-    for (int i = 0; begin_date[i] != NULL; i++){
-        char* end_date = get_end_date(get_reservations_by_id(reservC,reservations[i]));
-        gpointer user = GINT_TO_POINTER(get_user_id_R(get_reservations_by_id(reservC,reservations[i])) + 1);
+    finalResult[0] = int_to_string(count++);
+    for (int i = 1; begin_date[i] != NULL; i++){
+        char* end_date = get_end_date(get_reservations_by_id(reservC,reservations[i-1]));
+        gpointer user = GINT_TO_POINTER(get_user_id_R(get_reservations_by_id(reservC,reservations[i-1])) + 1);
         char* user_id = get_user_from_key(reservC, user);
-        char* rating = get_rating(get_reservations_by_id(reservC,reservations[i]));
-        char* price = double_to_string(get_cost(get_reservations_by_id(reservC,reservations[i])));
+        char* rating = get_rating(get_reservations_by_id(reservC,reservations[i-1]));
+        char* price = double_to_string(get_cost(get_reservations_by_id(reservC,reservations[i-1])));
 
-        int total_size = snprintf(NULL, 0, "%s;%s;%s;%s;%s;%s\n", reservations[i], begin_date[i], end_date, user_id, rating, price) + 1;
+        int total_size = snprintf(NULL, 0, "%s;%s;%s;%s;%s;%s\n", reservations[i-1], begin_date[i-1], end_date, user_id, rating, price) + 1;
 
         // Alocar memória para a string formatada
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
         // Criar a string formatada
-        snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s;%s\n", reservations[i], begin_date[i], end_date, user_id, rating, price);
+        snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s;%s\n", reservations[i-1], begin_date[i-1], end_date, user_id, rating, price);
         finalResult[i] = formatted_string;
         printf("%s\n",formatted_string);
-        free(reservations[i]);
-        free(begin_date[i]);
+        free(reservations[i-1]);
+        free(begin_date[i-1]);
         free(end_date);
         free(user_id);
         free(rating);
