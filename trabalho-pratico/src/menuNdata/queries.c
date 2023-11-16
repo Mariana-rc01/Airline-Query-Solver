@@ -20,6 +20,7 @@
  */
 #include "catalogs/users_c.h"
 #include "menuNdata/queries.h"
+#include "catalogs/reservations_c.h"
 #include "catalogs/manager_c.h"
 #include "entities/flights.h"
 #include "entities/users.h"
@@ -174,36 +175,6 @@ void* query1(MANAGER manager, STATS stats, char** args){
 // date = schedule_departure_date e begin_date, sem devolver horas
 //caso sejam os dois dizer se é flight ou reserva
 void* query2(MANAGER manager, STATS stats, char** args){
-    /*char* user = args[0];
-    USER userE = get_user_by_id(get_users_c(manager),user);
-    char** result = malloc(sizeof(char*)*256);
-
-    //primeiro ver se o user_id existe ou se é inactive
-    //ver se não é inactive
-    if (!userE){
-        return NULL;
-    }
-    else if (strcmp(get_user_account_status(userE), "inactive") == 0){
-        return NULL;
-    }
-    else if (args[1] == NULL){ //listar todos com os tipos
-        return NULL;
-    }
-    else if (strcmp(args[1],"reservations") == 0){
-        GPtrArray* reservations = get_user_reserv_array_by_id(get_reserv_c(manager),user);
-
-        for (int i = 0; i < (int)reservations->len; i++) {
-            RESERV reservation = g_ptr_array_index(reservations, i);
-            int reservation_id = get_reservation_id(reservation);
-            result[i] = malloc(sizeof(char) * 20);
-            snprintf(result[i], 20, "%d", reservation_id);
-        }
-
-    }
-    else if (strcmp(args[1],"flights") == 0){
-        //GPtrArray* flights = get_user_array_by_id(get_pass_c(manager), user);
-    }
-    else return NULL;*/
     (void) manager;
     (void) stats;
     return args;
@@ -215,107 +186,75 @@ void* query3(MANAGER catalog, STATS stats, char** args){
     return args;
 }
 
-typedef struct{
-    char* reserv_id;
-    char* begin_date;
-}ReservInfo;
+// Função para comparar duas reservas para ordenação
+int compare_reservations(const void* a, const void* b) {
+    struct reservations* res_a = *(struct reservations**)a;
+    struct reservations* res_b = *(struct reservations**)b;
 
-int compare_reserv_info(const void* a, const void* b){
-    ReservInfo* info_a = (ReservInfo*) a;
-    ReservInfo* info_b = (ReservInfo*) b;
-
-    int compare = compare_date_timeless(info_a->begin_date,info_b->begin_date);
-    if (compare == 0){
-        return strcmp(info_a->reserv_id,info_b->reserv_id);
+    // Comparar as datas de início
+    int date_compare = strcmp(get_begin_date(res_b), get_begin_date(res_a));
+    if (date_compare != 0) {
+        return date_compare;
     }
-    return compare;
+
+    // Se as datas de início forem iguais, usar o identificador da reserva como critério de desempate
+    return strcmp(int_to_string(get_reservation_id(res_a)), int_to_string(get_reservation_id(res_b)));
 }
 
-void sort_reserv(char** begin_date, char** ids, int count){
-    ReservInfo* reserv_array = malloc(sizeof(ReservInfo)*count);
+void* query4(MANAGER manager, STATS stats, char** args){
+    char* hotel_id = args[0];
+    RESERV_C catalog = get_reserv_c(manager);
 
-    for (int i = 0; i < count; i++){
-        reserv_array[i].reserv_id = ids[i];
-        reserv_array[i].begin_date = begin_date[i];
+    // Criar um array para armazenar ponteiros para as reservas
+    RESERV* reservations_array = malloc(get_number_reserv_id(catalog) * sizeof(RESERV *));
+    int i = 0;
+
+    GHashTable* reserv = get_hash_table_reserv(catalog);
+
+    // Iterar sobre as reservas no catálogo
+    GHashTableIter iter;
+    gpointer key, value;
+    g_hash_table_iter_init(&iter, reserv);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        RESERV reservation = (RESERV)value;
+
+        // Verificar se a reserva pertence ao hotel desejado
+        if (strcmp(get_hotel_id(reservation), hotel_id) == 0) {
+            reservations_array[i++] = reservation;
+        }
     }
 
-    qsort(reserv_array, count, sizeof(ReservInfo),compare_reserv_info);
+    // Ordenar as reservas usando a função de comparação
+    qsort(reservations_array, i, sizeof(RESERV), compare_reservations);
 
-    for (int i = 0; i < count; i++){
-        ids[i] = reserv_array[i].reserv_id;
-        begin_date[i] = reserv_array[i].begin_date;
-    }
+    char** finalResult = malloc(sizeof(char*)*600);
+    finalResult[0] = int_to_string(i);
+    for (int j = 1; j < i+1; j++) {
 
-    free(reserv_array);
-
-}
-
-void* query4(MANAGER catalog, STATS stats, char** args){
-    /*char* hotel_id = args[0];
-    GPtrArray* array = get_hotel_reserv_by_id(stats,hotel_id);
-
-    if (array == NULL){
-        return NULL;
-    }
-
-    int count = array->len;
-
-    char** reservations = malloc((count + 1) * sizeof(char*));
-
-    for (int i = 0; i < count; i++) {
-        reservations[i] = (char*)g_ptr_array_index(array, i);
-        printf("%s",reservations[i]);
-    }
-    reservations[count] = NULL;
-
-    RESERV_C reservC = get_reserv_c(catalog);
-    if (!reservations){
-        return NULL;
-    }
-
-    char** begin_date = malloc(sizeof(char*)*512);
-
-    count = 0;
-    while (reservations[count] != NULL) {
-        count++;
-    }
-
-    for (int i = 0; i < count; i++){
-        begin_date[i] = get_begin_date(get_reservations_by_id(reservC,reservations[i]));
-    }
-
-    sort_reserv(begin_date,reservations,count);
-
-    char** finalResult = malloc(sizeof(char*)*512);
-    finalResult[0] = int_to_string(count++);
-    for (int i = 1; begin_date[i] != NULL; i++){
-        char* end_date = get_end_date(get_reservations_by_id(reservC,reservations[i-1]));
-        gpointer user = GINT_TO_POINTER(get_user_id_R(get_reservations_by_id(reservC,reservations[i-1])) + 1);
-        char* user_id = get_user_from_key(reservC, user);
-        char* rating = get_rating(get_reservations_by_id(reservC,reservations[i-1]));
-        char* price = double_to_string(get_cost(get_reservations_by_id(reservC,reservations[i-1])));
-
-        int total_size = snprintf(NULL, 0, "%s;%s;%s;%s;%s;%s\n", reservations[i-1], begin_date[i-1], end_date, user_id, rating, price) + 1;
+        int total_size = snprintf(NULL, 0,"%s;%s;%s;%s;%s;%f\n",
+        get_reserv_from_key(catalog, GINT_TO_POINTER(get_reservation_id(reservations_array[j-1]))),
+        get_begin_date(reservations_array[j-1]), get_end_date(reservations_array[j-1]),
+        get_user_from_key(catalog, GINT_TO_POINTER(get_user_id_R(reservations_array[j-1]))),
+        get_rating(reservations_array[j-1]), get_cost(reservations_array[j-1])) + 1;
 
         // Alocar memória para a string formatada
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
         // Criar a string formatada
-        snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s;%s\n", reservations[i-1], begin_date[i-1], end_date, user_id, rating, price);
-        finalResult[i] = formatted_string;
-        printf("%s\n",formatted_string);
-        free(reservations[i-1]);
-        free(begin_date[i-1]);
-        free(end_date);
-        free(user_id);
-        free(rating);
-        free(price);
+        snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s;%.3f\n",
+        get_reserv_from_key(catalog, GINT_TO_POINTER(get_reservation_id(reservations_array[j-1]))),
+        get_begin_date(reservations_array[j-1]), get_end_date(reservations_array[j-1]),
+        get_user_from_key(catalog, GINT_TO_POINTER(get_user_id_R(reservations_array[j-1]))),
+        get_rating(reservations_array[j-1]), get_cost(reservations_array[j-1]));
+
+        finalResult[j] = formatted_string;
     }
 
-    return finalResult;*/
-    (void) catalog;
+    // Liberar memória alocada
+    free(reservations_array);
+
     (void) stats;
-    return args;
+    return finalResult;
 }
 
 void* query5(MANAGER catalog, STATS stats, char** args){

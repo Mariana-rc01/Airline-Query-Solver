@@ -113,17 +113,11 @@ void output_query3F(FILE* file, void* output){
 }
 
 void output_query4(FILE* file, void* output){
-    /*char** result_array = (char**)output;
+    char** result_array = (char**)output;
     int length = ourAtoi(result_array[0]);
-    for (int i = 1; i < length; i++) {
-        if (result_array[i] != NULL) {
-            fprintf(file, "%s", result_array[i]);
-        } else {
-            break;
-        }
-    }*/
-    (void) file;
-    (void) output;
+    for (int i = 1; i < length + 1; i++) {
+        fprintf(file, "%s", result_array[i]);
+    }
 }
 
 void output_query4F(FILE* file, void* output){
@@ -174,7 +168,7 @@ void output_query8F(FILE* file, void* output){
 void output_query9(FILE* file, void* output){
     char** result_array = (char**)output;
     int length = ourAtoi(result_array[0]);
-    for (int i = 1; i < length; i++) {
+    for (int i = 1; i < length+1; i++) {
         if (result_array[i] != NULL) {
             fprintf(file, "%s", result_array[i]);
         } else {

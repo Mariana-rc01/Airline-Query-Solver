@@ -61,7 +61,13 @@ GPtrArray* get_user_reserv_array_by_gpointer(RESERV_C catalog, gpointer user_id)
 
 int get_user_array_reserv_id(RESERV_C catalog, char* id);
 
-char* get_user_from_key(RESERV_C catalog, gpointer reserv);
+int get_number_reserv_id(RESERV_C catalog);
+
+char* get_user_from_key(RESERV_C catalog, gpointer user);
+
+char* get_reserv_from_key(RESERV_C catalog, gpointer reserv);
+
+GHashTable* get_hash_table_reserv(RESERV_C catalog);
 
 void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id);
 
