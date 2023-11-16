@@ -124,7 +124,7 @@ void* query1(MANAGER manager, STATS stats, char** args){
         int nNight = get_number_of_nights(reserv);
         result[6] = int_to_string(nNight);
 
-        int cost = get_cost(reserv);
+        double cost = get_cost(reserv);
         result[7] = double_to_string(cost);
         result[8] = "reservation";
     }

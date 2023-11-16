@@ -52,6 +52,7 @@ void output_query1(FILE* file, void* output){
             fprintf(file, ";");
         }
     }
+    fprintf(file,"\n");
 }
 
 void output_query1F(FILE* file, void* output){
@@ -78,7 +79,7 @@ void output_query1F(FILE* file, void* output){
         fprintf(file,"passengers: %s\n", result[6]);
         fprintf(file,"delay: %s\n", result[7]);
     }
-    else if (strcmp(result[8],"reservations") == 0){
+    else if (strcmp(result[8],"reservation") == 0){
         fprintf(file,"--- 1 ---\n");
         fprintf(file,"hotel_id: %s\n", result[0]);
         fprintf(file,"hotel_name: %s\n", result[1]);
