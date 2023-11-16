@@ -81,7 +81,7 @@ void* parser_query(MANAGER catalog, STATS stats, char* line){
 
 void* query1(MANAGER manager, STATS stats, char** args){
     char* entity = args[0];
-    char** result = malloc(sizeof(char*) * 8);
+    char** result = malloc(sizeof(char*) * 9);
     int i = 0;
     while (isDigit(entity[i]) && entity[i] != '\0') i++;
 
@@ -103,6 +103,8 @@ void* query1(MANAGER manager, STATS stats, char** args){
 
         int flight_delay = get_flight_delay(flight);
         result[7] = int_to_string(flight_delay);
+
+        result[8] = "flight";
     }
 
     //o id das reservas começa sempre com book
@@ -124,6 +126,7 @@ void* query1(MANAGER manager, STATS stats, char** args){
 
         int cost = get_cost(reserv);
         result[7] = double_to_string(cost);
+        result[8] = "reservation";
     }
 
     //se n for nem flight nem reserv pode ser user
@@ -155,6 +158,8 @@ void* query1(MANAGER manager, STATS stats, char** args){
 
         double total_spent = get_user_total_spent(user);
         result[7] = double_to_string(total_spent);
+
+        result[8] = "user";
 
     }
     else {
@@ -467,7 +472,7 @@ void free_query1(void* result){
         return;
     }
     char** resultF = (char**) result;
-    for (int i = 0; resultF[i] != NULL; i++) {
+    for (int i = 0; i < 7; i++) {
         free(resultF[i]);
     }
     free(resultF);

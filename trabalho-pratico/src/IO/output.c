@@ -45,10 +45,10 @@ void output_query(FILE* output_file, void* output, int query_id) {
 
 void output_query1(FILE* file, void* output){
     char** result = (char**) output;
-    for (int i = 0; result[i] != NULL; i++) {
+    for (int i = 0; i < 8; i++) {
         fprintf(file, "%s", result[i]);
 
-        if (result[i + 1] != NULL) {
+        if (i != 7) {
             fprintf(file, ";");
         }
     }
@@ -56,14 +56,39 @@ void output_query1(FILE* file, void* output){
 
 void output_query1F(FILE* file, void* output){
     char** result = (char**) output;
-    fprintf(file,"--- 1 ---\n");
-    fprintf(file,"name: %s\n", result[0]);
-    fprintf(file,"sex: %s\n", result[1]);
-    fprintf(file,"country_code: %s\n", result[2]);
-    fprintf(file,"passport: %s\n", result[3]);
-    fprintf(file,"number_of_flights: %s\n", result[4]);
-    fprintf(file,"number_of_reservations: %s\n", result[5]);
-    fprintf(file,"total_spent: %s\n", result[6]);
+    if (strcmp(result[8],"user") == 0){
+        fprintf(file,"--- 1 ---\n");
+        fprintf(file,"name: %s\n", result[0]);
+        fprintf(file,"sex: %s\n", result[1]);
+        fprintf(file,"age: %s\n",result[2]);
+        fprintf(file,"country_code: %s\n", result[3]);
+        fprintf(file,"passport: %s\n", result[4]);
+        fprintf(file,"number_of_flights: %s\n", result[5]);
+        fprintf(file,"number_of_reservations: %s\n", result[6]);
+        fprintf(file,"total_spent: %s\n", result[7]);
+    }
+    else if (strcmp(result[8],"flight") == 0){
+        fprintf(file,"--- 1 ---\n");
+        fprintf(file,"airline: %s\n", result[0]);
+        fprintf(file,"plane_model: %s\n", result[1]);
+        fprintf(file,"origin: %s\n",result[2]);
+        fprintf(file,"destination: %s\n", result[3]);
+        fprintf(file,"schedule_departure_date: %s\n", result[4]);
+        fprintf(file,"schedule_arrival_date: %s\n", result[5]);
+        fprintf(file,"passengers: %s\n", result[6]);
+        fprintf(file,"delay: %s\n", result[7]);
+    }
+    else if (strcmp(result[8],"reservations") == 0){
+        fprintf(file,"--- 1 ---\n");
+        fprintf(file,"hotel_id: %s\n", result[0]);
+        fprintf(file,"hotel_name: %s\n", result[1]);
+        fprintf(file,"hotel_stars: %s\n",result[2]);
+        fprintf(file,"begin_date: %s\n", result[3]);
+        fprintf(file,"end_date: %s\n", result[4]);
+        fprintf(file,"includes_breakfast: %s\n", result[5]);
+        fprintf(file,"nights: %s\n", result[6]);
+        fprintf(file,"total_price: %s\n", result[7]);
+    }
 }
 
 void output_query2(FILE* file, void* output){
