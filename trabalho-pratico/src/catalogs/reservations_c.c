@@ -29,10 +29,11 @@
  */
 struct reservations_catalog {
     GHashTable* reserv; /**< Hash table to store reservation records. */
-    GHashTable* reserv_id; /**< Hash table to link the key to the reserv_id*/
+    GHashTable* reserv_id; /**< Hash table to link the key to the reserv_id. */
 
     GHashTable* user; /**< Hash table to store all user's reservations*/
     GHashTable* user_id; /**< Hash table to link the key to the user_id*/
+    GPtrArray* user_key; /**< Hash table to link the ruser_id to the key. */
 };
 
 RESERV_C create_reservations_c(void){
@@ -43,6 +44,7 @@ RESERV_C create_reservations_c(void){
 
     new->user = g_hash_table_new_full(NULL, g_direct_equal, NULL, free_ptr_array);
     new->user_id = g_hash_table_new_full(g_str_hash,g_str_equal, free, NULL);
+    new->user_key = g_ptr_array_new_with_free_func(free);
 
     return new;
 }
@@ -89,18 +91,8 @@ int get_user_array_reserv_id(RESERV_C catalog, char* id){
     return user_array->len;
 }
 
-char* get_key_by_value_R(RESERV_C catalog, gpointer value){
-    GHashTableIter iter;
-    gpointer key, val;
-
-    g_hash_table_iter_init(&iter, catalog->reserv_id);
-    while (g_hash_table_iter_next(&iter, &key, &val)) {
-        if (val == value) {
-            return key;
-        }
-    }
-
-    return NULL;
+char* get_user_from_key(RESERV_C catalog, gpointer user) {
+    return g_ptr_array_index(catalog->user_key, GPOINTER_TO_INT(user));
 }
 
 void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id){
@@ -110,7 +102,6 @@ void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id
     char* copy_id = g_strdup(id);
     gpointer reserv_id = GINT_TO_POINTER(number_reservs);
     g_hash_table_insert(catalog->reserv_id, copy_id, reserv_id);
-
     set_reservation_id(reserv, reserv_id);
 
     if(g_hash_table_contains(catalog->user_id, user_id)){
@@ -122,6 +113,9 @@ void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id
         gpointer user = GINT_TO_POINTER(number_users);
         g_hash_table_insert(catalog->user_id, copy_user, user);
         set_user_id_R(reserv,user);
+
+        char* copy2 = strdup(user_id);
+        g_ptr_array_insert(catalog->user_key,number_users-1, copy2);
         number_users++;
     }
 
@@ -135,6 +129,7 @@ void free_reservations_c(RESERV_C catalog){
 
     //g_hash_table_destroy(catalog->user);
     g_hash_table_destroy(catalog->user_id);
+    g_ptr_array_free(catalog->user_key, TRUE);
 
     free(catalog);
 }

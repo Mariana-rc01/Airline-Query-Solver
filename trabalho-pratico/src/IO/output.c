@@ -55,8 +55,15 @@ void output_query1(FILE* file, void* output){
 }
 
 void output_query1F(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result = (char**) output;
+    fprintf(file,"--- 1 ---\n");
+    fprintf(file,"name: %s\n", result[0]);
+    fprintf(file,"sex: %s\n", result[1]);
+    fprintf(file,"country_code: %s\n", result[2]);
+    fprintf(file,"passport: %s\n", result[3]);
+    fprintf(file,"number_of_flights: %s\n", result[4]);
+    fprintf(file,"number_of_reservations: %s\n", result[5]);
+    fprintf(file,"total_spent: %s\n", result[6]);
 }
 
 void output_query2(FILE* file, void* output){
@@ -142,8 +149,16 @@ void output_query9(FILE* file, void* output){
 }
 
 void output_query9F(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result = (char**)output;
+    int length = ourAtoi(result[0]);
+    for(int i = 1; i < length + 1; i++){
+        char *token = strtok(result[i], ";");
+
+        fprintf(file, "--- %d ---\n", i);
+        if(token != NULL) fprintf(file, "id: %s\n", token);
+        token = strtok(NULL, ";");
+        if(token != NULL) fprintf(file, "name: %s\n", token);
+    }
 }
 
 void output_query10(FILE* file, void* output){

@@ -23,11 +23,12 @@
 
 #include "IO/input.h"
 #include "utils/utils.h"
-#include "menuNdata/statistics.h"
 #include "catalogs/users_c.h"
+#include "menuNdata/statistics.h"
 
 #include <stdlib.h>
 #include <string.h>
+#include <glib.h>
 
 /**
  * @struct user

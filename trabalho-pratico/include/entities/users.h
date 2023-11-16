@@ -29,7 +29,10 @@
 typedef struct user *USER;
 
 #include "menuNdata/statistics.h"
-#include "catalogs/users_c.h"
+
+
+#include <glib.h>
+
 
 /**
  * @brief Creates a new user struct with default values.

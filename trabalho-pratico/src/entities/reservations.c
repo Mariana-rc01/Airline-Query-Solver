@@ -21,10 +21,10 @@
 
 #include "entities/reservations.h"
 
-#include "menuNdata/statistics.h"
 #include "IO/input.h"
 #include "utils/utils.h"
 #include "catalogs/manager_c.h"
+#include "menuNdata/statistics.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -80,8 +80,8 @@ void set_user_id_R(RESERV res, gpointer u_id){
     res->user_id = u_id;
 }
 
-void set_hotel_id(RESERV res, char* h_id){
-    res->hotel_id = strdup(h_id);
+void set_hotel_id(RESERV res, gpointer h_id){
+    res->hotel_id = h_id;
 }
 
 void set_hotel_name(RESERV res, char* h_name){
@@ -142,8 +142,8 @@ int get_user_id_R(RESERV res){
     return GPOINTER_TO_INT(res->user_id);
 }
 
-char* get_hotel_id(RESERV res){
-    return strdup(res->hotel_id);
+int get_hotel_id(RESERV res){
+    return GPOINTER_TO_INT(res->hotel_id);
 }
 
 char* get_hotel_name(RESERV res){
@@ -197,7 +197,6 @@ double get_cost(RESERV res){
 }
 
 void free_reservations(RESERV res){
-    free(res->hotel_id);
     free(res->hotel_name);
     free(res->hotel_stars);
     free(res->city_tax);
@@ -242,7 +241,7 @@ int build_reservations(char** reservations_fields, void* catalog, STATS stats){
     char* breakfast = first_letter_to_upper(reservations_fields[10]);
 
     set_catalog_reserv(reservsC,res,reservations_fields[0],reservations_fields[1]);
-    set_hotel_id(res,reservations_fields[2]);
+    set_stats_hotel(stats,res,reservations_fields[2]);
     set_hotel_name(res,reservations_fields[3]);
     set_hotel_stars(res,reservations_fields[4]);
     set_city_tax(res,reservations_fields[5]);
@@ -275,11 +274,9 @@ int build_reservations(char** reservations_fields, void* catalog, STATS stats){
 
     insert_reservations_c(res, reservsC, res->id);
     insert_usersReservations_c(res->id, reservsC, res->user_id);
+    insert_hotel_c(reservations_fields[0],stats,res->hotel_id);
 
     update_user_c(usersC,reservations_fields[1],cost);
-
-    char* res_id = get_key_by_value_R(reservsC, res->id);
-    insert_hotel_c(res_id,stats,res->hotel_id);
 
     return 1;
 }

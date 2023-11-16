@@ -115,13 +115,16 @@ int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2){
         if (output_file == NULL) return -1;
 
         if(line[1] == ' ') query_id = line[0] - '0';
-        else if (line[1] == 'F') query_id = (line[0] -'0') + (line[0] - '0') * 10;
+        else if (line[1] == 'F') {query_id = (line[0] - '0') + 10;}
         else if (line[2] == 'F' && line[1] == '0') query_id = 20;
         else query_id = 10;
 
         if(result != NULL){
             output_query(output_file, result, query_id);
-            free_query(result, query_id);
+            if (query_id > 10){
+                free_query(result, query_id-10);
+            }
+            else free_query(result,query_id);
         }
         fclose(output_file);
         cmd_n++;
