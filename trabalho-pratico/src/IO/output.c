@@ -99,13 +99,17 @@ void output_query2(FILE* file, void* output){
     if (strcmp(type,"all") == 0){
         for (int i = 2; i < length + 2; i++) {
             if (i != (length + 1)) fprintf(file, "%s\n", result_array[i]);
-            else fprintf(file,"%s",result_array[i]);
+            else {
+                result_array[i][strlen(result_array[i])] ='\0';
+                fprintf(file,"%s",result_array[i]);
+            }
         }
     }
     else {
         for (int i = 2; i < length + 2; i++) {
             char* id = strtok(result_array[i], ";");
             char* dateTime = strtok(NULL, ";");
+            dateTime[strlen(dateTime)] = '\0';
 
             if (i != (length + 1)) fprintf(file, "%s;%s\n", id, dateTime);
             else fprintf(file,"%s;%s", id,dateTime);
@@ -129,6 +133,7 @@ void output_query2F(FILE* file, void* output){
                 fprintf(file,"type: %s\n\n",type);
             }
             else {
+                type[strlen(type)] = '\0';
                 fprintf(file,"type: %s",type);
             }
         }
@@ -143,7 +148,10 @@ void output_query2F(FILE* file, void* output){
                 fprintf(file,"date: %s\n",dateTime);
                 fprintf(file,"\n");
             }
-            else fprintf(file,"date: %s",dateTime);
+            else {
+                dateTime[strlen(dateTime)] = '\0';
+                fprintf(file,"date: %s",dateTime);
+            }
         }
     }
 }
@@ -185,7 +193,10 @@ void output_query4F(FILE* file, void* output){
         token = strtok(NULL,";");
         if(i != length){ fprintf(file, "total_price: %s\n\n", token);
         }
-        else fprintf(file,"total_price: %s",token);
+        else{
+            token[strlen(token)] = '\0';
+            fprintf(file,"total_price: %s",token);
+        }
 
     }
 }
@@ -196,6 +207,7 @@ void output_query5(FILE* file, void* output){
     for (int i = 1; i < length + 1; i++) {
         if (i != length) fprintf(file, "%s\n", result_array[i]);
         else {
+            result_array[i][strlen(result_array[i])] ='\0';
             fprintf(file,"%s",result_array[i]);
         }
     }
@@ -219,7 +231,10 @@ void output_query5F(FILE* file, void* output){
         if (i != length){
                 fprintf(file,"plane_model: %s\n",token);
                 fprintf(file,"\n");
-        } else fprintf(file,"plane_model: %s",token);
+        } else {
+            token[strlen(token)] = '\0';
+            fprintf(file,"plane_model: %s",token);
+        }
     }
 }
 
