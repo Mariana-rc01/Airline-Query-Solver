@@ -137,7 +137,7 @@ void* query1(MANAGER manager, STATS stats, char** args){
     else if (get_user_by_id(get_users_c(manager),entity)){
         USER user = get_user_by_id(get_users_c(manager),entity);
 
-        if (strcmp(get_user_account_status(user),"inactive") == 0){
+        if (strcmp(get_user_account_status(user),"INACTIVE") == 0){
             free(result);
             return NULL;
         }
@@ -180,12 +180,46 @@ typedef struct {
     char* type;
 } ResultEntry;
 
+// Função de comparação para qsort
+int compare_datesF(char* itemA, char* itemB) {
+    // Comparar anos
+    int yearA, monthA, dayA, hourA, minA,segA;
+    sscanf(itemA, "%d/%d/%d %d:%d:%d", &yearA, &monthA, &dayA, &hourA, &minA, &segA);
+
+    int yearB, monthB, dayB, hourB, minB, segB;
+    sscanf(itemB, "%d/%d/%d %d:%d:%d", &yearB, &monthB, &dayB, &hourB, &minB, &segB);
+
+    if (yearA != yearB){
+        return yearB - yearA;  // Ordenar por ano decrescente
+    }
+
+    // Comparar meses
+    if (monthA != monthB){
+        return monthB - monthA;  // Ordenar por mês decrescente
+    }
+
+    // Comparar dias
+    if (dayB != dayA){
+        return dayB - dayA;  // Ordenar por dia decrescente
+    }
+
+    if (hourB != hourA){
+        return hourB - hourA;
+    }
+
+    if (minB != minA){
+        return minB - minA;
+    }
+
+    return segB - segA;
+}
+
 int compare_results(const void* a, const void* b) {
     ResultEntry* entryA = (ResultEntry*)a;
     ResultEntry* entryB = (ResultEntry*)b;
 
     // Compare as datas
-    int dateComparison = compare_date_time(entryB->date, entryA->date);
+    int dateComparison = compare_datesF(entryA->date, entryB->date);
     if (dateComparison != 0) {
         return dateComparison;
     }
@@ -194,29 +228,49 @@ int compare_results(const void* a, const void* b) {
     return strcmp(entryA->id, entryB->id);
 }
 
-void print_result(ResultEntry* entry) {
-    printf("%s;%s;%s\n", entry->id, entry->date, entry->type);
+// Função para ordenar o array de resultados com base nos nomes dos usuários e IDs em caso de empate
+void sort_results2(char** id, int result_count, char** date, char** types) {
+    ResultEntry* result_array = malloc(sizeof(ResultEntry) * result_count);
+
+    // Preencher o array de UserInfo com os dados dos usuários
+    for (int i = 0; i < result_count; i++) {
+        result_array[i].id = id[i];
+        result_array[i].date = date[i];
+        result_array[i].type = types[i];
+    }
+
+    // Ordenar o array de Users
+    qsort(result_array, result_count, sizeof(ResultEntry), compare_results);
+
+    // Reorganizar o array de resultados com base na ordem dos UserInfo ordenados
+    for (int i = 0; i < result_count; i++) {
+        id[i] = result_array[i].id;
+        date[i] = result_array[i].date;
+        types[i] = result_array[i].type;
+    }
+
+    // Liberar a memória alocada
+    free(result_array);
 }
 
-// é suposto devolver o id dos voos / reservas
-// date = schedule_departure_date e begin_date, sem devolver horas
-//caso sejam os dois dizer se é flight ou reserva
 void* query2(MANAGER manager, STATS stats, char** args){
-    /*char* user = args[0];
+    char* user = args[0];
     int length_args = 0;
     while (args[length_args] != NULL) length_args++;
     USER userE = get_user_by_id(get_users_c(manager),user);
     FLIGHTS_C flightsC = get_flights_c(manager);
     RESERV_C reservC = get_reserv_c(manager);
-    //char** result = malloc(sizeof(char*)*256);
 
-    GPtrArray* results = g_ptr_array_new_with_free_func(free);
+    char** ids = malloc(sizeof(char*)*256);
+    char** dates = malloc(sizeof(char*)*256);
+    char** types = malloc(sizeof(char*)*256);
+    int count = 0;
 
     //primeiro ver se o user_id existe ou se é inactive
     if (!userE){
         return NULL;
     }
-    else if (strcmp(get_user_account_status(userE), "inactive") == 0){
+    else if (strcmp(get_user_account_status(userE), "INACTIVE") == 0){
         return NULL;
     }
     else if (length_args == 1){ //listar todos com os tipos
@@ -229,45 +283,44 @@ void* query2(MANAGER manager, STATS stats, char** args){
             FLIGHT flight = get_flight_by_id(flightsC,flightI);
             char* date = get_flight_schedule_departure_date(flight);
 
-            ResultEntry* entry = g_new(ResultEntry, 1);
             char* id_flight = strdup(flightI);
-            entry->id = id_flight;
-            entry->date = date;
-            entry->type = "flight";
-
-            g_ptr_array_add(results, entry);
+            ids[count] = id_flight;
+            dates[count] = date;
+            types[count] = "flight";
+            count++;
         }
 
         // Iterar sobre as reservas
-        for (int i = 0; i < (int)reservations->len; i++) {
-            char* reservationI = g_ptr_array_index(reservations, i); //está mal
-            RESERV reservation = get_reservations_by_id(reservC,reservationI);
-            char* date = get_begin_date(reservation);
+        if (reservations == NULL){
+            for (int i = 0; i < (int)reservations->len; i++) {
+                char* reservationI = g_ptr_array_index(reservations, i);
+                RESERV reservation = get_reservations_by_id(reservC,reservationI);
+                char* date = get_begin_date(reservation);
 
-            ResultEntry* entry = g_new(ResultEntry, 1);
-            char* id_reserv = strdup(reservationI);
-            entry->id = id_reserv;
-            entry->date = concat(date," 00:00:00");
-            entry->type = "reservation";
-
-            g_ptr_array_add(results, entry);
+                char* id_reserv = strdup(reservationI);
+                ids[count] = id_reserv;
+                dates[count] = concat(date," 00:00:00");
+                types[count] = "reservation";
+                count++;
+            }
         }
     }
     else if (strcmp(args[1],"reservations") == 0){
         GPtrArray* reservations = get_user_reserv_array_by_id(reservC,user);
 
-        // Iterar sobre as reservas
-        for (int i = 0; i < (int)reservations->len; i++) {
-            char* reservationI = g_ptr_array_index(reservations, i);
-            RESERV reservation = get_reservations_by_id(reservC,reservationI);
-            char* date = get_begin_date(reservation);
+        if (reservations == NULL){
+            // Iterar sobre as reservas
+            for (int i = 0; i < (int)reservations->len; i++) {
+                char* reservationI = g_ptr_array_index(reservations, i);
+                RESERV reservation = get_reservations_by_id(reservC,reservationI);
+                char* date = get_begin_date(reservation);
 
-            ResultEntry* entry = g_new(ResultEntry, 1);
-            entry->id = strdup(reservationI);
-            entry->date = concat(date," 00:00:00");
-            entry->type = "reservation";
-
-            g_ptr_array_add(results, entry);
+                char* id_reserv = strdup(reservationI);
+                ids[count] = id_reserv;
+                dates[count] = concat(date," 00:00:00");
+                types[count] = "reservation";
+                count++;
+            }
         }
     }
     else if (strcmp(args[1],"flights") == 0){
@@ -279,30 +332,45 @@ void* query2(MANAGER manager, STATS stats, char** args){
             FLIGHT flight = get_flight_by_id(flightsC,flightI);
             char* date = get_flight_schedule_departure_date(flight);
 
-            ResultEntry* entry = g_new(ResultEntry, 1);
-            entry->id = strdup(flightI);
-            entry->date = date;
-            entry->type = "flight";
-
-            g_ptr_array_add(results, entry);
+            char* id_flight = strdup(flightI);
+            ids[count] = id_flight;
+            dates[count] = date;
+            types[count] = "flight";
+            count++;
         }
     }
     else return NULL;
 
     // Ordenar os resultados
-    g_ptr_array_sort(results, compare_results);
+    char** finalResult = malloc(sizeof(char*)*256);
+    finalResult[0] = int_to_string(count);
+    sort_results2(ids, count, dates, types);
 
-    // Imprimir os resultados
-    for (int i = 0; i < (int)results->len; i++) {
-        ResultEntry* entry = g_ptr_array_index(results, i);
-        print_result(entry);
+    if (length_args == 1) finalResult[1] = "all";
+    else finalResult[1] = strdup(args[1]);
+    for (int j = 2; j < count+2; j++) {
+        char *date = strndup(dates[j-2], 10);
+        int total_size = snprintf(NULL, 0,"%s;%s;%s\n", ids[j-2], date, types[j-2]) + 1;
+
+        // Alocar memória para a string formatada
+        char* formatted_string = malloc(sizeof(char*)*total_size);
+
+        // Criar a string formatada
+        snprintf(formatted_string, total_size, "%s;%s;%s\n", ids[j-2], date, types[j-2]);
+
+        finalResult[j] = formatted_string;
+        printf("%s",finalResult[j]);
+        free(ids[j-2]);
+        free(dates[j-2]);
+        //free(types[j-1]);
     }
+    printf("\n");
 
-    // Liberar a memória alocada
-    g_ptr_array_free(results, TRUE);*/
-    (void) manager;
+    free(ids);
+    free(dates);
+    free(types);
     (void) stats;
-    return args;
+    return finalResult;
 }
 
 void* query3(MANAGER catalog, STATS stats, char** args){
@@ -328,12 +396,12 @@ int compare_dates(const void* a, const void* b) {
     int yearB, monthB, dayB;
     sscanf(itemB, "%d/%d/%d", &yearB, &monthB, &dayB);
 
-    if (yearA != yearB) {
+    if (yearA != yearB){
         return yearB - yearA;  // Ordenar por ano decrescente
     }
 
     // Comparar meses
-    if (monthA != monthB) {
+    if (monthA != monthB){
         return monthB - monthA;  // Ordenar por mês decrescente
     }
 
@@ -353,8 +421,6 @@ int compare_reservations(const void* a, const void* b) {
     }
 
     int compare = strcmp(res_a->id, res_b->id);
-    //if (compare == 1) compare = -1;
-    //else compare = 1;
 
     // Se as datas de início forem iguais, usar o identificador da reserva como critério de desempate
     return compare;
@@ -379,7 +445,6 @@ void sort_resultsR(char** id, int result_count, char** date) {
         date[i] = reserv_array[i].date;
     }
 
-    // Liberar a memória alocada
     free(reserv_array);
 }
 
@@ -433,7 +498,6 @@ void* query4(MANAGER manager, STATS stats, char** args){
         finalResult[j] = formatted_string;
     }
 
-    // Liberar memória alocada
     free(reservations_array);
 
     (void) stats;

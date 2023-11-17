@@ -93,13 +93,58 @@ void output_query1F(FILE* file, void* output){
 }
 
 void output_query2(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result_array = (char**)output;
+    int length = ourAtoi(result_array[0]);
+    char* type = result_array[1];
+    if (strcmp(type,"all") == 0){
+        for (int i = 2; i < length + 2; i++) {
+            fprintf(file, "%s", result_array[i]);
+        }
+    }
+    else {
+        for (int i = 2; i < length + 2; i++) {
+            char* id = strtok(result_array[i], ";");
+            char* dateTime = strtok(NULL, ";");
+
+            fprintf(file, "%s;%s\n", id, dateTime);
+        }
+    }
 }
 
 void output_query2F(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result_array = (char**)output;
+    int length = ourAtoi(result_array[0]);
+    char* type = result_array[1];
+    if (strcmp(type,"all") == 0){
+        for (int i = 2; i < length + 2; i++) {
+            char* id = strtok(result_array[i], ";");
+            char* dateTime = strtok(NULL, ";");
+            char* type = strtok(NULL, ";");
+            fprintf(file, "--- %d ---\n", i-1);
+            fprintf(file, "id: %s\n",id);
+            fprintf(file,"date: %s\n",dateTime);
+            if (i!= (length+1)){
+                fprintf(file,"type: %s\n",type);
+            }
+            else {
+                type[strlen(type)-1] = '\0';
+                fprintf(file,"type: %s",type);
+            }
+        }
+    }
+    else {
+        for (int i = 2; i < length + 2; i++) {
+            char* id = strtok(result_array[i], ";");
+            char* dateTime = strtok(NULL, ";");
+            fprintf(file, "--- %d ---\n", i-1);
+            fprintf(file, "id: %s\n",id);
+            if (i != (length+1)){
+                fprintf(file,"date: %s\n",dateTime);
+                fprintf(file,"\n");
+            }
+            else fprintf(file,"date: %s",dateTime);
+        }
+    }
 }
 
 void output_query3(FILE* file, void* output){
@@ -121,8 +166,25 @@ void output_query4(FILE* file, void* output){
 }
 
 void output_query4F(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result = (char**)output;
+    int length = ourAtoi(result[0]);
+    for(int i = 1; i < length + 1; i++){
+        char *token = strtok(result[i], ";");
+
+        fprintf(file, "--- %d ---\n", i);
+        if(token != NULL) fprintf(file, "id: %s\n", token);
+        token = strtok(NULL, ";");
+        if(token != NULL) fprintf(file, "begin_date: %s\n", token);
+        token = strtok(NULL,";");
+        if(token != NULL) fprintf(file, "end_date: %s\n", token);
+        token = strtok(NULL,";");
+        if(token != NULL) fprintf(file, "user_id: %s\n", token);
+        token = strtok(NULL,";");
+        if(token != NULL) fprintf(file, "rating: %s\n", token);
+        token = strtok(NULL,";");
+        if(token != NULL) fprintf(file, "total_price: %s\n", token);
+
+    }
 }
 
 void output_query5(FILE* file, void* output){
