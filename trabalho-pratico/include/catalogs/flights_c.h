@@ -60,6 +60,10 @@ FLIGHT get_flight_by_id(FLIGHTS_C catalog, char* id);
 
 FLIGHT get_flight_by_gpointer(FLIGHTS_C catalog, gpointer flight_id);
 
+char* get_flight_from_key(FLIGHTS_C catalog, gpointer flight);
+
+GHashTable* get_hash_table_flight(FLIGHTS_C catalog);
+
 void set_catalog_flight(FLIGHTS_C catalog, FLIGHT flight, char* id);
 
 /**

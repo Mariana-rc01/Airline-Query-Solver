@@ -182,7 +182,7 @@ void output_query4F(FILE* file, void* output){
         token = strtok(NULL,";");
         if(token != NULL) fprintf(file, "rating: %s\n", token);
         token = strtok(NULL,";");
-        if(token != NULL) fprintf(file, "total_price: %s\n", token);
+        if(token != NULL) fprintf(file, "total_price: %s", token);
 
     }
 }

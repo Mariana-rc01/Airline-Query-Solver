@@ -359,7 +359,7 @@ void* query2(MANAGER manager, STATS stats, char** args){
         snprintf(formatted_string, total_size, "%s;%s;%s\n", ids[j-2], date, types[j-2]);
 
         finalResult[j] = formatted_string;
-        printf("%s",finalResult[j]);
+        //printf("%s",finalResult[j]);
         free(ids[j-2]);
         free(dates[j-2]);
         //free(types[j-1]);
@@ -504,10 +504,115 @@ void* query4(MANAGER manager, STATS stats, char** args){
     return finalResult;
 }
 
-void* query5(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
+typedef struct {
+    char* id;
+    char* date;
+} FlightInfo;
+
+
+// Função para comparar duas reservas para ordenação
+int compare_flights(const void* a, const void* b) {
+    FlightInfo* f_a = (FlightInfo*)a;
+    FlightInfo* f_b = (FlightInfo*)b;
+
+    // Comparar as datas de início
+    int date_compare = compare_datesF(f_a->date, f_b->date);
+    if (date_compare != 0) {
+        return date_compare;
+    }
+
+    int compare = strcmp(f_a->id, f_b->id);
+
+    // Se as datas de início forem iguais, usar o identificador da reserva como critério de desempate
+    return compare;
+}
+
+// Função para ordenar o array de resultados com base nos nomes dos usuários e IDs em caso de empate
+void sort_resultsF(char** id, int result_count, char** date) {
+    FlightInfo* flight_array = malloc(sizeof(FlightInfo) * result_count);
+
+    // Preencher o array de FlightInfo com os dados dos usuários
+    for (int i = 0; i < result_count; i++) {
+        flight_array[i].id = id[i];
+        flight_array[i].date = date[i];
+    }
+
+    // Ordenar o array de Flights
+    qsort(flight_array, result_count, sizeof(FlightInfo), compare_flights);
+
+    // Reorganizar o array de resultados com base na ordem dos FlightInfo ordenados
+    for (int i = 0; i < result_count; i++) {
+        id[i] = flight_array[i].id;
+        date[i] = flight_array[i].date;
+    }
+
+    free(flight_array);
+}
+
+/* Ver origem de um voo,se for a mesma origem e a data estimada de partida está entre o args[2] e args[3]
+ adiciona para um array o id do voo e a data de partida
+ Ordena os voos da data mais antiga para a mais recente, se forem iguais, compara pelos voos
+Retorna id;schedule_departure_date;destination;airline;plane_model*/
+void* query5(MANAGER manager, STATS stats, char** args){
+    char* origin = args[0];
+    char* begin_date = args[1];
+    char* end_date = args[2];
+    FLIGHTS_C catalog = get_flights_c(manager);
+
+    // Criar um array para armazenar ponteiros para as reservas
+    char** flights_array = malloc(512 * sizeof(char*));
+    char** dates_array = malloc(512 * sizeof(char*));
+    int i = 0;
+
+    GHashTable* flights = get_hash_table_flight(catalog);
+
+    // Iterar sobre as reservas no catálogo
+    GHashTableIter iter;
+    gpointer key, value;
+    g_hash_table_iter_init(&iter, flights);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        FLIGHT flight = (FLIGHT)value;
+        char* date = get_flight_schedule_arrival_date(flight);
+
+        // Verificar se a reserva pertence ao hotel desejado
+        if (strcmp(get_flight_origin(flight), origin) == 0 &&
+        (compare_datesF(date,begin_date) >= 0 && compare_datesF(end_date, date) >= 0)) {
+            flights_array[i] = get_flight_from_key(catalog,GINT_TO_POINTER(get_flight_id(flight)));
+            dates_array[i] = get_flight_schedule_arrival_date(flight);
+            i++;
+        }
+    }
+
+    // Ordenar os voos usando a função de comparação
+    sort_resultsF(flights_array,i,dates_array);
+
+    char** finalResult = malloc(sizeof(char*)*600);
+    finalResult[0] = int_to_string(i);
+    for (int j = 1; j < i+1; j++) {
+        //id;schedule_departure_date;destination;airline;plane_model
+        FLIGHT flight = get_flight_by_id(catalog, flights_array[j-1]);
+
+        int total_size = snprintf(NULL, 0,"%s;%s;%s;%s;%s\n", flights_array[j-1],
+        get_flight_schedule_departure_date(flight), get_flight_destination(flight),
+        get_flight_airline(flight),get_flight_plane_model(flight)) + 1;
+
+        // Alocar memória para a string formatada
+        char* formatted_string = malloc(sizeof(char*)*total_size);
+
+        // Criar a string formatada
+        snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s\n", flights_array[j-1],
+        get_flight_schedule_departure_date(flight), get_flight_destination(flight),
+        get_flight_airline(flight),get_flight_plane_model(flight));
+
+        finalResult[j] = formatted_string;
+        printf("%s\n",formatted_string);
+    }
+
+    free(flights_array);
+    free(dates_array);
+
     (void) stats;
-    return args;
+    return finalResult;
 }
 
 void* query6(MANAGER catalog, STATS stats, char** args){
