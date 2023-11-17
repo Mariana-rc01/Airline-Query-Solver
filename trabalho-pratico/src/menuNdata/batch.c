@@ -144,7 +144,7 @@ void batch (char* path1, char* path2){
     PASS_C passengers_catalog = create_passengers_c();
     MANAGER manager_catalog = create_manager_c(users_catalog,flights_catalog,reservations_catalog,passengers_catalog);
 
-    STATS statistics = create_stats();
+    STATS statistics = NULL;
 
     if (setup_catalog_and_stats(manager_catalog,statistics,path1) == -1){
         return;

@@ -28,63 +28,6 @@
 #include <string.h>
 
 struct statistics{
-    GHashTable* hotels;
-    GHashTable* hotels_id;
-    GPtrArray* hotel_key;
+    int n;
 };
-
-STATS create_stats(void){
-    STATS new = malloc(sizeof(struct statistics));
-
-    new->hotels = g_hash_table_new_full(NULL,g_direct_equal,NULL,NULL);
-    new->hotels_id = g_hash_table_new_full(g_str_hash,g_str_equal, free, NULL);
-    new->hotel_key = g_ptr_array_new_with_free_func(free);
-
-    return new;
-}
-
-void insert_hotel_c(char* reserv_id, STATS stats, gpointer hotel_id){
-    if (g_hash_table_contains(stats->hotels,hotel_id)){
-        GPtrArray* reservs = g_hash_table_lookup(stats->hotels, hotel_id);
-        g_ptr_array_add(reservs, reserv_id);
-    }
-    else{
-        GPtrArray* reservs = g_ptr_array_new();
-        g_ptr_array_add(reservs,reserv_id);
-        g_hash_table_insert(stats->hotels, hotel_id, reservs);
-    }
-}
-
-GPtrArray* get_hotel_reserv_by_id(STATS stats, char* hotel_id){
-    gpointer hotel = g_hash_table_lookup(stats->hotels_id,hotel_id);
-    if (hotel == NULL) return NULL;
-    return get_hotel_reserv_by_gpointer(stats, hotel);
-}
-
-GPtrArray* get_hotel_reserv_by_gpointer(STATS stats, gpointer hotel_id){
-    return g_hash_table_lookup(stats->hotels, hotel_id);
-}
-
-char* get_hotel_from_key(STATS catalog, gpointer hotel) {
-    return g_ptr_array_index(catalog->hotel_key, GPOINTER_TO_INT(hotel) - 1);
-}
-
-void set_stats_hotel(STATS catalog, RESERV reserv, char* hotel_id){
-    static int number_hotel = 1;
-
-    if (g_hash_table_contains(catalog->hotels_id, hotel_id)){
-        gpointer hotel = g_hash_table_lookup(catalog->hotels_id, hotel_id);
-        set_hotel_id(reserv, hotel);
-    }
-    else {
-        char* copy_hotel = g_strdup(hotel_id);
-        gpointer hotel = GINT_TO_POINTER(number_hotel);
-        g_hash_table_insert(catalog->hotels_id, copy_hotel,hotel);
-        set_hotel_id(reserv,hotel);
-
-        char* copy2 = strdup(hotel_id);
-        g_ptr_array_insert(catalog->hotel_key,number_hotel-1, copy2);
-        number_hotel++;
-    }
-}
 

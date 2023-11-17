@@ -29,20 +29,5 @@ typedef struct statistics* STATS;
 #include "entities/users.h"
 #include "entities/flights.h"
 
-#include <glib.h>
-
-typedef struct hotel *HOTEL;
-
-STATS create_stats(void);
-
-void insert_hotel_c(char* reserv_id, STATS stats, gpointer hotel_id);
-
-GPtrArray* get_hotel_reserv_by_id(STATS stats, char* hotel_id);
-
-GPtrArray* get_hotel_reserv_by_gpointer(STATS stats, gpointer hotel_id);
-
-char* get_hotel_from_key(STATS catalog, gpointer hotel);
-
-void set_stats_hotel(STATS catalog, RESERV reserv, char* hotel_id);
 
 #endif
