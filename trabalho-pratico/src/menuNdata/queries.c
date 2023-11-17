@@ -253,6 +253,7 @@ void sort_results2(char** id, int result_count, char** date, char** types) {
     free(result_array);
 }
 
+// VER RESERVAS
 void* query2(MANAGER manager, STATS stats, char** args){
     char* user = args[0];
     int length_args = 0;
@@ -291,36 +292,34 @@ void* query2(MANAGER manager, STATS stats, char** args){
         }
 
         // Iterar sobre as reservas
-        if (reservations == NULL){
-            for (int i = 0; i < (int)reservations->len; i++) {
-                char* reservationI = g_ptr_array_index(reservations, i);
-                RESERV reservation = get_reservations_by_id(reservC,reservationI);
-                char* date = get_begin_date(reservation);
+        for (int i = 0; i < (int)reservations->len; i++) {
+            gpointer reservationI = g_ptr_array_index(reservations, i);
+            RESERV reservation = get_reservations_by_gpointer(reservC,reservationI);
+            char* reservs = get_reserv_from_key(reservC, reservationI);
+            char* date = get_begin_date(reservation);
 
-                char* id_reserv = strdup(reservationI);
-                ids[count] = id_reserv;
-                dates[count] = concat(date," 00:00:00");
-                types[count] = "reservation";
-                count++;
-            }
+            char* id_reserv = strdup(reservs);
+            ids[count] = id_reserv;
+            dates[count] = concat(date," 00:00:00");
+            types[count] = "reservation";
+            count++;
         }
     }
     else if (strcmp(args[1],"reservations") == 0){
         GPtrArray* reservations = get_user_reserv_array_by_id(reservC,user);
 
-        if (reservations == NULL){
-            // Iterar sobre as reservas
-            for (int i = 0; i < (int)reservations->len; i++) {
-                char* reservationI = g_ptr_array_index(reservations, i);
-                RESERV reservation = get_reservations_by_id(reservC,reservationI);
-                char* date = get_begin_date(reservation);
+        // Iterar sobre as reservas
+        for (int i = 0; i < (int)reservations->len; i++) {
+            gpointer reservationI = g_ptr_array_index(reservations, i);
+            RESERV reservation = get_reservations_by_gpointer(reservC,reservationI);
+            char* reservs = get_reserv_from_key(reservC, reservationI);
+            char* date = get_begin_date(reservation);
 
-                char* id_reserv = strdup(reservationI);
-                ids[count] = id_reserv;
-                dates[count] = concat(date," 00:00:00");
-                types[count] = "reservation";
-                count++;
-            }
+            char* id_reserv = strdup(reservs);
+            ids[count] = id_reserv;
+            dates[count] = concat(date," 00:00:00");
+            types[count] = "reservation";
+            count++;
         }
     }
     else if (strcmp(args[1],"flights") == 0){
@@ -350,21 +349,19 @@ void* query2(MANAGER manager, STATS stats, char** args){
     else finalResult[1] = strdup(args[1]);
     for (int j = 2; j < count+2; j++) {
         char *date = strndup(dates[j-2], 10);
-        int total_size = snprintf(NULL, 0,"%s;%s;%s\n", ids[j-2], date, types[j-2]) + 1;
+        int total_size = snprintf(NULL, 0,"%s;%s;%s", ids[j-2], date, types[j-2]) + 1;
 
         // Alocar memória para a string formatada
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
         // Criar a string formatada
-        snprintf(formatted_string, total_size, "%s;%s;%s\n", ids[j-2], date, types[j-2]);
+        snprintf(formatted_string, total_size, "%s;%s;%s", ids[j-2], date, types[j-2]);
 
         finalResult[j] = formatted_string;
-        //printf("%s",finalResult[j]);
         free(ids[j-2]);
         free(dates[j-2]);
         //free(types[j-1]);
     }
-    printf("\n");
 
     free(ids);
     free(dates);
@@ -481,7 +478,7 @@ void* query4(MANAGER manager, STATS stats, char** args){
     finalResult[0] = int_to_string(i);
     for (int j = 1; j < i+1; j++) {
         RESERV reservation = get_reservations_by_id(catalog,reservations_array[j-1]);
-        int total_size = snprintf(NULL, 0,"%s;%s;%s;%s;%s;%f\n", reservations_array[j-1],
+        int total_size = snprintf(NULL, 0,"%s;%s;%s;%s;%s;%f", reservations_array[j-1],
         get_begin_date(reservation), get_end_date(reservation),
         get_user_from_key(catalog, GINT_TO_POINTER(get_user_id_R(reservation))),
         get_rating(reservation), get_cost(reservation)) + 1;
@@ -490,7 +487,7 @@ void* query4(MANAGER manager, STATS stats, char** args){
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
         // Criar a string formatada
-        snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s;%.3f\n",reservations_array[j-1],
+        snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s;%.3f",reservations_array[j-1],
         get_begin_date(reservation), get_end_date(reservation),
         get_user_from_key(catalog, GINT_TO_POINTER(get_user_id_R(reservation))),
         get_rating(reservation), get_cost(reservation));
@@ -576,7 +573,7 @@ void* query5(MANAGER manager, STATS stats, char** args){
 
         // Verificar se a reserva pertence ao hotel desejado
         if (strcmp(get_flight_origin(flight), origin) == 0 &&
-        (compare_datesF(date,begin_date) >= 0 && compare_datesF(end_date, date) >= 0)) {
+        (compare_datesF(begin_date,date) >= 0 && compare_datesF(date,end_date) >= 0)) {
             flights_array[i] = get_flight_from_key(catalog,GINT_TO_POINTER(get_flight_id(flight)));
             dates_array[i] = get_flight_schedule_arrival_date(flight);
             i++;
@@ -600,12 +597,11 @@ void* query5(MANAGER manager, STATS stats, char** args){
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
         // Criar a string formatada
-        snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s\n", flights_array[j-1],
+        snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s", flights_array[j-1],
         get_flight_schedule_departure_date(flight), get_flight_destination(flight),
         get_flight_airline(flight),get_flight_plane_model(flight));
 
         finalResult[j] = formatted_string;
-        printf("%s\n",formatted_string);
     }
 
     free(flights_array);

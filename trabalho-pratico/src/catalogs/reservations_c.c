@@ -29,7 +29,7 @@
  */
 struct reservations_catalog {
     GHashTable* reserv; /**< Hash table to store reservation records. */
-    GHashTable* reserv_id; /**< Hash table to link the key to the reserv_id. */
+    GHashTable* reservs_id; /**< Hash table to link the key to the reserv_id. */
     GPtrArray* reserv_key; /**< Hash table to link the reserv_id to the key. */
 
     GHashTable* user; /**< Hash table to store all user's reservations*/
@@ -41,7 +41,7 @@ RESERV_C create_reservations_c(void){
     RESERV_C new = malloc(sizeof(struct reservations_catalog));
 
     new->reserv = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_reservations);
-    new->reserv_id = g_hash_table_new_full(g_str_hash,g_str_equal, free, NULL);
+    new->reservs_id = g_hash_table_new_full(g_str_hash,g_str_equal, free, NULL);
     new->reserv_key = g_ptr_array_new_with_free_func(free);
 
     new->user = g_hash_table_new_full(NULL, g_direct_equal, NULL, free_ptr_array);
@@ -68,7 +68,7 @@ void insert_usersReservations_c(char* reserv_id, RESERV_C catalog, gpointer key)
 }
 
 RESERV get_reservations_by_id(RESERV_C catalog, char* id){
-    gpointer reserv_id = g_hash_table_lookup(catalog->reserv_id, id);
+    gpointer reserv_id = g_hash_table_lookup(catalog->reservs_id, id);
     if (reserv_id == NULL) return NULL;
     return get_reservations_by_gpointer(catalog, reserv_id);
 }
@@ -115,7 +115,7 @@ void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id
 
     char* copy_id = g_strdup(id);
     gpointer reserv_id = GINT_TO_POINTER(number_reservs);
-    g_hash_table_insert(catalog->reserv_id, copy_id, reserv_id);
+    g_hash_table_insert(catalog->reservs_id, copy_id, reserv_id);
 
     char* copy_id2 = strdup(id);
     g_ptr_array_insert(catalog->reserv_key,number_reservs-1, copy_id2);
@@ -141,7 +141,7 @@ void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id
 
 void free_reservations_c(RESERV_C catalog){
     g_hash_table_destroy(catalog->reserv);
-    g_hash_table_destroy(catalog->reserv_id);
+    g_hash_table_destroy(catalog->reservs_id);
     g_ptr_array_free(catalog->reserv_key,TRUE);
 
     //g_hash_table_destroy(catalog->user);

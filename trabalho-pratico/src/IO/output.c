@@ -98,7 +98,8 @@ void output_query2(FILE* file, void* output){
     char* type = result_array[1];
     if (strcmp(type,"all") == 0){
         for (int i = 2; i < length + 2; i++) {
-            fprintf(file, "%s", result_array[i]);
+            if (i != (length + 1)) fprintf(file, "%s\n", result_array[i]);
+            else fprintf(file,"%s",result_array[i]);
         }
     }
     else {
@@ -106,7 +107,8 @@ void output_query2(FILE* file, void* output){
             char* id = strtok(result_array[i], ";");
             char* dateTime = strtok(NULL, ";");
 
-            fprintf(file, "%s;%s\n", id, dateTime);
+            if (i != (length + 1)) fprintf(file, "%s;%s\n", id, dateTime);
+            else fprintf(file,"%s;%s", id,dateTime);
         }
     }
 }
@@ -123,11 +125,10 @@ void output_query2F(FILE* file, void* output){
             fprintf(file, "--- %d ---\n", i-1);
             fprintf(file, "id: %s\n",id);
             fprintf(file,"date: %s\n",dateTime);
-            if (i!= (length+1)){
-                fprintf(file,"type: %s\n",type);
+            if (i != (length+1)){
+                fprintf(file,"type: %s\n\n",type);
             }
             else {
-                type[strlen(type)-1] = '\0';
                 fprintf(file,"type: %s",type);
             }
         }
@@ -161,7 +162,7 @@ void output_query4(FILE* file, void* output){
     char** result_array = (char**)output;
     int length = ourAtoi(result_array[0]);
     for (int i = 1; i < length + 1; i++) {
-        fprintf(file, "%s", result_array[i]);
+        fprintf(file, "%s\n", result_array[i]);
     }
 }
 
@@ -182,19 +183,44 @@ void output_query4F(FILE* file, void* output){
         token = strtok(NULL,";");
         if(token != NULL) fprintf(file, "rating: %s\n", token);
         token = strtok(NULL,";");
-        if(token != NULL) fprintf(file, "total_price: %s", token);
+        if(i != length){ fprintf(file, "total_price: %s\n\n", token);
+        }
+        else fprintf(file,"total_price: %s",token);
 
     }
 }
 
 void output_query5(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result_array = (char**)output;
+    int length = ourAtoi(result_array[0]);
+    for (int i = 1; i < length + 1; i++) {
+        if (i != length) fprintf(file, "%s\n", result_array[i]);
+        else {
+            fprintf(file,"%s",result_array[i]);
+        }
+    }
 }
 
 void output_query5F(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result = (char**)output;
+    int length = ourAtoi(result[0]);
+    for(int i = 1; i < length + 1; i++){
+        char *token = strtok(result[i], ";");
+
+        fprintf(file, "--- %d ---\n", i);
+        if(token != NULL) fprintf(file, "id: %s\n", token);
+        token = strtok(NULL, ";");
+        if(token != NULL) fprintf(file, "schedule_departure_date: %s\n", token);
+        token = strtok(NULL,";");
+        if(token != NULL) fprintf(file, "destination: %s\n", token);
+        token = strtok(NULL,";");
+        if(token != NULL) fprintf(file, "airline: %s\n", token);
+        token = strtok(NULL,";");
+        if (i != length){
+                fprintf(file,"plane_model: %s\n",token);
+                fprintf(file,"\n");
+        } else fprintf(file,"plane_model: %s",token);
+    }
 }
 
 void output_query6(FILE* file, void* output){
