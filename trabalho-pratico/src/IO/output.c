@@ -163,13 +163,14 @@ void output_query2F(FILE* file, void* output){
 }
 
 void output_query3(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char* rating = (char*) output;
+    fprintf(file,"%s\n",rating);
 }
 
 void output_query3F(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char* rating = (char*) output;
+    fprintf(file,"--- 1 ---\n");
+    fprintf(file,"rating: %s\n",rating);
 }
 
 void output_query4(FILE* file, void* output){
@@ -248,13 +249,36 @@ void output_query5F(FILE* file, void* output){
 }
 
 void output_query6(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result_array = (char**)output;
+    int length = ourAtoi(result_array[0]);
+    for (int i = 1; i < length + 1; i++) {
+        if (i != length) fprintf(file, "%s\n", result_array[i]);
+        else {
+            result_array[i][strlen(result_array[i])] ='\0';
+            char *truncatedString = strndup(result_array[i], strlen(result_array[i]));
+            fprintf(file,"%s\n",truncatedString);
+        }
+    }
 }
 
 void output_query6F(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result = (char**)output;
+    int length = ourAtoi(result[0]);
+    for(int i = 1; i < length + 1; i++){
+        char *token = strtok(result[i], ";");
+
+        fprintf(file, "--- %d ---\n", i);
+        if(token != NULL) fprintf(file, "name: %s\n", token);
+        token = strtok(NULL, ";");
+        if (i != length){
+                fprintf(file, "passengers: %s\n", token);
+                fprintf(file,"\n");
+        } else {
+            token[strlen(token)] = '\0';
+            char *truncatedString = strndup(token, strlen(token));
+            fprintf(file,"passengers: %s\n",truncatedString);
+        }
+    }
 }
 
 void output_query7(FILE* file, void* output){
@@ -278,28 +302,13 @@ void output_query8F(FILE* file, void* output){
 }
 
 void output_query9(FILE* file, void* output){
-    char** result_array = (char**)output;
-    int length = ourAtoi(result_array[0]);
-    for (int i = 1; i < length+1; i++) {
-        if (result_array[i] != NULL) {
-            fprintf(file, "%s", result_array[i]);
-        } else {
-            break;
-        }
-    }
+    (void) file;
+    (void) output;
 }
 
 void output_query9F(FILE* file, void* output){
-    char** result = (char**)output;
-    int length = ourAtoi(result[0]);
-    for(int i = 1; i < length + 1; i++){
-        char *token = strtok(result[i], ";");
-
-        fprintf(file, "--- %d ---\n", i);
-        if(token != NULL) fprintf(file, "id: %s\n", token);
-        token = strtok(NULL, ";");
-        if(token != NULL) fprintf(file, "name: %s\n", token);
-    }
+    (void) file;
+    (void) output;
 }
 
 void output_query10(FILE* file, void* output){

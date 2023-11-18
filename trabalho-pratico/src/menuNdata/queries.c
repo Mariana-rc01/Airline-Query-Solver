@@ -253,7 +253,6 @@ void sort_results2(char** id, int result_count, char** date, char** types) {
     free(result_array);
 }
 
-// VER RESERVAS
 void* query2(MANAGER manager, STATS stats, char** args){
     char* user = args[0];
     int length_args = 0;
@@ -370,10 +369,41 @@ void* query2(MANAGER manager, STATS stats, char** args){
     return finalResult;
 }
 
-void* query3(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
+void* query3(MANAGER manager, STATS stats, char** args){
+    char* hotel_id = args[0];
+    RESERV_C catalog = get_reserv_c(manager);
+
+    // Criar um array para armazenar ponteiros para as reservas
+    double rating = 0;
+    int i = 0;
+
+    GHashTable* reserv = get_hash_table_reserv(catalog);
+
+    // Iterar sobre as reservas no catálogo
+    GHashTableIter iter;
+    gpointer key, value;
+    g_hash_table_iter_init(&iter, reserv);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        RESERV reservation = (RESERV)value;
+
+        // Verificar se a reserva pertence ao hotel desejado
+        if (strcmp(get_hotel_id(reservation), hotel_id) == 0) {
+            char* ratingH = get_rating(reservation);
+            double add;
+            sscanf(ratingH, "%lf", &add);
+            rating += add;
+            i++;
+            free(ratingH);
+        }
+    }
+
+    rating = rating/(double)i;
+
+    char* finalResult = malloc(sizeof(char*)*128);
+    finalResult = double_to_string(rating);
+
     (void) stats;
-    return args;
+    return finalResult;
 }
 
 typedef struct {
@@ -465,7 +495,7 @@ void* query4(MANAGER manager, STATS stats, char** args){
 
         // Verificar se a reserva pertence ao hotel desejado
         if (strcmp(get_hotel_id(reservation), hotel_id) == 0) {
-            reservations_array[i] = get_reserv_from_key(catalog,GINT_TO_POINTER(get_reservation_id(reservation)));
+            reservations_array[i] = strdup(get_reserv_from_key(catalog,GINT_TO_POINTER(get_reservation_id(reservation))));
             dates_array[i] = get_begin_date(reservation);
             i++;
         }
@@ -496,6 +526,7 @@ void* query4(MANAGER manager, STATS stats, char** args){
     }
 
     free(reservations_array);
+    free(dates_array);
 
     (void) stats;
     return finalResult;
@@ -505,7 +536,6 @@ typedef struct {
     char* id;
     char* date;
 } FlightInfo;
-
 
 // Função para comparar duas reservas para ordenação
 int compare_flights(const void* a, const void* b) {
@@ -606,15 +636,119 @@ void* query5(MANAGER manager, STATS stats, char** args){
 
     free(flights_array);
     free(dates_array);
-
     (void) stats;
     return finalResult;
 }
 
-void* query6(MANAGER catalog, STATS stats, char** args){
-    (void) catalog;
+typedef struct {
+    char* name;
+    int nPassengers;
+} AirportInfo;
+
+// Função para comparar duas reservas para ordenação
+int sort_airports(const void* a, const void* b) {
+    AirportInfo* f_a = (AirportInfo*)a;
+    AirportInfo* f_b = (AirportInfo*)b;
+
+    // Comparar o numero de passageiros
+    int date_compare = f_b->nPassengers - f_a->nPassengers;
+    if (date_compare != 0) {
+        return date_compare;
+    }
+
+    int compare = strcmp(f_a->name, f_b->name);
+
+    // Se o nº de passageiros forem iguais, usar o nome do aeroporto como critério de desempate
+    return compare;
+}
+
+// Função para obter a posição do aeroporto no array ou -1 se não estiver presente
+int findAirportPosition(AirportInfo* array, int size, const char* airport) {
+    for (int i = 0; i < size; i++) {
+        if (strcmp(array[i].name, airport) == 0) {
+            // O nome do aeroporto foi encontrado no array
+            return i;
+        }
+    }
+    // O nome do aeroporto não foi encontrado no array
+    return -1;
+}
+
+//recebe <Year> e N
+// retorna nome do aeroporto e o numero de passageiros
+void* query6(MANAGER manager, STATS stats, char** args){
+    char* Year = args[0];
+    int N = ourAtoi(args[1]);
+    FLIGHTS_C catalog = get_flights_c(manager);
+    PASS_C passengers = get_pass_c(manager);
+
+    AirportInfo* array = malloc(sizeof(AirportInfo) * 512);
+
+    int i = 0;
+
+    GHashTable* flights = get_hash_table_flight(catalog);
+
+    // Iterar sobre as reservas no catálogo
+    GHashTableIter iter;
+    gpointer key, value;
+    g_hash_table_iter_init(&iter, flights);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        FLIGHT flight = (FLIGHT) value;
+
+        char* date = get_flight_schedule_arrival_date(flight);
+        char *truncatedString = strndup(date, 4);
+        char* origin = get_flight_origin(flight);
+        char* destination = get_flight_destination(flight);
+
+        char* id_flight = get_flight_from_key(catalog, GINT_TO_POINTER(get_flight_id(flight)));
+        int pass = get_flight_array_number_by_id(passengers, id_flight);
+
+        // Verificar se o airport pertence ao ano desejado
+        if (strcmp(Year,truncatedString) == 0){
+        //verificar se o nome do aeroporto já foi registado, se foi aumenta apenas o nº de passageiros
+            int airportPosition = findAirportPosition(array, i, origin);
+            if (airportPosition != -1){ // é para incrementar no array[i] que tem aquele aeroporto
+                array[airportPosition].nPassengers += pass;
+            }
+            else {
+                array[i].name = origin;
+                array[i].nPassengers = pass;
+                i++;
+            }
+
+            int airportPositionD = findAirportPosition(array, i, destination);
+            if (airportPositionD != -1){ // é para incrementar no array[i] que tem aquele aeroporto
+                array[airportPositionD].nPassengers += pass;
+            }
+            else {
+                array[i].name = destination;
+                array[i].nPassengers = pass;
+                i++;
+            }
+        }
+    }
+
+    // Ordenar os voos usando a função de comparação
+    qsort(array, i, sizeof(AirportInfo), sort_airports);
+
+
+    char** finalResult = malloc(sizeof(char*)*600);
+    finalResult[0] = int_to_string(N);
+    for (int j = 1; j < i+1 && j<N+1; j++) {
+        int total_size = snprintf(NULL, 0,"%s;%d", array[j-1].name,
+        array[j-1].nPassengers) + 1;
+
+        // Alocar memória para a string formatada
+        char* formatted_string = malloc(sizeof(char*)*total_size);
+
+        // Criar a string formatada
+        snprintf(formatted_string, total_size, "%s;%d", array[j-1].name, array[j-1].nPassengers);
+
+        finalResult[j] = formatted_string;
+    }
+
     (void) stats;
-    return args;
+    return finalResult;
 }
 
 void* query7(MANAGER catalog, STATS stats, char** args){
@@ -629,113 +763,10 @@ void* query8(MANAGER catalog, STATS stats, char** args){
     return args;
 }
 
-typedef struct {
-    char* user_id;
-    char* user_name;
-} UserInfo;
-
-// Função de comparação para qsort
-int compare_user_info(const void* a, const void* b) {
-    setlocale(LC_COLLATE, "en_US.UTF-8");
-    UserInfo* user_info_a = (UserInfo*) a;
-    UserInfo* user_info_b = (UserInfo*) b;
-
-    // Comparar os nomes dos usuários
-    int name_comparison = strcoll(user_info_a->user_name, user_info_b->user_name);
-
-    if (name_comparison == 0) {
-        // Se os nomes são iguais, comparar pelos IDs
-        return strcoll(user_info_a->user_id, user_info_b->user_id);
-    }
-
-    return name_comparison;
-}
-
-// Função para ordenar o array de resultados com base nos nomes dos usuários e IDs em caso de empate
-void sort_results(char** result, int result_count, char** names) {
-    UserInfo* user_info_array = malloc(sizeof(UserInfo) * result_count);
-
-    // Preencher o array de UserInfo com os dados dos usuários
-    for (int i = 0; i < result_count; i++) {
-        user_info_array[i].user_id = result[i];
-        user_info_array[i].user_name = names[i];
-    }
-
-    // Ordenar o array de Users
-    qsort(user_info_array, result_count, sizeof(UserInfo), compare_user_info);
-
-    // Reorganizar o array de resultados com base na ordem dos UserInfo ordenados
-    for (int i = 0; i < result_count; i++) {
-        result[i] = user_info_array[i].user_id;
-        names[i] = user_info_array[i].user_name;
-    }
-
-    // Liberar a memória alocada
-    free(user_info_array);
-}
-
 void* query9(MANAGER catalog, STATS stats, char** args) {
-    char* prefix = args[0];
-    USERS_C usersC = get_users_c(catalog);
-
-    // Obter um array de chaves (gpointer)
-    gpointer* keysArray = get_keys_as_array(usersC);
-    if (keysArray == NULL){
-        return NULL;
-    }
-
-    char** result = malloc(sizeof(char*) * 256);
-    char** names = malloc(sizeof(char*) * 256);
-    int result_count = 0;
-
-    int i = 0;
-    int length = calculate_array_length(usersC);
-    // Iterar sobre o array de keys
-    while(i < length && (keysArray[i] != NULL)){
-        gpointer key = keysArray[i];
-        USER user = get_user_by_gpointer(usersC, key);
-
-        if (user != NULL){
-            if(strcmp(get_user_account_status(user),"ACTIVE") == 0) {
-                char* user_name = get_user_name(user);
-                char *truncatedString = strndup(user_name, strlen(prefix));
-
-                // Verificar se o nome do utilizador começa com o prefixo
-                if (strcoll(truncatedString, prefix) == 0) {
-                    result[result_count] = strdup(get_key_by_value(usersC,key));
-                    names[result_count] = strdup(user_name);
-                    result_count++;
-                }
-            }
-        }
-        i++;
-    }
-
-    g_free(keysArray);
-
-    sort_results(result, result_count, names);
-
-    char** finalResult = malloc(sizeof(char*)*256);
-    finalResult[0] = int_to_string(result_count);
-    for (int i = 1; i < result_count+1; i++){
-        int total_size = snprintf(NULL, 0, "%s;%s\n", result[i-1], names[i-1]) + 1;
-
-        // Alocar memória para a string formatada
-        char* formatted_string = malloc(sizeof(char*)*total_size);
-
-        // Criar a string formatada
-        snprintf(formatted_string, total_size, "%s;%s\n", result[i-1], names[i-1]);
-        finalResult[i] = formatted_string;
-        free(result[i-1]);
-        free(names[i-1]);
-    }
-
-    free(result);
-    free(names);
-
+    (void) catalog;
     (void) stats;
-
-    return finalResult;
+    return args;
 }
 
 void* query10(MANAGER catalog, STATS stats, char** args){
@@ -770,11 +801,23 @@ void free_query2(void* result){
 }
 
 void free_query3(void* result){
-    (void) result;
+    if (result == NULL) {
+        return;
+    }
+    char** resultF = (char**) result;
+    free(resultF);
 }
 
 void free_query4(void* result){
-    (void) result;
+    if (result == NULL) {
+        return;
+    }
+    char** resultF = (char**) result;
+    int n = ourAtoi(resultF[0]);
+    for (int i = 0; i < n; i++) {
+        free(resultF[i]);
+    }
+    free(resultF);
 }
 
 void free_query5(void* result){
@@ -794,17 +837,8 @@ void free_query8(void* result){
 }
 
 void free_query9(void* result) {
-    if (result == NULL) {
-        return;
-    }
-    char** resultF = (char**) result;
-    int length = ourAtoi(resultF[0]);
-    for (int i = 1; i < length; i++) {
-        free(resultF[i]);
-    }
-    free(resultF);
+    (void) result;
 }
-
 
 void free_query10(void* result){
     (void) result;
