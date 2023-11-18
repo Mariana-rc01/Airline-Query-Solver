@@ -1,6 +1,6 @@
 /**
  * @file utils.h
- * @brief Module that connects all the entities
+ * @brief Module containg utility functions used throughout the program.
  */
 
 /*
@@ -62,9 +62,8 @@ int ourAtoi(char* string);
 /**
  * @brief This function concatenates 2 strings resulting in a separate string
  *
- * The reason we use this instead of just strcat is because strcat modifys the first
- * which in this case we want to keep intact
- *
+ * This function is used instead of strcat because it doesn't modify the first 
+ * string, instead returning a separate result argument
  *
  * @param s1 path to the file we want to open
  * @param s2 name of the file we want to open
@@ -74,7 +73,7 @@ int ourAtoi(char* string);
 char* concat(char* s1, char* s2);
 
 /**
- * @brief This function verifies if a given fil is empty
+ * @brief This function verifies if a given file is empty
  *
  * @param file File to be verified
  * @return Bool
@@ -88,24 +87,85 @@ int isFileEmpty(FILE *file);
  */
 void removeQuotes(char* s);
 
+/**
+ * @brief Creates an output file for a query.
+ *
+ * @param n The command number
+ * @return The pointer to the created output file.
+ */
 FILE* create_output_file(int n);
 
+/**
+ * @brief Frees memory allocated for a pointer array.
+ *
+ * @param data The pointer to the GPtrArray to be freed.
+ */
 void free_ptr_array(gpointer data);
 
+/**
+ * @brief Calculates the age of a user based on current and birth dates.
+ *
+ * @param currentDate The current date in the format "YYYY/MM/DD".
+ * @param birthDate The user's birth date in the format "YYYY/MM/DD".
+ * @return The calculated age.
+ */
 int calculate_user_age(char* currentDate, char* birthDate);
 
+/**
+ * @brief Converts a string to uppercase.
+ *
+ * @param string The input string to be converted.
+ * @return The converted case_insensitive string.
+ */
 char* case_insensitive(char* string);
 
+/**
+ * @brief Converts the first letter of a string to uppercase.
+ *
+ * @param string The input string to be converted.
+ * @return The converted string.
+ */
 char* first_letter_to_upper(char* string);
 
+/**
+ * @brief Calculates the delay of a flight based on schedule and actual departure dates.
+ *
+ * @param scheduleDate The scheduled departure date in the format "YYYY/MM/DD HH:MM:SS".
+ * @param actualDate The actual departure date in the format "YYYY/MM/DD HH:MM:SS".
+ * @return The calculated delay in seconds.
+ */
 int calculate_flight_delay(char* scheduleDate, char* actualDate);
 
+/**
+ * @brief Gets the delay of a flight given its information.
+ *
+ * @param flight Flight details.
+ * @return The calculated delay in seconds.
+ */
 int get_flight_delay(FLIGHT flight);
 
+/**
+ * @brief Gets the number of nights for a reservation.
+ *
+ * @param reserv Reservation details.
+ * @return The number of nights for the reservation.
+ */
 int get_number_of_nights(RESERV reserv);
 
+/**
+ * @brief Converts an integer to a string.
+ *
+ * @param number The integer to be converted.
+ * @return The converted string.
+ */
 char* int_to_string(int number);
 
+/**
+ * @brief Converts a double to a string with three decimal places.
+ *
+ * @param number The double to be converted.
+ * @return The converted string.
+ */
 char* double_to_string(double number);
 
 #endif

@@ -29,10 +29,10 @@
  */
 struct passengers_catalog {
     GHashTable* flights; /**< Hash table to store passengers of flights records.*/
-    GHashTable* flights_id;
+    GHashTable* flights_id; /**< Hash table to link the key to the flight_id. */
 
     GHashTable* users; /**< Hash table to store flights of users records. */
-    GHashTable* users_id;
+    GHashTable* users_id; /**< Hash table to link the key to the users_id. */
 };
 
 PASS_C create_passengers_c(void){
@@ -111,11 +111,12 @@ int get_user_array_number_id(PASS_C catalog, char* id){
 void set_catalog_passenger(PASS_C catalog, PASS pass, char* user_id, char* flight_id){
     static int number_flights = 1;
     static int number_users = 1;
-
+    // If the flight is already in the flight ID hash table, associate the flight with the passenger
     if (g_hash_table_contains(catalog->flights_id,flight_id)){
         gpointer pass_id = g_hash_table_lookup(catalog->flights_id, flight_id);
         set_flight_P(pass, pass_id);
     }
+    // If the flight is not in the flight ID hash table, insert the flight ID and associate it with the passenger
     else {
         char* copy_id = g_strdup(flight_id);
         gpointer pass_id = GINT_TO_POINTER(number_flights);
@@ -123,11 +124,12 @@ void set_catalog_passenger(PASS_C catalog, PASS pass, char* user_id, char* fligh
         set_flight_P(pass, pass_id);
         number_flights++;
     }
-
+    // If the user is already in the user ID hash table, associate the user with the passenger
     if (g_hash_table_contains(catalog->users_id, user_id)){
         gpointer pass_id3 = g_hash_table_lookup(catalog->users_id, user_id);
         set_user_P(pass, pass_id3);
     }
+    // If the user is not in the user ID hash table, insert the user ID and associate it with the passenger
     else {
         char* copy_id3 = g_strdup(user_id);
         gpointer pass_id3 = GINT_TO_POINTER(number_users);
@@ -136,6 +138,7 @@ void set_catalog_passenger(PASS_C catalog, PASS pass, char* user_id, char* fligh
         number_users++;
     }
 }
+
 
 void free_passengers_c(PASS_C catalog){
     g_hash_table_destroy(catalog->flights);

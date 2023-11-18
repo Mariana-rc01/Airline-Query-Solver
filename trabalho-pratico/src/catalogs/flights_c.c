@@ -31,8 +31,8 @@
  */
 struct flights_catalog {
     GHashTable* flights; /**< Hash table that maps flight IDs to flight objects.*/
-    GHashTable* flights_id;
-    GPtrArray* flights_key;
+    GHashTable* flights_id; /**< Hash table to link the key to the flight_id. */
+    GPtrArray* flights_key; /**< Hash table to link the flight_id to the key. */
 };
 
 FLIGHTS_C create_flight_c(void){
@@ -70,11 +70,13 @@ GHashTable* get_hash_table_flight(FLIGHTS_C catalog){
 void set_catalog_flight(FLIGHTS_C catalog, FLIGHT flight, char* id){
 
     static int number_flights = 1;
-
+    
+    // Create a copy of the flight ID and insert it into the flight_id hashtable
     char* copy_id = g_strdup(id);
     gpointer flight_id = GINT_TO_POINTER(number_flights);
     g_hash_table_insert(catalog->flights_id, copy_id, flight_id);
 
+    // Create a copy of the flight ID and insert it into the flight_key GPtrArray
     char* copy_id2 = g_strdup(id);
     g_ptr_array_insert(catalog->flights_key, number_flights-1, copy_id2);
     set_flight_id(flight, flight_id);
