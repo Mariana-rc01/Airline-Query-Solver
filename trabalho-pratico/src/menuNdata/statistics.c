@@ -27,6 +27,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * @struct statistics
+ * @brief Structure containing usefull statistics
+ *
+ */
 struct statistics{
     int n;
 };

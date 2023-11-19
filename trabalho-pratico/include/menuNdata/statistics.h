@@ -1,6 +1,6 @@
 /**
  * @file statistics.h
- * @brief Module that connects all the entities
+ * @brief Module that connects the entities
  */
 
 /*
@@ -22,6 +22,11 @@
 #ifndef STATISTICS_H
 #define STATISTICS_H
 
+/**
+ * @typedef STATS
+ * @brief A pointer to the statistics structure.
+ *
+ */
 typedef struct statistics* STATS;
 
 #include "catalogs/reservations_c.h"

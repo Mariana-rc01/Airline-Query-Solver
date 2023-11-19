@@ -1,6 +1,8 @@
 /**
  * @file batch.h
- * @brief Contains the code related to the bath mode
+ * @brief Module that contains functions for executing the batch execution mode aswell as functions 
+ * for setting up the catalogs and statistics and executing queries.
+ * 
  */
 
 /*
@@ -23,11 +25,41 @@
 #define BATCH_H
 
 /**
- * @brief Initializes batch mode of operation
+ * @brief Sets up the catalog and statistics using input files and parses data into catalogs.
  *
- * @param path1 first argument received from main
- * @param path2 second argument received from main
+ * This function initializes the catalog and statistics, reads and parses data from CSV files, 
+ * and write the information to each catalog.
+ * It also checks for errors during parsing and creates error files if needed.
+ *
+ * @param manager_catalog The catalog manager conataing a catalog for each entity type(users, flights, reservations and passengers).
+ * @param statistics The statistics data structure
+ * @param path1 The path  to the folder containing input CSV files.
+ * @return 0 on success, -1 on failure.
  */
-void batch(char* path1, char*path2);
+int setup_catalog_and_stats(MANAGER manager_catalog, STATS statistics, char* path1);
 
+/**
+ * @brief Executes queries read from a file, writes results to output files, and frees resources.
+ *
+ * This function reads queries from a file, parses and executes them storing their result in a 
+ * corresponding output file. 
+ * Frees any allocated memory.
+ *
+ * @param manager_catalog The catalog manager containing a catalog for each entity type(users, flights, reservations and passengers).
+ * @param statistics The statistics data structure
+ * @param path2 The path to the file containing queries to be executed.
+ * @return 0 on success, -1 on failure.
+ */
+int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2);
+
+/**
+ * @brief Performs batch processing by setting up the catalog and executing queries.
+ *
+ * Initializes catalog components, and, receiving the given arguments from main, executes 
+ * functions to sets up catalog and statistics, executes queries, and frees allocated resources.
+ *
+ * @param path1 The path containing input CSV files.
+ * @param path2 The path to the file containing queries to be executed.
+ */
+void batch(char* path1, char* path2);
 #endif

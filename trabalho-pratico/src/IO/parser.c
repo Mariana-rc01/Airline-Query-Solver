@@ -63,20 +63,25 @@ void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS s
     free(line);
 }
 
-char** parseL (char* line, int max_fields){
+char** parseL(char* line, int max_fields) {
+    // Allocate memory for the array of fields
     char** fields = malloc(sizeof(char*) * max_fields);
     char* temp = strstr(line, ";");
     char* field = NULL;
 
     int i;
+    // Iterate through the line, extracting fields using the delimiter
     for (i = 0; temp != NULL; (temp = strstr(line, ";")), i++) {
+        // Check if the field is not the beginning of the line
         field = temp != line ? line : NULL;
 
+        // Store the field in the array
         fields[i] = field;
         line = temp + 1;
-        *temp = '\0';
+        *temp = '\0'; 
     }
 
+    // Handle the last field after the last delimiter
     field = line;
     fields[i] = field;
 

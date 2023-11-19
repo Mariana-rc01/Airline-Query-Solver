@@ -50,12 +50,12 @@ int main(int argc, char** argsv){
 
         return 0;
     }
-    if(argc == 0) {
+    if(argc == 1) {
         printf("Interactive mode not yet implemented");
         return 0;
     }
     else{
-        printf("Invalid number of arguments, must be either 0 or 3\n");
+        printf("Invalid number of arguments, must be either 1 or 3\n");
         return 0;
     }
 }

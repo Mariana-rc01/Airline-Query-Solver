@@ -88,10 +88,10 @@ void update_user_c(USERS_C catalog, char* id, double cost){
     set_user_total_spent(user, total + cost);
 }
 
-void set_catalog_user(USERS_C catalog, USER user, char* id){
-
+void set_catalog_user(USERS_C catalog, USER user, char* id) {
     static int number_users = 1;
 
+    // Copy the user ID and insert it into the user ID hash table
     char* copy_id = g_strdup(id);
     gpointer user_id = GINT_TO_POINTER(number_users);
     g_hash_table_insert(catalog->users_id, copy_id, user_id);
@@ -100,6 +100,7 @@ void set_catalog_user(USERS_C catalog, USER user, char* id){
 
     number_users++;
 }
+
 
 void free_user_c(USERS_C catalog){
     g_hash_table_destroy(catalog->users);

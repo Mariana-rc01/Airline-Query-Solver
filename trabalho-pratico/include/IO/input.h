@@ -175,6 +175,4 @@ int validate_rating(char* rating);
  */
 int validate_existence(char* string);
 
-int ourAtoi(char* string);
-
 #endif

@@ -113,30 +113,34 @@ void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id
     static int number_reservs = 1;
     static int number_users = 1;
 
+    // Copy the reservation ID and insert it into the ID hash table
     char* copy_id = g_strdup(id);
     gpointer reserv_id = GINT_TO_POINTER(number_reservs);
     g_hash_table_insert(catalog->reservs_id, copy_id, reserv_id);
 
+    // Copy the reservation ID and insert it into the reservation key array
     char* copy_id2 = strdup(id);
-    g_ptr_array_insert(catalog->reserv_key,number_reservs-1, copy_id2);
+    g_ptr_array_insert(catalog->reserv_key, number_reservs - 1, copy_id2);
     set_reservation_id(reserv, reserv_id);
 
-    if(g_hash_table_contains(catalog->user_id, user_id)){
+    // Check if the user ID already exists in the user ID hash table
+    if (g_hash_table_contains(catalog->user_id, user_id)) {
         gpointer user = g_hash_table_lookup(catalog->user_id, user_id);
         set_user_id_R(reserv, user);
-    }
-    else{
+    } 
+    else {
+        // If user ID does not exist, create a new entry for the user
         char* copy_user = g_strdup(user_id);
         gpointer user = GINT_TO_POINTER(number_users);
         g_hash_table_insert(catalog->user_id, copy_user, user);
-        set_user_id_R(reserv,user);
+        set_user_id_R(reserv, user);
 
+        // Copy the user ID and insert it into the user key array
         char* copy2 = strdup(user_id);
-        g_ptr_array_insert(catalog->user_key,number_users-1, copy2);
+        g_ptr_array_insert(catalog->user_key, number_users - 1, copy2);
         number_users++;
     }
     number_reservs++;
-
 }
 
 void free_reservations_c(RESERV_C catalog){

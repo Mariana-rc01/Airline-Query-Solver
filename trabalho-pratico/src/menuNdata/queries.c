@@ -87,57 +87,68 @@ void* query1(MANAGER manager, STATS stats, char** args){
     char* entity = args[0];
     char** result = malloc(sizeof(char*) * 9);
     int i = 0;
+
+    // Check if the entity ID is a digit, indicating it might be a flight ID
     while (isDigit(entity[i]) && entity[i] != '\0') i++;
 
-    // o id do flight é formado apenas por digitos
-    if ((i == (int)strlen(entity)) && get_flight_by_id(get_flights_c(manager),entity)) {
-        FLIGHT flight = get_flight_by_id(get_flights_c(manager),entity);
+    // If the ID is composed of digits and corresponds to a flight
+    if ((i == (int)strlen(entity)) && get_flight_by_id(get_flights_c(manager), entity)) {
+        FLIGHT flight = get_flight_by_id(get_flights_c(manager), entity);
         static flight_table_getters flight_functions[] = {
             get_flight_airline, get_flight_plane_model, get_flight_origin,
             get_flight_destination, get_flight_schedule_departure_date,
             get_flight_schedule_arrival_date
         };
 
-        for(i = 0; i < 6; i++){
+        // Retrieve flight information using getter functions
+        for (i = 0; i < 6; i++) {
             result[i] = flight_functions[i](flight);
         }
 
+        // Get the number of flights in the array based on the flight ID
         int flight_array_number = get_flight_array_number_by_id(get_pass_c(manager), entity);
         result[6] = int_to_string(flight_array_number);
 
+        // Get the delay of the flight
         int flight_delay = get_flight_delay(flight);
         result[7] = int_to_string(flight_delay);
 
         result[8] = "flight";
     }
 
-    //o id das reservas começa sempre com book
-    else if (strncmp(entity,"Book", 4) == 0 && get_reservations_by_id(get_reserv_c(manager),entity)){
+    // If the ID starts with "Book" and corresponds to a reservation
+    else if (strncmp(entity, "Book", 4) == 0 && get_reservations_by_id(get_reserv_c(manager), entity)) {
         RESERV reserv = get_reservations_by_id(get_reserv_c(manager), entity);
         static reservation_table_getters reservation_functions[] = {
             get_hotel_name, get_hotel_name, get_hotel_stars, get_begin_date, get_end_date,
             get_includes_breakfast
         };
 
-        for(i = 0; i < 6; i++){
+        // Retrieve reservation information using getter functions
+        for (i = 0; i < 6; i++) {
             result[i] = reservation_functions[i](reserv);
         }
 
+        // Get the hotel ID from the reservation
         result[0] = get_hotel_id(reserv);
 
+        // Get the number of nights in the reservation
         int nNight = get_number_of_nights(reserv);
         result[6] = int_to_string(nNight);
 
+        // Get the cost of the reservation
         double cost = get_cost(reserv);
         result[7] = double_to_string(cost);
+
         result[8] = "reservation";
     }
 
-    //se n for nem flight nem reserv pode ser user
-    else if (get_user_by_id(get_users_c(manager),entity)){
-        USER user = get_user_by_id(get_users_c(manager),entity);
+    // If the entity is a user
+    else if (get_user_by_id(get_users_c(manager), entity)) {
+        USER user = get_user_by_id(get_users_c(manager), entity);
 
-        if (strcmp(get_user_account_status(user),"INACTIVE") == 0){
+        // Check if the user is inactive, if so, return NULL
+        if (strcmp(get_user_account_status(user), "INACTIVE") == 0) {
             free(result);
             return NULL;
         }
@@ -147,40 +158,65 @@ void* query1(MANAGER manager, STATS stats, char** args){
             get_user_country_code, get_user_passport
         };
 
-        for(i = 0; i < 5; i++){
+        // Retrieve user information using getter functions
+        for (i = 0; i < 5; i++) {
             result[i] = user_functions[i](user);
         }
 
+        // Get the age of the user
         int age = get_user_age(user);
         result[2] = int_to_string(age);
 
+        // Get the number of flights associated with the user
         int array_flight = get_user_array_number_id(get_pass_c(manager), entity);
         result[5] = int_to_string(array_flight);
 
+        // Get the number of reservations associated with the user
         int array_reserv = get_user_array_reserv_id(get_reserv_c(manager), entity);
         result[6] = int_to_string(array_reserv);
 
+        // Get the total amount spent by the user
         double total_spent = get_user_total_spent(user);
         result[7] = double_to_string(total_spent);
 
         result[8] = "user";
-
-    }
-    else {
+    } else {
+        // If the entity is not recognized, free the result array and return NULL
         free(result);
         return NULL;
     }
+    
     (void) stats;
     return result;
 }
 
+
+/**
+ * @file
+ * @brief Structure representing a result entry.
+ *
+ * This structure holds information about a result entry, including an identifier (id),
+ * a date, and a type. It is commonly used to store and organize data related to query results.
+ * The members of this structure are typically filled with data retrieved from a database or
+ * another data source and are used for sorting and processing the results.
+ */
 typedef struct {
-    char* id;
-    char* date;
-    char* type;
+    char* id;      ///< Identifier associated with the result entry.
+    char* date;    ///< Date associated with the result entry.
+    char* type;    ///< Type associated with the result entry.
 } ResultEntry;
 
-// Função de comparação para qsort
+/**
+ * @brief Compares two date strings in the format "yyyy/mm/dd hh:mm:ss".
+ *
+ * This function compares two date strings, first by years, then months, days, hours,
+ * minutes, and seconds. The returning integer is positive if itemB is later than itemA,
+ * negative if itemB is earlier than itemA, and zero if they are equal.
+ *
+ * @param itemA The first date string.
+ * @param itemB The second date string.
+ * @return The result of the comparison.
+ */
 int compare_datesF(char* itemA, char* itemB) {
     // Comparar anos
     int yearA, monthA, dayA, hourA, minA,segA;
@@ -190,66 +226,91 @@ int compare_datesF(char* itemA, char* itemB) {
     sscanf(itemB, "%d/%d/%d %d:%d:%d", &yearB, &monthB, &dayB, &hourB, &minB, &segB);
 
     if (yearA != yearB){
-        return yearB - yearA;  // Ordenar por ano decrescente
+        return yearB - yearA;  // Sort by year in descending order
     }
 
-    // Comparar meses
+    // Compare months
     if (monthA != monthB){
-        return monthB - monthA;  // Ordenar por mês decrescente
+        return monthB - monthA;  // sort by month in descending order
     }
 
-    // Comparar dias
+    // Compare days
     if (dayB != dayA){
-        return dayB - dayA;  // Ordenar por dia decrescente
+        return dayB - dayA;  // Sort days by descending order
     }
 
+    //Compare hours
     if (hourB != hourA){
-        return hourB - hourA;
+        return hourB - hourA; //Sort hours in descending order
     }
 
+    //Compare minutes
     if (minB != minA){
-        return minB - minA;
+        return minB - minA; //Sort minutesin descending order
     }
 
-    return segB - segA;
+    return segB - segA; //Sort seconds in descending order
 }
 
+/**
+ * @brief Compares two ResultEntry structures based on date and ID.
+ *
+ * This function is designed to be used with the qsort function to sort an array
+ * of ResultEntry structures. It first compares dates using the compare_datesF
+ * function and then, in case of a tie, compares IDs using strcmp. The result is
+ * suitable for sorting entries in chronological order and alphabetical order by ID.
+ *
+ * @param a Pointer to the first ResultEntry.
+ * @param b Pointer to the second ResultEntry.
+ * @return The result of the comparison.
+ */
 int compare_results(const void* a, const void* b) {
     ResultEntry* entryA = (ResultEntry*)a;
     ResultEntry* entryB = (ResultEntry*)b;
 
-    // Compare as datas
+    // Compare dates
     int dateComparison = compare_datesF(entryA->date, entryB->date);
     if (dateComparison != 0) {
         return dateComparison;
     }
 
-    // Em caso de empate, compare os IDs
+    // In case of a tie compare Ids
     return strcmp(entryA->id, entryB->id);
 }
 
-// Função para ordenar o array de resultados com base nos nomes dos usuários e IDs em caso de empate
+/**
+ * @brief Sorts an array of results based on dates and IDs in case of a tie.
+ *
+ * This function takes arrays of IDs, dates, and types and sorts their content based on
+ * chronological order (dates) and alphabetical order (IDs). The input arrays are then
+ * modified to represent their sorted order.
+ *
+ * @param id An array of user IDs.
+ * @param result_count The number of entries in the arrays.
+ * @param date An array of date strings.
+ * @param types An array of result types.
+ */
 void sort_results2(char** id, int result_count, char** date, char** types) {
     ResultEntry* result_array = malloc(sizeof(ResultEntry) * result_count);
 
-    // Preencher o array de UserInfo com os dados dos usuários
+    // Fill UserInfo array with user data
     for (int i = 0; i < result_count; i++) {
         result_array[i].id = id[i];
         result_array[i].date = date[i];
         result_array[i].type = types[i];
     }
 
-    // Ordenar o array de Users
+    // Sort User array
     qsort(result_array, result_count, sizeof(ResultEntry), compare_results);
 
-    // Reorganizar o array de resultados com base na ordem dos UserInfo ordenados
+    // Reorganize the arrays based of the sorted UserInfo array
     for (int i = 0; i < result_count; i++) {
         id[i] = result_array[i].id;
         date[i] = result_array[i].date;
         types[i] = result_array[i].type;
     }
 
-    // Liberar a memória alocada
+    // Free alocated memory
     free(result_array);
 }
 
@@ -266,18 +327,18 @@ void* query2(MANAGER manager, STATS stats, char** args){
     char** types = malloc(sizeof(char*)*256);
     int count = 0;
 
-    //primeiro ver se o user_id existe ou se é inactive
+    //Check if user_id exists
     if (!userE){
         return NULL;
     }
     else if (strcmp(get_user_account_status(userE), "INACTIVE") == 0){
         return NULL;
     }
-    else if (length_args == 1){ //listar todos com os tipos
+    else if (length_args == 1){ //list all types
         GPtrArray* flights = get_user_array_by_id(get_pass_c(manager),user);
         GPtrArray* reservations = get_user_reserv_array_by_id(reservC,user);
 
-        // Iterar sobre os voos
+        // Iterate over flights
         for (int i = 0; i < (int)flights->len; i++) {
             char* flightI = g_ptr_array_index(flights, i);
             FLIGHT flight = get_flight_by_id(flightsC,flightI);
@@ -290,7 +351,7 @@ void* query2(MANAGER manager, STATS stats, char** args){
             count++;
         }
 
-        // Iterar sobre as reservas
+        // Iterate over reservations
         for (int i = 0; i < (int)reservations->len; i++) {
             gpointer reservationI = g_ptr_array_index(reservations, i);
             RESERV reservation = get_reservations_by_gpointer(reservC,reservationI);
@@ -307,7 +368,7 @@ void* query2(MANAGER manager, STATS stats, char** args){
     else if (strcmp(args[1],"reservations") == 0){
         GPtrArray* reservations = get_user_reserv_array_by_id(reservC,user);
 
-        // Iterar sobre as reservas
+        // Iterate over reservations
         for (int i = 0; i < (int)reservations->len; i++) {
             gpointer reservationI = g_ptr_array_index(reservations, i);
             RESERV reservation = get_reservations_by_gpointer(reservC,reservationI);
@@ -324,7 +385,7 @@ void* query2(MANAGER manager, STATS stats, char** args){
     else if (strcmp(args[1],"flights") == 0){
         GPtrArray* flights = get_user_array_by_id(get_pass_c(manager), user);
 
-        // Iterar sobre os voos
+        // Iterate over flights
         for (int i = 0; i < (int)flights->len; i++) {
             char* flightI = g_ptr_array_index(flights, i);
             FLIGHT flight = get_flight_by_id(flightsC,flightI);
@@ -339,7 +400,7 @@ void* query2(MANAGER manager, STATS stats, char** args){
     }
     else return NULL;
 
-    // Ordenar os resultados
+    // Sort ressults
     char** finalResult = malloc(sizeof(char*)*256);
     finalResult[0] = int_to_string(count);
     sort_results2(ids, count, dates, types);
@@ -350,10 +411,10 @@ void* query2(MANAGER manager, STATS stats, char** args){
         char *date = strndup(dates[j-2], 10);
         int total_size = snprintf(NULL, 0,"%s;%s;%s", ids[j-2], date, types[j-2]) + 1;
 
-        // Alocar memória para a string formatada
+        // Alocatte memory to formatted string
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
-        // Criar a string formatada
+        // Create formatted string
         snprintf(formatted_string, total_size, "%s;%s;%s", ids[j-2], date, types[j-2]);
 
         finalResult[j] = formatted_string;
@@ -373,20 +434,20 @@ void* query3(MANAGER manager, STATS stats, char** args){
     char* hotel_id = args[0];
     RESERV_C catalog = get_reserv_c(manager);
 
-    // Criar um array para armazenar ponteiros para as reservas
+    // Create array that contains pointers to reservation
     double rating = 0;
     int i = 0;
 
     GHashTable* reserv = get_hash_table_reserv(catalog);
 
-    // Iterar sobre as reservas no catálogo
+    // Iterate over reservations in the catalog
     GHashTableIter iter;
     gpointer key, value;
     g_hash_table_iter_init(&iter, reserv);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         RESERV reservation = (RESERV)value;
 
-        // Verificar se a reserva pertence ao hotel desejado
+        // Verify if a reservation belongs to the desired hotel
         if (strcmp(get_hotel_id(reservation), hotel_id) == 0) {
             char* ratingH = get_rating(reservation);
             double add;
@@ -406,17 +467,34 @@ void* query3(MANAGER manager, STATS stats, char** args){
     return finalResult;
 }
 
+/**
+ * @typedef RESERVInfo
+ * @brief Structure representing reservation information.
+ *
+ * This structure holds information about a reservation, including the reservation ID
+ * and the date of the reservation. It is used for sorting and organizing reservation data.
+ */
 typedef struct {
     char* id;
     char* date;
 } RESERVInfo;
 
-// Função de comparação para qsort
+/**
+ * @brief Compares two date strings in the format "yyyy/mm/dd".
+ *
+ * This function compares two date strings, first by years, then months, then days.
+ * The returning integer is positive if itemB is later than itemA, negative if itemB
+ * is earlier than itemA, and zero if they are equal.
+ *
+ * @param a Pointer to the first date string.
+ * @param b Pointer to the second date string.
+ * @return The result of the comparison.
+ */
 int compare_dates(const void* a, const void* b) {
     char* itemA = (char*)a;
     char* itemB = (char*)b;
 
-    // Comparar anos
+    // Compare years
     int yearA, monthA, dayA;
     sscanf(itemA, "%d/%d/%d", &yearA, &monthA, &dayA);
 
@@ -424,49 +502,69 @@ int compare_dates(const void* a, const void* b) {
     sscanf(itemB, "%d/%d/%d", &yearB, &monthB, &dayB);
 
     if (yearA != yearB){
-        return yearB - yearA;  // Ordenar por ano decrescente
+        return yearB - yearA;  // Sort by year in descending order
     }
 
-    // Comparar meses
+    // Compare months
     if (monthA != monthB){
-        return monthB - monthA;  // Ordenar por mês decrescente
+        return monthB - monthA;  // Sort by month in descending order
     }
 
-    // Comparar dias
-    return dayB - dayA;  // Ordenar por dia decrescente
+    // Compare days
+    return dayB - dayA;  // Sort by day in descending order
 }
 
-// Função para comparar duas reservas para ordenação
+/**
+ * @brief Compares two reservations based on their dates and IDs.
+ *
+ * This function is designed to be used with the qsort function to compare two RESERVInfo 
+ * structures. It first compares dates using the compare_dates function and then,
+ * in case of a tie, compares reservation IDs using strcmp.
+ *
+ * @param a Pointer to the first RESERVInfo structure.
+ * @param b Pointer to the second RESERVInfo structure.
+ * @return The result of the comparison.
+ */
 int compare_reservations(const void* a, const void* b) {
     RESERVInfo* res_a = (RESERVInfo*)a;
     RESERVInfo* res_b = (RESERVInfo*)b;
 
-    // Comparar as datas de início
+    // Compare begin dates
     int date_compare = compare_dates(res_a->date, res_b->date);
     if (date_compare != 0) {
         return date_compare;
     }
 
+    //If begin dates are equal use the reservation Id as a tiebreaker
     int compare = strcmp(res_a->id, res_b->id);
-
-    // Se as datas de início forem iguais, usar o identificador da reserva como critério de desempate
     return compare;
 }
 
-// Função para ordenar o array de resultados com base nos nomes dos usuários e IDs em caso de empate
+/**
+ * @brief Sorts an array of reservation results based on dates and reservation IDs.
+ *
+ * This function takes arrays of reservation IDs and dates and organizes them based on
+ * chronological order (dates) and alphabetical order (IDs). It uses the compare_reservations
+ * function for the sorting process. The input arrays are thenmodified to represent their 
+ * sorted order.
+ *
+ * @param id An array of reservation IDs.
+ * @param result_count The number of entries in the arrays.
+ * @param date An array of reservation dates.
+ */
 void sort_resultsR(char** id, int result_count, char** date) {
     RESERVInfo* reserv_array = malloc(sizeof(RESERVInfo) * result_count);
 
-    // Preencher o array de UserInfo com os dados dos usuários
+    // Fill UserInfo array with user data
     for (int i = 0; i < result_count; i++) {
         reserv_array[i].id = id[i];
         reserv_array[i].date = date[i];
     }
 
-    // Ordenar o array de Users
+    // Sort user array
     qsort(reserv_array, result_count, sizeof(RESERVInfo), compare_reservations);
 
-    // Reorganizar o array de resultados com base na ordem dos UserInfo ordenados
+    // Reorganize the arrays based in the sorted UserInfo array
     for (int i = 0; i < result_count; i++) {
         id[i] = reserv_array[i].id;
         date[i] = reserv_array[i].date;
@@ -479,21 +577,21 @@ void* query4(MANAGER manager, STATS stats, char** args){
     char* hotel_id = args[0];
     RESERV_C catalog = get_reserv_c(manager);
 
-    // Criar um array para armazenar ponteiros para as reservas
+    // Create an array to store pointers to the reservations
     char** reservations_array = malloc(get_number_reserv_id(catalog) * sizeof(char*));
     char** dates_array = malloc(get_number_reserv_id(catalog) * sizeof(char*));
     int i = 0;
 
     GHashTable* reserv = get_hash_table_reserv(catalog);
 
-    // Iterar sobre as reservas no catálogo
+    // Iterate over catalog reservations
     GHashTableIter iter;
     gpointer key, value;
     g_hash_table_iter_init(&iter, reserv);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         RESERV reservation = (RESERV)value;
 
-        // Verificar se a reserva pertence ao hotel desejado
+        // Verify if a reservation belongs to a given hotel
         if (strcmp(get_hotel_id(reservation), hotel_id) == 0) {
             reservations_array[i] = strdup(get_reserv_from_key(catalog,GINT_TO_POINTER(get_reservation_id(reservation))));
             dates_array[i] = get_begin_date(reservation);
@@ -501,7 +599,7 @@ void* query4(MANAGER manager, STATS stats, char** args){
         }
     }
 
-    // Ordenar as reservas usando a função de comparação
+    // Sort reservations using sort function
     sort_resultsR(reservations_array,i,dates_array);
 
     char** finalResult = malloc(sizeof(char*)*600);
@@ -513,10 +611,10 @@ void* query4(MANAGER manager, STATS stats, char** args){
         get_user_from_key(catalog, GINT_TO_POINTER(get_user_id_R(reservation))),
         get_rating(reservation), get_cost(reservation)) + 1;
 
-        // Alocar memória para a string formatada
+        // Allocate memory to formatted string
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
-        // Criar a string formatada
+        // Create fromatted string
         snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s;%.3f",reservations_array[j-1],
         get_begin_date(reservation), get_end_date(reservation),
         get_user_from_key(catalog, GINT_TO_POINTER(get_user_id_R(reservation))),
@@ -524,7 +622,8 @@ void* query4(MANAGER manager, STATS stats, char** args){
 
         finalResult[j] = formatted_string;
     }
-
+    
+    //Free Allocated memory
     free(reservations_array);
     free(dates_array);
 
@@ -532,42 +631,68 @@ void* query4(MANAGER manager, STATS stats, char** args){
     return finalResult;
 }
 
+/**
+ * @typedef FlightInfo
+ * @brief Structure representing flight information.
+ *
+ * This structure holds information about a flight, including the flight ID
+ * and the date of the flight. It is used for sorting and organizing flight data.
+ */
 typedef struct {
     char* id;
     char* date;
 } FlightInfo;
 
-// Função para comparar duas reservas para ordenação
+/**
+ * @brief Compares two flight entries based on their dates and IDs.
+ *
+ * This function is compares two FlightInfo structures. It first compares dates 
+ * using the compare_datesF function, and then, in case of a tie, compares flight IDs using strcmp.
+ *
+ * @param a Pointer to the first FlightInfo structure.
+ * @param b Pointer to the second FlightInfo structure.
+ * @return The result of the comparison.
+ */
 int compare_flights(const void* a, const void* b) {
     FlightInfo* f_a = (FlightInfo*)a;
     FlightInfo* f_b = (FlightInfo*)b;
 
-    // Comparar as datas de início
+    // Compare begin dates
     int date_compare = compare_datesF(f_a->date, f_b->date);
     if (date_compare != 0) {
         return date_compare;
     }
 
+    // If the begin dates are the same use flight Id as a tiebreaker
     int compare = strcmp(f_a->id, f_b->id);
-
-    // Se as datas de início forem iguais, usar o identificador da reserva como critério de desempate
     return compare;
 }
 
-// Função para ordenar o array de resultados com base nos nomes dos usuários e IDs em caso de empate
+/**
+ * @brief Sorts an array of flight results based on dates and flight IDs.
+ *
+ * This function takes arrays of flight IDs and dates and organizes them based on
+ * chronological order (dates) and alphabetical order (IDs). It uses the compare_flights
+ * function for the sorting process. The input arrays are then modified to represent their
+ * the sorted order.
+ *
+ * @param id An array of flight IDs.
+ * @param result_count The number of entries in the arrays.
+ * @param date An array of flight dates.
+ */
 void sort_resultsF(char** id, int result_count, char** date) {
     FlightInfo* flight_array = malloc(sizeof(FlightInfo) * result_count);
 
-    // Preencher o array de FlightInfo com os dados dos usuários
+    // Fill FlightInfo array with user data
     for (int i = 0; i < result_count; i++) {
         flight_array[i].id = id[i];
         flight_array[i].date = date[i];
     }
 
-    // Ordenar o array de Flights
+    // Sort flights array
     qsort(flight_array, result_count, sizeof(FlightInfo), compare_flights);
 
-    // Reorganizar o array de resultados com base na ordem dos FlightInfo ordenados
+    // Reorganize the resulting arrays based off sorted FlightInfo array
     for (int i = 0; i < result_count; i++) {
         id[i] = flight_array[i].id;
         date[i] = flight_array[i].date;
@@ -576,24 +701,20 @@ void sort_resultsF(char** id, int result_count, char** date) {
     free(flight_array);
 }
 
-/* Ver origem de um voo,se for a mesma origem e a data estimada de partida está entre o args[2] e args[3]
- adiciona para um array o id do voo e a data de partida
- Ordena os voos da data mais antiga para a mais recente, se forem iguais, compara pelos voos
-Retorna id;schedule_departure_date;destination;airline;plane_model*/
 void* query5(MANAGER manager, STATS stats, char** args){
     char* origin = args[0];
     char* begin_date = args[1];
     char* end_date = args[2];
     FLIGHTS_C catalog = get_flights_c(manager);
 
-    // Criar um array para armazenar ponteiros para as reservas
+    // Create an array to store pointers to reservations
     char** flights_array = malloc(512 * sizeof(char*));
     char** dates_array = malloc(512 * sizeof(char*));
     int i = 0;
 
     GHashTable* flights = get_hash_table_flight(catalog);
 
-    // Iterar sobre as reservas no catálogo
+    // Iterate over catalog reservations
     GHashTableIter iter;
     gpointer key, value;
     g_hash_table_iter_init(&iter, flights);
@@ -601,7 +722,7 @@ void* query5(MANAGER manager, STATS stats, char** args){
         FLIGHT flight = (FLIGHT)value;
         char* date = get_flight_schedule_arrival_date(flight);
 
-        // Verificar se a reserva pertence ao hotel desejado
+        // Verify if a reservation belongs to the desire hotel
         if (strcmp(get_flight_origin(flight), origin) == 0 &&
         (compare_datesF(begin_date,date) >= 0 && compare_datesF(date,end_date) >= 0)) {
             flights_array[i] = get_flight_from_key(catalog,GINT_TO_POINTER(get_flight_id(flight)));
@@ -610,7 +731,7 @@ void* query5(MANAGER manager, STATS stats, char** args){
         }
     }
 
-    // Ordenar os voos usando a função de comparação
+    // Sort flights using compare function
     sort_resultsF(flights_array,i,dates_array);
 
     char** finalResult = malloc(sizeof(char*)*600);
@@ -623,10 +744,10 @@ void* query5(MANAGER manager, STATS stats, char** args){
         get_flight_schedule_departure_date(flight), get_flight_destination(flight),
         get_flight_airline(flight),get_flight_plane_model(flight)) + 1;
 
-        // Alocar memória para a string formatada
+        // Alocatte memory to formatted string
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
-        // Criar a string formatada
+        // Create formatted string
         snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s", flights_array[j-1],
         get_flight_schedule_departure_date(flight), get_flight_destination(flight),
         get_flight_airline(flight),get_flight_plane_model(flight));
@@ -640,42 +761,70 @@ void* query5(MANAGER manager, STATS stats, char** args){
     return finalResult;
 }
 
+/**
+ * @typedef FlightInfo
+ * @brief Structure representing flight information.
+ *
+ * This structure holds information about a flight, including the flight ID
+ * and the date of the flight. It is used for sorting and organizing flight data.
+ */
 typedef struct {
     char* name;
     int nPassengers;
 } AirportInfo;
 
-// Função para comparar duas reservas para ordenação
+/**
+ * @brief Compares two airport entries based on the number of passengers and airport names.
+ *
+ * This function is designed to be used with the qsort function to sort an array of
+ * AirportInfo structures. It first compares the number of passengers in descending
+ * order and, in case of a tie, compares airport names using strcmp. The result is suitable
+ * for sorting entries based on passenger count and alphabetical order of airport names.
+ *
+ * @param a Pointer to the first AirportInfo structure.
+ * @param b Pointer to the second AirportInfo structure.
+ * @return The result of the comparison.
+ */
 int sort_airports(const void* a, const void* b) {
     AirportInfo* f_a = (AirportInfo*)a;
     AirportInfo* f_b = (AirportInfo*)b;
 
-    // Comparar o numero de passageiros
+    // Compare number of passengers
     int date_compare = f_b->nPassengers - f_a->nPassengers;
     if (date_compare != 0) {
         return date_compare;
     }
 
+    // If the number of passengers is the same, use airport name as a tiebreaker
     int compare = strcmp(f_a->name, f_b->name);
-
-    // Se o nº de passageiros forem iguais, usar o nome do aeroporto como critério de desempate
     return compare;
 }
 
-// Função para obter a posição do aeroporto no array ou -1 se não estiver presente
+/**
+ * @brief Finds the position of an airport in an array or returns -1 if not present.
+ *
+ * This function searches for the specified airport name in an array of AirportInfo
+ * structures. If the airport name is found, the function returns the position in the
+ * array; otherwise, it returns -1 to indicate that the airport is not present.
+ *
+ * @param array The array of AirportInfo structures.
+ * @param size The number of entries in the array.
+ * @param airport The name of the airport to search for.
+ * @return The position of the airport in the array or -1 if not found.
+ */
 int findAirportPosition(AirportInfo* array, int size, const char* airport) {
     for (int i = 0; i < size; i++) {
         if (strcmp(array[i].name, airport) == 0) {
-            // O nome do aeroporto foi encontrado no array
+            // The airport name was found in the array
             return i;
         }
     }
-    // O nome do aeroporto não foi encontrado no array
+    // Airport name was not found in the array
     return -1;
 }
 
-//recebe <Year> e N
-// retorna nome do aeroporto e o numero de passageiros
+// receives <Year> and N
+// retorn airport name and number of passengers
 void* query6(MANAGER manager, STATS stats, char** args){
     char* Year = args[0];
     int N = ourAtoi(args[1]);
@@ -688,7 +837,7 @@ void* query6(MANAGER manager, STATS stats, char** args){
 
     GHashTable* flights = get_hash_table_flight(catalog);
 
-    // Iterar sobre as reservas no catálogo
+    // Iterate over catalog reservations
     GHashTableIter iter;
     gpointer key, value;
     g_hash_table_iter_init(&iter, flights);
@@ -703,9 +852,9 @@ void* query6(MANAGER manager, STATS stats, char** args){
         char* id_flight = get_flight_from_key(catalog, GINT_TO_POINTER(get_flight_id(flight)));
         int pass = get_flight_array_number_by_id(passengers, id_flight);
 
-        // Verificar se o airport pertence ao ano desejado
+        // Verify if a airport belongs to the desired year
         if (strcmp(Year,truncatedString) == 0){
-        //verificar se o nome do aeroporto já foi registado, se foi aumenta apenas o nº de passageiros
+        // Verify if an airport name, has been registered, if it was increment nº of passengers
             int airportPosition = findAirportPosition(array, i, origin);
             if (airportPosition != -1){ // é para incrementar no array[i] que tem aquele aeroporto
                 array[airportPosition].nPassengers += pass;
@@ -717,7 +866,7 @@ void* query6(MANAGER manager, STATS stats, char** args){
             }
 
             int airportPositionD = findAirportPosition(array, i, destination);
-            if (airportPositionD != -1){ // é para incrementar no array[i] que tem aquele aeroporto
+            if (airportPositionD != -1){ // Increments in the array[i] with the airport
                 array[airportPositionD].nPassengers += pass;
             }
             else {
@@ -728,7 +877,7 @@ void* query6(MANAGER manager, STATS stats, char** args){
         }
     }
 
-    // Ordenar os voos usando a função de comparação
+    // Sort flights using compare function
     qsort(array, i, sizeof(AirportInfo), sort_airports);
 
 
@@ -738,10 +887,10 @@ void* query6(MANAGER manager, STATS stats, char** args){
         int total_size = snprintf(NULL, 0,"%s;%d", array[j-1].name,
         array[j-1].nPassengers) + 1;
 
-        // Alocar memória para a string formatada
+        // Alocatte memory to a formatted string
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
-        // Criar a string formatada
+        // Create fromatted string
         snprintf(formatted_string, total_size, "%s;%d", array[j-1].name, array[j-1].nPassengers);
 
         finalResult[j] = formatted_string;
