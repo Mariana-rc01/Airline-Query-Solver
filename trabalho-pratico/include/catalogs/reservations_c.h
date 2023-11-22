@@ -22,6 +22,8 @@
 #define RESERVATIONS_C_H
 
 #include "entities/reservations.h"
+#include "utils/utils.h"
+
 #include <glib.h>
 
 /**

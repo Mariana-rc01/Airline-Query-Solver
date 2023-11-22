@@ -22,10 +22,6 @@
 #include "entities/flights.h"
 #include "catalogs/manager_c.h"
 
-#include "menuNdata/statistics.h"
-#include "IO/input.h"
-#include "utils/utils.h"
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -209,7 +205,7 @@ int verify_flight(char** fields){
     return 1;
 }
 
-int build_flight(char** flight_fields, void* catalog, STATS stats){
+int build_flight(char** flight_fields, void* catalog){
 
     FLIGHTS_C flightsC = (FLIGHTS_C) catalog;
 
@@ -235,7 +231,6 @@ int build_flight(char** flight_fields, void* catalog, STATS stats){
     set_flight_notes(flight,flight_fields[12]);
 
     insert_flight_c(flight,flightsC,flight->id);
-    (void) stats;
 
     return 1;
 }

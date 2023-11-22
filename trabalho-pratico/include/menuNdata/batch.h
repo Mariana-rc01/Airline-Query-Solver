@@ -2,7 +2,7 @@
  * @file batch.h
  * @brief Module that contains functions for executing the batch execution mode aswell as functions 
  * for setting up the catalogs and statistics and executing queries.
- * 
+ *
  */
 
 /*
@@ -24,33 +24,43 @@
 #ifndef BATCH_H
 #define BATCH_H
 
+#include "catalogs/manager_c.h"
+#include "entities/flights.h"
+#include "entities/passengers.h"
+#include "entities/reservations.h"
+#include "entities/users.h"
+#include "menuNdata/queries.h"
+#include "IO/parser.h"
+#include "IO/input.h"
+#include "IO/output.h"
+#include "utils/utils.h"
+
+
 /**
- * @brief Sets up the catalog and statistics using input files and parses data into catalogs.
+ * @brief Sets up the catalog using input files and parses data into catalogs.
  *
  * This function initializes the catalog and statistics, reads and parses data from CSV files, 
  * and write the information to each catalog.
  * It also checks for errors during parsing and creates error files if needed.
  *
  * @param manager_catalog The catalog manager conataing a catalog for each entity type(users, flights, reservations and passengers).
- * @param statistics The statistics data structure
  * @param path1 The path  to the folder containing input CSV files.
  * @return 0 on success, -1 on failure.
  */
-int setup_catalog_and_stats(MANAGER manager_catalog, STATS statistics, char* path1);
+int set_catalogs(MANAGER manager_catalog, char* path1);
 
 /**
  * @brief Executes queries read from a file, writes results to output files, and frees resources.
  *
  * This function reads queries from a file, parses and executes them storing their result in a 
- * corresponding output file. 
+ * corresponding output file.
  * Frees any allocated memory.
  *
  * @param manager_catalog The catalog manager containing a catalog for each entity type(users, flights, reservations and passengers).
- * @param statistics The statistics data structure
  * @param path2 The path to the file containing queries to be executed.
  * @return 0 on success, -1 on failure.
  */
-int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2);
+int execute_queries(MANAGER manager_catalog, char* path2);
 
 /**
  * @brief Performs batch processing by setting up the catalog and executing queries.
@@ -62,4 +72,5 @@ int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2);
  * @param path2 The path to the file containing queries to be executed.
  */
 void batch(char* path1, char* path2);
+
 #endif

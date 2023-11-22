@@ -18,17 +18,8 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-#include "catalogs/users_c.h"
+
 #include "menuNdata/queries.h"
-#include "catalogs/reservations_c.h"
-#include "catalogs/flights_c.h"
-#include "catalogs/manager_c.h"
-#include "entities/flights.h"
-#include "entities/users.h"
-#include "entities/reservations.h"
-#include "menuNdata/statistics.h"
-#include "utils/utils.h"
-#include "IO/input.h"
 
 #include <glib.h>
 #include <stdio.h>
@@ -37,7 +28,7 @@
 #include <locale.h>
 
 
-void* parser_query(MANAGER catalog, STATS stats, char* line){
+void* parser_query(MANAGER catalog,char* line){
     int i = 0;
     char** args = malloc(sizeof(char*) * MAX_ARGS);
     char* copia = strdup(line);
@@ -51,8 +42,7 @@ void* parser_query(MANAGER catalog, STATS stats, char* line){
 
             token = strtok(NULL,"\"");
             char* temp1 = concat(temp,token);
-            args[i] = strdup(temp1);
-            free(temp1);
+            args[i] = temp1;
             i++;
         } else {
             args[i] = strdup(token);
@@ -75,7 +65,7 @@ void* parser_query(MANAGER catalog, STATS stats, char* line){
                                     query4, query5, query6,
                                     query7, query8, query9, query10};
 
-    void* result = queries[query-1](catalog, stats, args+1);
+    void* result = queries[query-1](catalog, args+1);
 
     for (int k = 0; k < i; k++) free(args[k]);
     free(args);
@@ -83,7 +73,7 @@ void* parser_query(MANAGER catalog, STATS stats, char* line){
     return result;
 }
 
-void* query1(MANAGER manager, STATS stats, char** args){
+void* query1(MANAGER manager,char** args){
     char* entity = args[0];
     char** result = malloc(sizeof(char*) * 9);
     int i = 0;
@@ -120,17 +110,14 @@ void* query1(MANAGER manager, STATS stats, char** args){
     else if (strncmp(entity, "Book", 4) == 0 && get_reservations_by_id(get_reserv_c(manager), entity)) {
         RESERV reserv = get_reservations_by_id(get_reserv_c(manager), entity);
         static reservation_table_getters reservation_functions[] = {
-            get_hotel_name, get_hotel_name, get_hotel_stars, get_begin_date, get_end_date,
+            get_hotel_id, get_hotel_name, get_hotel_stars, get_begin_date, get_end_date,
             get_includes_breakfast
         };
 
         // Retrieve reservation information using getter functions
-        for (i = 0; i < 6; i++) {
+        for(i = 0; i < 6; i++){
             result[i] = reservation_functions[i](reserv);
         }
-
-        // Get the hotel ID from the reservation
-        result[0] = get_hotel_id(reserv);
 
         // Get the number of nights in the reservation
         int nNight = get_number_of_nights(reserv);
@@ -146,10 +133,12 @@ void* query1(MANAGER manager, STATS stats, char** args){
     // If the entity is a user
     else if (get_user_by_id(get_users_c(manager), entity)) {
         USER user = get_user_by_id(get_users_c(manager), entity);
+        char* status = get_user_account_status(user);
 
         // Check if the user is inactive, if so, return NULL
-        if (strcmp(get_user_account_status(user), "INACTIVE") == 0) {
+        if (strcmp(status, "INACTIVE") == 0) {
             free(result);
+            free(status);
             return NULL;
         }
 
@@ -159,13 +148,12 @@ void* query1(MANAGER manager, STATS stats, char** args){
         };
 
         // Retrieve user information using getter functions
-        for (i = 0; i < 5; i++) {
+        for(i = 0; i < 5; i++){
+            if(i != 2){
             result[i] = user_functions[i](user);
+            }
+            else result[i] = int_to_string(get_user_age(user));
         }
-
-        // Get the age of the user
-        int age = get_user_age(user);
-        result[2] = int_to_string(age);
 
         // Get the number of flights associated with the user
         int array_flight = get_user_array_number_id(get_pass_c(manager), entity);
@@ -180,13 +168,13 @@ void* query1(MANAGER manager, STATS stats, char** args){
         result[7] = double_to_string(total_spent);
 
         result[8] = "user";
+        free(status);
     } else {
         // If the entity is not recognized, free the result array and return NULL
         free(result);
         return NULL;
     }
-    
-    (void) stats;
+
     return result;
 }
 
@@ -314,7 +302,7 @@ void sort_results2(char** id, int result_count, char** date, char** types) {
     free(result_array);
 }
 
-void* query2(MANAGER manager, STATS stats, char** args){
+void* query2(MANAGER manager,char** args){
     char* user = args[0];
     int length_args = 0;
     while (args[length_args] != NULL) length_args++;
@@ -329,9 +317,18 @@ void* query2(MANAGER manager, STATS stats, char** args){
 
     //Check if user_id exists
     if (!userE){
+        free(ids);
+        free(dates);
+        free(types);
         return NULL;
     }
-    else if (strcmp(get_user_account_status(userE), "INACTIVE") == 0){
+
+    char* status = get_user_account_status(userE);
+    if (strcmp(status, "INACTIVE") == 0){
+        free(status);
+        free(ids);
+        free(dates);
+        free(types);
         return NULL;
     }
     else if (length_args == 1){ //list all types
@@ -363,6 +360,7 @@ void* query2(MANAGER manager, STATS stats, char** args){
             dates[count] = concat(date," 00:00:00");
             types[count] = "reservation";
             count++;
+            free(date);
         }
     }
     else if (strcmp(args[1],"reservations") == 0){
@@ -380,6 +378,7 @@ void* query2(MANAGER manager, STATS stats, char** args){
             dates[count] = concat(date," 00:00:00");
             types[count] = "reservation";
             count++;
+            free(date);
         }
     }
     else if (strcmp(args[1],"flights") == 0){
@@ -398,7 +397,13 @@ void* query2(MANAGER manager, STATS stats, char** args){
             count++;
         }
     }
-    else return NULL;
+    else {
+        free(status);
+        free(ids);
+        free(types);
+        free(dates);
+        return NULL;
+    }
 
     // Sort ressults
     char** finalResult = malloc(sizeof(char*)*256);
@@ -408,29 +413,35 @@ void* query2(MANAGER manager, STATS stats, char** args){
     if (length_args == 1) finalResult[1] = "all";
     else finalResult[1] = strdup(args[1]);
     for (int j = 2; j < count+2; j++) {
-        char *date = strndup(dates[j-2], 10);
-        int total_size = snprintf(NULL, 0,"%s;%s;%s", ids[j-2], date, types[j-2]) + 1;
+        char* date = strndup(dates[j-2], 10);
+        char* id = ids[j-2];
+        char* type = types[j-2];
+        int total_size = snprintf(NULL, 0,"%s;%s;%s", id, date, type) + 1;
 
         // Alocatte memory to formatted string
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
         // Create formatted string
-        snprintf(formatted_string, total_size, "%s;%s;%s", ids[j-2], date, types[j-2]);
+        snprintf(formatted_string, total_size, "%s;%s;%s", id, date, type);
 
-        finalResult[j] = formatted_string;
-        free(ids[j-2]);
-        free(dates[j-2]);
-        //free(types[j-1]);
+        finalResult[j] = strdup(formatted_string);
+        free(formatted_string);
+        free(date);
     }
 
+    for (int j = 0; j < count;j++){
+        free(ids[j]);
+        free(dates[j]);
+    }
+
+    free(status);
     free(ids);
     free(dates);
     free(types);
-    (void) stats;
     return finalResult;
 }
 
-void* query3(MANAGER manager, STATS stats, char** args){
+void* query3(MANAGER manager,char** args){
     char* hotel_id = args[0];
     RESERV_C catalog = get_reserv_c(manager);
 
@@ -446,9 +457,10 @@ void* query3(MANAGER manager, STATS stats, char** args){
     g_hash_table_iter_init(&iter, reserv);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         RESERV reservation = (RESERV)value;
+        char* hotel_idC = get_hotel_id(reservation);
 
         // Verify if a reservation belongs to the desired hotel
-        if (strcmp(get_hotel_id(reservation), hotel_id) == 0) {
+        if (strcmp(hotel_idC, hotel_id) == 0) {
             char* ratingH = get_rating(reservation);
             double add;
             sscanf(ratingH, "%lf", &add);
@@ -456,14 +468,13 @@ void* query3(MANAGER manager, STATS stats, char** args){
             i++;
             free(ratingH);
         }
+        free(hotel_idC);
     }
 
     rating = rating/(double)i;
 
-    char* finalResult = malloc(sizeof(char*)*128);
-    finalResult = double_to_string(rating);
+    char* finalResult = double_to_string(rating);
 
-    (void) stats;
     return finalResult;
 }
 
@@ -573,7 +584,7 @@ void sort_resultsR(char** id, int result_count, char** date) {
     free(reserv_array);
 }
 
-void* query4(MANAGER manager, STATS stats, char** args){
+void* query4(MANAGER manager,char** args){
     char* hotel_id = args[0];
     RESERV_C catalog = get_reserv_c(manager);
 
@@ -590,13 +601,15 @@ void* query4(MANAGER manager, STATS stats, char** args){
     g_hash_table_iter_init(&iter, reserv);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         RESERV reservation = (RESERV)value;
+        char* hotel_idC = get_hotel_id(reservation);
 
         // Verify if a reservation belongs to a given hotel
-        if (strcmp(get_hotel_id(reservation), hotel_id) == 0) {
+        if (strcmp(hotel_idC, hotel_id) == 0) {
             reservations_array[i] = strdup(get_reserv_from_key(catalog,GINT_TO_POINTER(get_reservation_id(reservation))));
             dates_array[i] = get_begin_date(reservation);
             i++;
         }
+        free(hotel_idC);
     }
 
     // Sort reservations using sort function
@@ -606,28 +619,33 @@ void* query4(MANAGER manager, STATS stats, char** args){
     finalResult[0] = int_to_string(i);
     for (int j = 1; j < i+1; j++) {
         RESERV reservation = get_reservations_by_id(catalog,reservations_array[j-1]);
+        char* begin = get_begin_date(reservation);
+        char* end = get_end_date(reservation);
+        char* user = get_user_from_key(catalog, GINT_TO_POINTER(get_user_id_R(reservation)));
+        char* rating = get_rating(reservation);
+
         int total_size = snprintf(NULL, 0,"%s;%s;%s;%s;%s;%f", reservations_array[j-1],
-        get_begin_date(reservation), get_end_date(reservation),
-        get_user_from_key(catalog, GINT_TO_POINTER(get_user_id_R(reservation))),
-        get_rating(reservation), get_cost(reservation)) + 1;
+        begin, end, user, rating, get_cost(reservation)) + 1;
 
         // Allocate memory to formatted string
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
         // Create fromatted string
         snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s;%.3f",reservations_array[j-1],
-        get_begin_date(reservation), get_end_date(reservation),
-        get_user_from_key(catalog, GINT_TO_POINTER(get_user_id_R(reservation))),
-        get_rating(reservation), get_cost(reservation));
+        begin, end, user, rating, get_cost(reservation));
 
         finalResult[j] = formatted_string;
+        free(begin);
+        free(end);
+        free(rating);
+        free(dates_array[j-1]);
+        free(reservations_array[j-1]);
     }
-    
+
     //Free Allocated memory
     free(reservations_array);
     free(dates_array);
 
-    (void) stats;
     return finalResult;
 }
 
@@ -701,7 +719,7 @@ void sort_resultsF(char** id, int result_count, char** date) {
     free(flight_array);
 }
 
-void* query5(MANAGER manager, STATS stats, char** args){
+void* query5(MANAGER manager,char** args){
     char* origin = args[0];
     char* begin_date = args[1];
     char* end_date = args[2];
@@ -721,14 +739,17 @@ void* query5(MANAGER manager, STATS stats, char** args){
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         FLIGHT flight = (FLIGHT)value;
         char* date = get_flight_schedule_arrival_date(flight);
+        char* originC = get_flight_origin(flight);
 
         // Verify if a reservation belongs to the desire hotel
-        if (strcmp(get_flight_origin(flight), origin) == 0 &&
+        if (strcmp(originC, origin) == 0 &&
         (compare_datesF(begin_date,date) >= 0 && compare_datesF(date,end_date) >= 0)) {
             flights_array[i] = get_flight_from_key(catalog,GINT_TO_POINTER(get_flight_id(flight)));
             dates_array[i] = get_flight_schedule_arrival_date(flight);
             i++;
         }
+        free(date);
+        free(originC);
     }
 
     // Sort flights using compare function
@@ -740,24 +761,31 @@ void* query5(MANAGER manager, STATS stats, char** args){
         //id;schedule_departure_date;destination;airline;plane_model
         FLIGHT flight = get_flight_by_id(catalog, flights_array[j-1]);
 
+        char* schedule_departure_date = get_flight_schedule_departure_date(flight);
+        char* destination = get_flight_destination(flight);
+        char* airline = get_flight_airline(flight);
+        char* plane_model = get_flight_plane_model(flight);
+
         int total_size = snprintf(NULL, 0,"%s;%s;%s;%s;%s\n", flights_array[j-1],
-        get_flight_schedule_departure_date(flight), get_flight_destination(flight),
-        get_flight_airline(flight),get_flight_plane_model(flight)) + 1;
+        schedule_departure_date, destination, airline,plane_model) + 1;
 
         // Alocatte memory to formatted string
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
         // Create formatted string
         snprintf(formatted_string, total_size, "%s;%s;%s;%s;%s", flights_array[j-1],
-        get_flight_schedule_departure_date(flight), get_flight_destination(flight),
-        get_flight_airline(flight),get_flight_plane_model(flight));
+        schedule_departure_date, destination, airline,plane_model);
 
         finalResult[j] = formatted_string;
+        free(schedule_departure_date);
+        free(destination);
+        free(airline);
+        free(plane_model);
+        free(dates_array[j-1]);
     }
 
     free(flights_array);
     free(dates_array);
-    (void) stats;
     return finalResult;
 }
 
@@ -825,7 +853,7 @@ int findAirportPosition(AirportInfo* array, int size, const char* airport) {
 
 // receives <Year> and N
 // retorn airport name and number of passengers
-void* query6(MANAGER manager, STATS stats, char** args){
+void* query6(MANAGER manager,char** args){
     char* Year = args[0];
     int N = ourAtoi(args[1]);
     FLIGHTS_C catalog = get_flights_c(manager);
@@ -860,7 +888,7 @@ void* query6(MANAGER manager, STATS stats, char** args){
                 array[airportPosition].nPassengers += pass;
             }
             else {
-                array[i].name = origin;
+                array[i].name = strdup(origin);
                 array[i].nPassengers = pass;
                 i++;
             }
@@ -870,11 +898,15 @@ void* query6(MANAGER manager, STATS stats, char** args){
                 array[airportPositionD].nPassengers += pass;
             }
             else {
-                array[i].name = destination;
+                array[i].name = strdup(destination);
                 array[i].nPassengers = pass;
                 i++;
             }
         }
+        free(date);
+        free(truncatedString);
+        free(origin);
+        free(destination);
     }
 
     // Sort flights using compare function
@@ -896,31 +928,32 @@ void* query6(MANAGER manager, STATS stats, char** args){
         finalResult[j] = formatted_string;
     }
 
-    (void) stats;
+    for(int j = 0; j < i; j++){
+        free(array[j].name);
+    }
+
+    free(array);
+
     return finalResult;
 }
 
-void* query7(MANAGER catalog, STATS stats, char** args){
+void* query7(MANAGER catalog,char** args){
     (void) catalog;
-    (void) stats;
     return args;
 }
 
-void* query8(MANAGER catalog, STATS stats, char** args){
+void* query8(MANAGER catalog,char** args){
     (void) catalog;
-    (void) stats;
     return args;
 }
 
-void* query9(MANAGER catalog, STATS stats, char** args) {
+void* query9(MANAGER catalog,char** args) {
     (void) catalog;
-    (void) stats;
     return args;
 }
 
-void* query10(MANAGER catalog, STATS stats, char** args){
+void* query10(MANAGER catalog,char** args){
     (void) catalog;
-    (void) stats;
     return args;
 }
 
@@ -939,14 +972,23 @@ void free_query1(void* result){
         return;
     }
     char** resultF = (char**) result;
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 8; i++) {
         free(resultF[i]);
     }
     free(resultF);
 }
 
 void free_query2(void* result){
-    (void) result;
+    if (result == NULL) {
+        return;
+    }
+    char** resultF = (char**) result;
+    int n = ourAtoi(resultF[0]);
+    free(resultF[0]);
+    for (int i = 2; i < n+2; i++) {
+        //free(resultF[i]);
+    }
+    free(resultF);
 }
 
 void free_query3(void* result){
@@ -963,18 +1005,34 @@ void free_query4(void* result){
     }
     char** resultF = (char**) result;
     int n = ourAtoi(resultF[0]);
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n+1; i++) {
         free(resultF[i]);
     }
     free(resultF);
 }
 
 void free_query5(void* result){
-    (void) result;
+    if (result == NULL) {
+        return;
+    }
+    char** resultF = (char**) result;
+    int n = ourAtoi(resultF[0]);
+    for (int i = 0; i < n+1; i++) {
+        free(resultF[i]);
+    }
+    free(resultF);
 }
 
 void free_query6(void* result){
-    (void) result;
+    if (result == NULL) {
+        return;
+    }
+    char** resultF = (char**) result;
+    int n = ourAtoi(resultF[0]);
+    for (int i = 0; i < n+1; i++) {
+        free(resultF[i]);
+    }
+    free(resultF);
 }
 
 void free_query7(void* result){

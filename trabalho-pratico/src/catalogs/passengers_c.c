@@ -20,8 +20,6 @@
 */
 
 #include "catalogs/passengers_c.h"
-#include "entities/passengers.h"
-#include "utils/utils.h"
 
 /**
  * @struct passengers_catalog

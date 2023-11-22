@@ -20,8 +20,6 @@
 */
 
 #include "catalogs/reservations_c.h"
-#include "entities/reservations.h"
-#include "utils/utils.h"
 
 /**
  * @struct reservations_catalog
@@ -44,7 +42,7 @@ RESERV_C create_reservations_c(void){
     new->reservs_id = g_hash_table_new_full(g_str_hash,g_str_equal, free, NULL);
     new->reserv_key = g_ptr_array_new_with_free_func(free);
 
-    new->user = g_hash_table_new_full(NULL, g_direct_equal, NULL, free_ptr_array);
+    new->user = g_hash_table_new_full(NULL, g_direct_equal, NULL, NULL);
     new->user_id = g_hash_table_new_full(g_str_hash,g_str_equal, free, NULL);
     new->user_key = g_ptr_array_new_with_free_func(free);
 
@@ -127,7 +125,7 @@ void set_catalog_reserv(RESERV_C catalog, RESERV reserv, char* id, char* user_id
     if (g_hash_table_contains(catalog->user_id, user_id)) {
         gpointer user = g_hash_table_lookup(catalog->user_id, user_id);
         set_user_id_R(reserv, user);
-    } 
+    }
     else {
         // If user ID does not exist, create a new entry for the user
         char* copy_user = g_strdup(user_id);
@@ -148,7 +146,17 @@ void free_reservations_c(RESERV_C catalog){
     g_hash_table_destroy(catalog->reservs_id);
     g_ptr_array_free(catalog->reserv_key,TRUE);
 
-    //g_hash_table_destroy(catalog->user);
+    // Free user hash table
+    GHashTableIter iter;
+    gpointer user_id, user_reservations;
+    g_hash_table_iter_init(&iter, catalog->user);
+    while (g_hash_table_iter_next(&iter, &user_id, &user_reservations)) {
+        // Free the GPtrArray associated with each user
+        GPtrArray *reservations_array = user_reservations;
+        g_ptr_array_free(reservations_array, TRUE);
+    }
+
+    g_hash_table_destroy(catalog->user);
     g_hash_table_destroy(catalog->user_id);
     g_ptr_array_free(catalog->user_key, TRUE);
 

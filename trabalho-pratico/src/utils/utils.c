@@ -101,7 +101,7 @@ FILE* create_output_file(int n){
 }
 
 void free_ptr_array(gpointer data){
-    GPtrArray *array = (GPtrArray *)data;
+    GPtrArray* array = (GPtrArray *)data;
     for (guint i = 0; i < array->len; i++) {
         g_free(g_ptr_array_index(array, i));
     }

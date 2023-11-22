@@ -22,6 +22,8 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+#include "utils/utils.h"
+
 /**
  * @brief Function that validates the date format YYYY/MM/DD
  *

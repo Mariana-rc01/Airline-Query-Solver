@@ -28,8 +28,9 @@
  */
 typedef struct user *USER;
 
-#include "menuNdata/statistics.h"
-
+#include "IO/input.h"
+#include "utils/utils.h"
+#include "catalogs/users_c.h"
 
 #include <glib.h>
 
@@ -239,10 +240,9 @@ int verify_user(char** fields);
  * @brief Builds a user struct from user data fields.
  * @param user_fields An array of user data fields.
  * @param catalog A pointer to the respective catalog.
- * @param stats A pointer to the statistics.
  *
  * @return 1 if the user is added to the catalog 0 if not
  */
-int build_user(char **user_fields, void *catalog, STATS stats);
+int build_user(char **user_fields, void *catalog);
 
 #endif

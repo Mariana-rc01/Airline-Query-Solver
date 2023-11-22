@@ -21,11 +21,6 @@
 
 #include "entities/users.h"
 
-#include "IO/input.h"
-#include "utils/utils.h"
-#include "catalogs/users_c.h"
-#include "menuNdata/statistics.h"
-
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
@@ -207,7 +202,7 @@ int verify_user(char** fields){
     return 1;
 }
 
-int build_user(char  **user_fields, void *catalog, STATS stats){
+int build_user(char  **user_fields, void *catalog){
 
     USERS_C usersC = (USERS_C)catalog;
     if (!verify_user(user_fields)) return 0;
@@ -231,7 +226,6 @@ int build_user(char  **user_fields, void *catalog, STATS stats){
     set_user_total_spent(user,0.0);
 
     insert_user_c(user,usersC,user->id);
-    (void) stats;
 
     return 1;
 }

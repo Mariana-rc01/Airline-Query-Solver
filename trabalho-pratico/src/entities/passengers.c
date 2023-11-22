@@ -21,8 +21,6 @@
 
 #include "entities/passengers.h"
 
-#include "menuNdata/statistics.h"
-#include "IO/input.h"
 #include "catalogs/manager_c.h"
 
 #include <stdlib.h>
@@ -70,7 +68,7 @@ int verify_passengers(char** passengers_fields, USERS_C users, FLIGHTS_C flights
     return 1;
 }
 
-int build_passengers(char** passengers_fields, void* catalog, STATS stats){
+int build_passengers(char** passengers_fields, void* catalog){
 
     MANAGER managerC = (MANAGER) catalog;
     USERS_C usersC = get_users_c(managerC);
@@ -87,25 +85,6 @@ int build_passengers(char** passengers_fields, void* catalog, STATS stats){
 
     insert_pass_flight_c(copy_user, passengersC, pass->flight);
     insert_pass_user_c(copy_flight,passengersC, pass->user);
-
-    //GPtrArray* flightArray = get_flight_array_by_id(passengersC, copy_flight);
-    //GPtrArray* userArray = get_user_array_by_id(passengersC, copy_user);
-
-    //if (flightArray != NULL) {
-    //    // Use the len field to get the size of the array
-    //    guint array_size = flightArray->len;
-    //    g_print("Size of flightArray: %u\n", array_size);
-    //    g_print("flight_id: %s\n",copy_flight);
-    //}
-
-    //if (userArray != NULL) {
-    //    // Use the len field to get the size of the array
-    //    guint array_size = userArray->len;
-    //    g_print("Size of userArray: %u\n", array_size);
-    //    g_print("user_id of userArray: %s\n", copy_user);
-    //}
-
-    (void) stats;
 
     free(pass);
 

@@ -20,7 +20,6 @@
 */
 
 #include "catalogs/users_c.h"
-#include "entities/users.h"
 
 /**
  * @struct users_catalog

@@ -24,7 +24,6 @@
 #include "IO/input.h"
 #include "utils/utils.h"
 #include "catalogs/manager_c.h"
-#include "menuNdata/statistics.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -230,7 +229,7 @@ int verify_reservations(char** fields, USERS_C users){
     return 1;
 }
 
-int build_reservations(char** reservations_fields, void* catalog, STATS stats){
+int build_reservations(char** reservations_fields, void* catalog){
 
     MANAGER managerC = (MANAGER)catalog;
     USERS_C usersC = get_users_c(managerC);
@@ -277,7 +276,6 @@ int build_reservations(char** reservations_fields, void* catalog, STATS stats){
     insert_usersReservations_c(res->id, reservsC, res->user_id);
 
     update_user_c(usersC,reservations_fields[1],cost);
-    (void) stats;
 
     return 1;
 }

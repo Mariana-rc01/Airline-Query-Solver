@@ -23,30 +23,28 @@
 #define PARSER_H
 
 #include <stdio.h>
-#include "menuNdata/statistics.h"
 
-typedef int (*void_function)(char**, void*, STATS);
+typedef int (*void_function)(char**, void*);
 
 /**
  * @brief Function to parse a file
- * 
+ *
  * This function reads data from a file, writes to the error csv,
  * separates the line into fields and verifies for any errors.
- * 
+ *
  * @param f Pointer to given file
  * @param max_fields Number of attributes of the csv file
  * @param func Function that loads the data into the structs
  * @param catalog The catalog of the respective file
- * @param statistics Struct that contains statistics
  * @param error_f Pointer to the error file
 */
-void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS statistics, FILE* error_f);
+void parseF (FILE* f, int max_fields, void_function func, void *catalog, FILE* error_f);
 
 /**
  * @brief Function to parse a line
  *
  * This function takes a line and splits it into fields based on the delimiter ';'.
- * 
+ *
  * @param line Pointer to given line
  * @param max_fields Number of attributes of the csv file
 */

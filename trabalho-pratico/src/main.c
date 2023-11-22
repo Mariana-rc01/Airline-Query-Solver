@@ -24,7 +24,6 @@
 #include "entities/reservations.h"
 #include "entities/users.h"
 #include "catalogs/manager_c.h"
-#include "menuNdata/statistics.h"
 #include "IO/parser.h"
 #include "IO/input.h"
 #include "menuNdata/batch.h"

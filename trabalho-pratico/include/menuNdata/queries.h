@@ -22,9 +22,16 @@
 #define QUERIES_H
 
 #include "catalogs/manager_c.h"
-#include "menuNdata/statistics.h"
+#include "catalogs/users_c.h"
+#include "catalogs/reservations_c.h"
+#include "catalogs/flights_c.h"
+#include "entities/flights.h"
+#include "entities/users.h"
+#include "entities/reservations.h"
+#include "utils/utils.h"
+#include "IO/input.h"
 
-#define MAX_ARGS 4
+#define MAX_ARGS 7
 
 /**
  * @typedef queries_func
@@ -33,7 +40,7 @@
  * This typedef defines a function pointer type 'queries_func' used to represent query functions.
  * These functions represent the implementation of the query itself.
  */
-typedef void* (*queries_func)(MANAGER catalog, STATS stats, char** query_args);
+typedef void* (*queries_func)(MANAGER catalog, char** query_args);
 
 /**
  * @typedef free_queries_func
@@ -58,7 +65,7 @@ typedef void (*free_queries_func)(void* result);
  * @note This function allocates memory for the 'query_args' array, which should be freed after query execution. The query identifier is expected to be a single character ('1', '2', '3', etc.).
  */
 
-void* parser_query(MANAGER catalog, STATS stats, char* line);
+void* parser_query(MANAGER catalog,  char* line);
 
 /**
  * @typedef flight_table_getters
@@ -89,116 +96,105 @@ typedef char* (*user_table_getters)(USER user);
 
 /**
  * @brief Execute query 1
- * 
+ *
  * Lists the information about a flight, reservation, or user.
  *
  * @param manager Catalog manager.
- * @param stats   Statistics data.
  * @param args    Array of arguments for the query.
  * @return        The result of the query.
  */
-void* query1(MANAGER manager, STATS stats, char** args);
+void* query1(MANAGER manager, char** args);
 
 /**
  * Executes Query 2: Retrieve reservations or flights for a given user.
  *
  * @param manager Catalog manager.
- * @param stats   Statistics data.
  * @param args    Array of arguments for the query.
  * @return        The result of the query.
  */
-void* query2(MANAGER manager, STATS stats, char** args);
+void* query2(MANAGER manager, char** args);
 
 /**
  * @brief Execute query 3
  *
  * Returns the average rating of a hotel.
- * 
+ *
  * @param catalog Catalog manager.
- * @param stats   Statistics data.
  * @param args    Array of arguments for the query.
  * @return        The result of the query.
  */
-void* query3(MANAGER catalog, STATS stats, char** args);
+void* query3(MANAGER catalog, char** args);
 
 /**
  * @brief Execute query 4
- * 
+ *
  * Lists reservations for a given hotel, sorted by their begin date.
  *
  * @param manager Catalog manager.
- * @param stats   Statistics data.
  * @param args    Array of arguments for the query.
  * @return        The result of the query.
  */
-void* query4(MANAGER manager, STATS stats, char** args);
+void* query4(MANAGER manager, char** args);
 
 /**
  * @brief Executes Query 5
- * 
+ *
  * Lists flights with origin in a given airport, between 2 dates, sorted by estimated begin date.
  * If two flights have the same date, sort them by their flight_id
  *
  * @param manager Catalog manager.
- * @param stats   Statistics data.
  * @param args    Array of arguments for the query.
  * @return        The result of the query.
  */
-void* query5(MANAGER manager, STATS stats, char** args);
+void* query5(MANAGER manager, char** args);
 
 /**
  * @brief Executes Query 6
- * 
+ *
  * List the top N airports with most passengers in a given year.
  * In case of a tie, sort the airports by their name.
  *
  * @param catalog Catalog manager.
- * @param stats   Statistics data.
  * @param args    Array of arguments for the query.
  * @return        The result of the query.
  */
-void* query6(MANAGER catalog, STATS stats, char** args);
+void* query6(MANAGER catalog, char** args);
 
 /**
  * @brief Executes Query 7
  *
  * @param catalog Catalog manager.
- * @param stats   Statistics data.
  * @param args    Array of arguments for the query.
  * @return        The result of the query.
  */
-void* query7(MANAGER catalog, STATS stats, char** args);
+void* query7(MANAGER catalog, char** args);
 
 /**
  * @brief Executes Query 8
  *
  * @param catalog Catalog manager.
- * @param stats   Statistics data.
  * @param args    Array of arguments for the query.
  * @return        The result of the query.
  */
-void* query8(MANAGER catalog, STATS stats, char** args);
+void* query8(MANAGER catalog, char** args);
 
 /**
  * @brief Executes Query 9
  *
  * @param catalog Catalog manager.
- * @param stats   Statistics data.
  * @param args    Array of arguments for the query.
  * @return        The result of the query.
  */
-void* query9(MANAGER catalog, STATS stats, char** args);
+void* query9(MANAGER catalog, char** args);
 
 /**
  * @brief Executes Query 10
- * 
  *
  * @param catalog Catalog manager.
- * @param stats   Statistics data.
  * @param args    Array of arguments for the query.
  * @return        The result of the query.
  */
-void* query10(MANAGER catalog, STATS stats, char** args);
+void* query10(MANAGER catalog, char** args);
 
 
 /**

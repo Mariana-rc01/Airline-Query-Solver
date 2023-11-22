@@ -28,9 +28,10 @@
  */
 typedef struct passengers *PASS;
 
-#include "menuNdata/statistics.h"
 #include "catalogs/users_c.h"
 #include "catalogs/flights_c.h"
+#include "IO/input.h"
+
 
 /**
  * @brief Creates a new passengers struct with default values.
@@ -83,10 +84,9 @@ int verify_passengers(char** passengers_fields, USERS_C users, FLIGHTS_C flights
  * @brief Builds a passenger struct from passenger data fields.
  * @param passengers_fields An array of passenger data fields.
  * @param catalog A pointer to the manager catalog.
- * @param stats A pointer to the statistics.
  *
  * @return 1 if the passenger is added to the catalog 0 if not
  */
-int build_passengers(char** passengers_fields, void* catalog, STATS stats);
+int build_passengers(char** passengers_fields, void* catalog);
 
 #endif

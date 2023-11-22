@@ -28,7 +28,8 @@
  */
 typedef struct flight *FLIGHT;
 
-#include "menuNdata/statistics.h"
+#include "IO/input.h"
+#include "utils/utils.h"
 #include <glib.h>
 
 /**
@@ -241,6 +242,6 @@ int verify_flight(char** fields);
  *
  * @return 1 if the flight is added to the catalog 0 if not
  */
-int build_flight(char **flight_fields, void *catalog, STATS stats);
+int build_flight(char **flight_fields, void *catalog);
 
 #endif

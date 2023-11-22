@@ -20,7 +20,6 @@
 */
 
 #include "IO/input.h"
-#include "utils/utils.h"
 
 #include <stdio.h>
 #include <string.h>

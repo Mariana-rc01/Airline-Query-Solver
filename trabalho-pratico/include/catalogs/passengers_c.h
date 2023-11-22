@@ -22,6 +22,9 @@
 #ifndef PASSENGERS_C_H
 #define PASSENGERS_C_H
 
+#include "entities/passengers.h"
+#include "utils/utils.h"
+
 #include <glib.h>
 
 /**

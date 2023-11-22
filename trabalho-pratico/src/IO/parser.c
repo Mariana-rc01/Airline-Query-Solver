@@ -19,13 +19,13 @@
  *   limitations under the License.
 */
 
-#include "menuNdata/statistics.h"
 #include "IO/parser.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS statistics, FILE* error_f){
+void parseF (FILE* f, int max_fields, void_function func, void *catalog, FILE* error_f){
     int verify = 0;
     char* line = NULL;
     size_t lsize = 0;
@@ -52,7 +52,7 @@ void parseF (FILE* f, int max_fields, void_function func, void *catalog, STATS s
         temp = strdup(line);
 
         char **fields = parseL(line, max_fields);
-        verify = func(fields,catalog,statistics);
+        verify = func(fields,catalog);
 
         if (verify == 0) {
             fprintf(error_f,"%s\n",temp);
@@ -78,7 +78,7 @@ char** parseL(char* line, int max_fields) {
         // Store the field in the array
         fields[i] = field;
         line = temp + 1;
-        *temp = '\0'; 
+        *temp = '\0';
     }
 
     // Handle the last field after the last delimiter

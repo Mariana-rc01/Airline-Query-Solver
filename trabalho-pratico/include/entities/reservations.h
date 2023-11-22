@@ -30,10 +30,6 @@ typedef struct reservations *RESERV;
 
 typedef struct users_catalog *USERS_C;
 
-
-#include "catalogs/users_c.h"
-#include "menuNdata/statistics.h"
-
 #include <glib.h>
 
 /**
@@ -274,6 +270,6 @@ int verify_reservations(char** fields, USERS_C users);
  *
  * @return 1 if the reservation is added to the catalog 0 if not
  */
-int build_reservations(char** reservations_fields, void* catalog, STATS stats);
+int build_reservations(char** reservations_fields, void* catalog);
 
 #endif

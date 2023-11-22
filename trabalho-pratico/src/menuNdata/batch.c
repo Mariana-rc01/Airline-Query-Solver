@@ -20,23 +20,13 @@
  */
 
 
-#include "entities/flights.h"
-#include "entities/passengers.h"
-#include "entities/reservations.h"
-#include "entities/users.h"
-#include "catalogs/manager_c.h"
-#include "menuNdata/statistics.h"
-#include "menuNdata/queries.h"
-#include "IO/parser.h"
-#include "IO/input.h"
-#include "IO/output.h"
-#include "utils/utils.h"
+#include "menuNdata/batch.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-int setup_catalog_and_stats(MANAGER manager_catalog, STATS statistics, char* path1){
+int set_catalogs(MANAGER manager_catalog, char* path1){
     FILE *flights_file, *passengers_file, *users_file, *reservations_file;
     FILE *flights_error_file, *passengers_error_file, *users_error_file, *reservations_error_file;
 
@@ -58,12 +48,12 @@ int setup_catalog_and_stats(MANAGER manager_catalog, STATS statistics, char* pat
     reservations_error_file = fopen("Resultados/reservations_errors.csv", "w");
 
     USERS_C users = get_users_c(manager_catalog);
-    parseF(users_file, 12, build_user, users, statistics, users_error_file);
+    parseF(users_file, 12, build_user, users, users_error_file);
 
     FLIGHTS_C flights = get_flights_c(manager_catalog);
-    parseF(flights_file, 13, build_flight, flights, statistics, flights_error_file);
-    parseF(reservations_file, 14, build_reservations, manager_catalog, statistics, reservations_error_file);
-    parseF(passengers_file, 2, build_passengers, manager_catalog, statistics, passengers_error_file);
+    parseF(flights_file, 13, build_flight, flights, flights_error_file);
+    parseF(reservations_file, 14, build_reservations, manager_catalog, reservations_error_file);
+    parseF(passengers_file, 2, build_passengers, manager_catalog, passengers_error_file);
 
     free(flight_path);
     free(passenger_path);
@@ -97,7 +87,7 @@ int setup_catalog_and_stats(MANAGER manager_catalog, STATS statistics, char* pat
     return 0;
 }
 
-int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2){
+int execute_queries(MANAGER manager_catalog, char* path2){
 
     char *line = NULL;
     size_t lsize = 0;
@@ -110,7 +100,7 @@ int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2){
     while(getline(&line,&lsize, queries_file) != -1){
         int query_id;
         line[strlen(line)-1] = '\0';
-        result = parser_query(manager_catalog, statistics, line);
+        result = parser_query(manager_catalog, line);
         output_file = create_output_file(cmd_n);
         if (output_file == NULL) return -1;
 
@@ -131,8 +121,6 @@ int execute_queries(MANAGER manager_catalog, STATS statistics, char* path2){
     }
     free(line);
     fclose(queries_file);
-    (void) manager_catalog;
-    (void) statistics;
     return 0;
 }
 
@@ -144,13 +132,11 @@ void batch (char* path1, char* path2){
     PASS_C passengers_catalog = create_passengers_c();
     MANAGER manager_catalog = create_manager_c(users_catalog,flights_catalog,reservations_catalog,passengers_catalog);
 
-    STATS statistics = NULL;
-
-    if (setup_catalog_and_stats(manager_catalog,statistics,path1) == -1){
+    if (set_catalogs(manager_catalog,path1) == -1){
         return;
     }
 
-    if (execute_queries(manager_catalog,statistics,path2) == -1){
+    if (execute_queries(manager_catalog,path2) == -1){
         return;
     }
 

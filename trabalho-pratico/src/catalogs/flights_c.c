@@ -20,7 +20,6 @@
 */
 
 #include "catalogs/flights_c.h"
-#include "entities/flights.h"
 
 #include <glib.h>
 #include <stdio.h>
@@ -70,7 +69,7 @@ GHashTable* get_hash_table_flight(FLIGHTS_C catalog){
 void set_catalog_flight(FLIGHTS_C catalog, FLIGHT flight, char* id){
 
     static int number_flights = 1;
-    
+
     // Create a copy of the flight ID and insert it into the flight_id hashtable
     char* copy_id = g_strdup(id);
     gpointer flight_id = GINT_TO_POINTER(number_flights);
@@ -87,5 +86,6 @@ void set_catalog_flight(FLIGHTS_C catalog, FLIGHT flight, char* id){
 void free_flight_c(FLIGHTS_C catalog){
     g_hash_table_destroy(catalog->flights);
     g_hash_table_destroy(catalog->flights_id);
+    g_ptr_array_free(catalog->flights_key, TRUE);
     free(catalog);
 }
