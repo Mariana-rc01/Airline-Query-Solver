@@ -97,7 +97,10 @@ void output_query2(FILE* file, void* output){
     char* type = result_array[1];
     if (strcmp(type,"all") == 0){
         for (int i = 2; i < length + 2; i++) {
-            if (i != (length + 1)) fprintf(file, "%s\n", result_array[i]);
+            if (i != (length + 1)) {
+                fprintf(file, "%s\n", result_array[i]);
+                free(result_array[i]);
+            }
             else {
                 result_array[i][strlen(result_array[i])] ='\0';
                 char *truncatedString = strndup(result_array[i], strlen(result_array[i]));
@@ -118,6 +121,7 @@ void output_query2(FILE* file, void* output){
                 fprintf(file,"%s;%s\n", id,truncatedString);
                 free(truncatedString);
             }
+            free(id);
         }
     }
 }
@@ -162,6 +166,7 @@ void output_query2F(FILE* file, void* output){
                 fprintf(file,"date: %s\n",truncatedString);
                 free(truncatedString);
             }
+            free(id);
         }
     }
 }

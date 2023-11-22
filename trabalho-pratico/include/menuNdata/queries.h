@@ -31,16 +31,6 @@
 #include "utils/utils.h"
 #include "IO/input.h"
 
-#define MAX_ARGS 7
-
-/**
- * @typedef queries_func
- * @brief Function pointer type for query functions.
- *
- * This typedef defines a function pointer type 'queries_func' used to represent query functions.
- * These functions represent the implementation of the query itself.
- */
-typedef void* (*queries_func)(MANAGER catalog, char** query_args);
 
 /**
  * @typedef free_queries_func
@@ -50,22 +40,6 @@ typedef void* (*queries_func)(MANAGER catalog, char** query_args);
  * These functions free the memory allocated to the result of the corresponding executed query-.
  */
 typedef void (*free_queries_func)(void* result);
-
-/**
- * @brief Parse and execute a query based on input line.
- *
- * This function parses an input line containing a query identifier and its arguments, then executes the corresponding query function. The query function is determined by the identifier in the input line.
- *
- * @param catalog The catalog data manager.
- * @param stats The statistics data.
- * @param line The input line containing the query identifier and arguments.
- *
- * @return A pointer to the result data of the executed query function. The type of data returned may vary and should be cast to the appropriate type.
- *
- * @note This function allocates memory for the 'query_args' array, which should be freed after query execution. The query identifier is expected to be a single character ('1', '2', '3', etc.).
- */
-
-void* parser_query(MANAGER catalog,  char* line);
 
 /**
  * @typedef flight_table_getters

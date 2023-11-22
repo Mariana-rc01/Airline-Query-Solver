@@ -28,51 +28,6 @@
 #include <locale.h>
 
 
-void* parser_query(MANAGER catalog,char* line){
-    int i = 0;
-    char** args = malloc(sizeof(char*) * MAX_ARGS);
-    char* copia = strdup(line);
-    char* token = strtok(copia, " ");
-
-    while (token != NULL && i < MAX_ARGS) {
-        if (token[0] == '"') {
-            char temp[100];
-            strcpy(temp, token);
-            removeQuotes(temp);
-
-            token = strtok(NULL,"\"");
-            char* temp1 = concat(temp,token);
-            args[i] = temp1;
-            i++;
-        } else {
-            args[i] = strdup(token);
-            i++;
-        }
-
-        token = strtok(NULL, " ");
-    }
-
-    args[i] = NULL;
-
-    free(copia);
-    free(token);
-
-    int query;
-    if(args[0][1] != '0') query = args[0][0] - '0';
-    else query = 10;
-
-    static queries_func queries[] = {query1, query2, query3,
-                                    query4, query5, query6,
-                                    query7, query8, query9, query10};
-
-    void* result = queries[query-1](catalog, args+1);
-
-    for (int k = 0; k < i; k++) free(args[k]);
-    free(args);
-
-    return result;
-}
-
 void* query1(MANAGER manager,char** args){
     char* entity = args[0];
     char** result = malloc(sizeof(char*) * 9);
@@ -983,11 +938,7 @@ void free_query2(void* result){
         return;
     }
     char** resultF = (char**) result;
-    int n = ourAtoi(resultF[0]);
     free(resultF[0]);
-    for (int i = 2; i < n+2; i++) {
-        //free(resultF[i]);
-    }
     free(resultF);
 }
 

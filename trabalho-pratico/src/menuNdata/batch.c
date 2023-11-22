@@ -87,43 +87,6 @@ int set_catalogs(MANAGER manager_catalog, char* path1){
     return 0;
 }
 
-int execute_queries(MANAGER manager_catalog, char* path2){
-
-    char *line = NULL;
-    size_t lsize = 0;
-    int cmd_n = 1;
-    void* result;
-
-    FILE* queries_file = fopen(path2, "r");
-    FILE* output_file;
-
-    while(getline(&line,&lsize, queries_file) != -1){
-        int query_id;
-        line[strlen(line)-1] = '\0';
-        result = parser_query(manager_catalog, line);
-        output_file = create_output_file(cmd_n);
-        if (output_file == NULL) return -1;
-
-        if(line[1] == ' ') query_id = line[0] - '0';
-        else if (line[1] == 'F') {query_id = (line[0] - '0') + 10;}
-        else if (line[2] == 'F' && line[1] == '0') query_id = 20;
-        else query_id = 10;
-
-        if(result != NULL){
-            output_query(output_file, result, query_id);
-            if (query_id > 10){
-                free_query(result, query_id-10);
-            }
-            else free_query(result,query_id);
-        }
-        fclose(output_file);
-        cmd_n++;
-    }
-    free(line);
-    fclose(queries_file);
-    return 0;
-}
-
 void batch (char* path1, char* path2){
 
     USERS_C users_catalog = create_user_c();
