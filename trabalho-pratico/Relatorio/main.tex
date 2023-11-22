@@ -66,24 +66,47 @@
 \paragraph{}Dessa forma, este projeto abrange uma variedade de conceitos essenciais, funcionando também como uma ponte de aprendizagem para programação orientada a objetos, desde manipulação de arquivos e \textit{parsing} de dados até a manipulação de estruturas de dados complexas e a execução dinâmica de consultas. O desafio reside não apenas na correta implementação desses aspetos individuais, mas também na integração eficiente e eficaz de todos os elementos para criar um sistema coeso e funcional.
 
 \section{Arquitetura do Projeto}
-\paragraph{}
-%batch mode implementada 
-%parsing que extrai os campos que nos permitem tratar da informacao
-%temos um interpretador responsavel por ler o ficheiro de comandos e %executar a respetiva query
-%um modulo que contem todas as queries bem como algumas estruturas de dados %auxiliares
-%um catalogo para cada uma das entidades que contem todos os dados sobre %estas, e um outro catalogo que corresponde a operacao logica do uniao dos %catalogos
-Utils: Módulo que contendo funções que nos vão auxiliar ao longo do programa.
-Parser: Módulo responsável por realizar o parsing dos ficheiros csv. 
-\paragraph{}Catalogs (Manager, Flights\_c, Reservations\_c, Users\_c, Passengers\_c): Módulos responsáveis por criar as estruturas de dados que ligam as várias entidades (Hash tables). O catálogo manager equivale à junção de todos os outros catálogos. Também contém os getters e setter dessas estruturas de dados.
-\paragraph{}Statistics: Módulo contendo estruturas de dados com informações relevantes à execução de determinadas queries. 
-\paragraph{}Input: Módulo responsável por realizar a validação dos ficheiros. 
-\paragraph{}Query: Módulo responsável pelo parser das querys, as querys em si e outras funções relevantes à sua execução., tal como funções que libertam memória alocada pelas queries. 
-\paragraph{}Output: Módulo responsável por criar e escrever os ficheiros de output para cada query, verificando a presença da flag ‘F’ nas queries. 
-\paragraph{}Entities (Flights, Reservations, Users, Passengers):  Módulos responsáveis por criar as estruturas de dados correspondente às entidades individuais de cada tipo de ficheiro csv. Também contém os getters e setters dessas estruturas de dados. 
-\paragraph{}Batch: Módulo responsável pelo modo de operação batch do programa. 
+\paragraph{}Ao conceber a arquitetura deste projeto, adotamos uma abordagem modular para garantir uma implementação robusta e escalável. O sistema é composto por vários módulos relacionados entre si, cada um responsável por tarefas diferentes, mas resumidamente dividos em 3 componentes essenciais: \textbf{Processamento de Entrada}, \textbf{Lógica de Negócios} e \textbf{Geração de Resultados}.
 
+\subsection{Processamento de Entrada}
+\paragraph{}Os módulo encarregues pelo Processamento de Entrada são responsáveis pela ingestão de dados brutos provenientes de arquivos CSV. Nesta fase, os dados são submetidos a um processo de \textit{parsing}, onde são extraídas informações relevantes e validadas quanto à integridade dos campos. Durante esse processo, as entidades são construídas e os dados são transformados para serem armazenados nos catálogos correspondentes. Há ainda um módulo extra nesta componente inicial chamado \textit{interpreter} que tem a mesma função que o \textit{parser} mas para o ficheiro de \textit{input}, que contém um comando por linha, onde cada comando corresponde à execução de uma \textit{query}.
 
-Colocar foto como esta no guiao, sobre a nossa arquitetura
+\subsection{Lógica de Negócios}
+\paragraph{}A Lógica de Negócios representa o núcleo do sistema, onde os catálogos são continuamente alimentados e atualizados. Utilizamos a biblioteca \textit{GLib} para criar estruturas de dados dinâmicas que se ajustam às necessidades variáveis do projeto. A validação contínua dos dados durante o processo de \textit{parsing} assegura a coerência dos catálogos. 
+Num módulo \textit{interpreter} identificamos o tipo de \textit{query} que queremos executar e, utilizando as informações contidas nos catálogos (gerenciadas por um \textit{catalog manager}, que corresponde à operação lógica de junção de todos os outros catálogos), um outro módulo \textit{queries} resolve a \textit{query} em questão, produzindo os resultados correspondentes para a escrita do \textit{output} correspondente.
+
+\subsection{Geração de Saída}
+\paragraph{}O módulo de Geração de Saída chamado \textit{output}, é responsável por criar os resultados das \textit{queries} em ficheiros de texto. Durante a execução das \textit{queries}, os resultados são formatados como pedido e armazenados de maneira eficiente nos arquivos de saída, preservando a estrutura e integridade dos dados. Esta fase utiliza as estruturas de dados previamente construídas nos catálogos.
+
+\subsection{Representação Visual}
+\paragraph{}A Figura 1 apresenta um diagrama simplificado que ilustra as principais classes e suas interações no sistema. Este diagrama proporciona uma visão visual clara da estrutura do projeto.
+\begin{figure}[H]
+\begin{center}
+	\includegraphics[width=10cm]{Images/arquitetura.png} 
+        \caption{Representação da Arquitetura do Projeto}
+\end{center}
+\end{figure}
+
+\subsection{Considerações de Desempenho e Escalabilidade}
+\paragraph{}A arquitetura foi projetada com ênfase na eficiência do processamento, minimizando a complexidade temporal e espacial. Utilizamos estruturas de dados dinâmicas, fornecidas pela biblioteca \textit{GLib}, o que garante escalabilidade e permite a gestão eficaz de grandes conjuntos de dados. 
+
+\subsection{Padrões e Tecnologias Utilizados}
+\paragraph{}Optamos por adotar uma abordagem modular na organização do código-fonte, dando prioridade à criação de módulos específicos à medida que identificamos conjuntos de funções com complexidade suficiente para justificar um novo módulo. Essa abordagem favorece a clareza e a manutenção do código, permitindo que cada módulo tenha responsabilidades bem definidas e uma interface coesa.
+
+\subsection{Conclusão da Secção}
+\paragraph{}A arquitetura proposta fornece uma base sólida para a implementação do projeto, garantindo a modularidade, a eficiência e a facilidade de manutenção. A interconexão fluida entre os módulos permite que o sistema atenda de forma eficaz aos requisitos funcionais, ao mesmo tempo que mantém a flexibilidade necessária para futuras expansões e melhorias.
+
+%Utils: Módulo que contendo funções que nos vão auxiliar ao longo do programa.
+%Parser: Módulo responsável por realizar o parsing dos ficheiros csv. 
+%\paragraph{}Catalogs (Manager, Flights\_c, Reservations\_c, Users\_c, %Passengers\_c): Módulos responsáveis por criar as estruturas de dados que %ligam as várias entidades (Hash tables). O catálogo manager equivale à %junção de todos os outros catálogos. Também contém os getters e setter %dessas estruturas de dados.
+%\paragraph{}Statistics: Módulo contendo estruturas de dados com informações %relevantes à execução de determinadas queries. 
+%\paragraph{}Input: Módulo responsável por realizar a validação dos %ficheiros. 
+%\paragraph{}Query: Módulo responsável pelo parser das querys, as querys em %si e outras funções relevantes à sua execução., tal como funções que %libertam memória alocada pelas queries. 
+%\paragraph{}Output: Módulo responsável por criar e escrever os ficheiros de %output para cada query, verificando a presença da flag ‘F’ nas queries. 
+%\paragraph{}Entities (Flights, Reservations, Users, Passengers):  Módulos %responsáveis por criar as estruturas de dados correspondente às entidades %individuais de cada tipo de ficheiro csv. Também contém os getters e 
+%setters dessas estruturas de dados. 
+%\paragraph{}Batch: Módulo responsável pelo modo de operação batch do %programa. 
+
 \section{Desenvolvimento e Ideias Iniciais}
 \paragraph{}Após termos a arquitetura do projeto definida, preocupámo-nos então com o desenvolvimento do código do projeto. 
 \paragraph{}Começamos inicialmente por realizar um parser para os documentos csv, capaz de formatá-los dividindo cada linha do ficheiro em vários campos, sendo fácil assim manipulá-los para validação e organização nos catálogos. O parser seria capaz de receber um ficheiro csv, formatá-lo e passá-lo para uma função, recebida como argumento responsável por transformar a linha formatada numa entidade e validar essa mesma linha, escrevendo os erros na validação no ficheiro criado a esse destino.   
