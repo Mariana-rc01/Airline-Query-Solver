@@ -1,0 +1,123 @@
+\documentclass{article}
+\usepackage{imakeidx}
+\usepackage{multirow}
+\usepackage[a4paper,top=2cm,bottom=3cm,left=1.5cm,right=1.5cm,marginparwidth=1.75cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{caption}
+\usepackage{geometry}
+\usepackage{datetime}
+\usepackage{wrapfig}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage{hyphenat}
+\usepackage[export]{adjustbox}
+\usepackage[colorlinks=true, allcolors=black]{hyperref}
+\usepackage{comment}
+\usepackage{blindtext}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{tablefootnote}
+\usepackage[bottom]{footmisc}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{subfig}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+\begin{document}
+\begin{center}
+    \begin{minipage}{0.83\linewidth}
+        \centering
+        \includegraphics[width=0.4\textwidth]{Images/UM.jpg}\par\vspace{0.5cm}
+        {\scshape\textbf{Universidade do Minho}} \par
+        {\scshape Licenciatura em Engenharia Informática} \par
+        \vspace{3cm}
+        {\LARGE Fase 1\\} \par
+        {\scshape\LARGE \textbf{Projeto LI3}\\} \par
+        \vspace{1.0cm}
+        {\LARGE \textbf{Airline Manager}} \par
+        \vspace{2cm}
+        {\LARGE\textbf {PL6 - Grupo 27}} \par
+        \vspace{0.1cm}
+        {\LARGE Hugo Abelheira(a95151)\par Luís França(a104259)\par Mariana Rocha(a90817) \par}
+        
+        \vspace{5cm}
+        {\large \today\par}
+        
+    \end{minipage}
+\end{center}
+\newpage
+\tableofcontents
+\listoftables
+\listoffigures
+
+\newpage
+\section{Introdução}
+\paragraph{}O projeto em desenvolvimento no âmbito da disciplina de Laboratórios de Informática 3 tem como objetivo principal realizar o tratamento de dados provenientes de extensos conjuntos de informações contidas em arquivos CSV. Este tratamento envolve a implementação de um processo de parsing, onde os dados são interpretados e transformados em entidades representativas, que por sua vez são armazenadas em estruturas de dados específicas denominadas catálogos.
+\vspace{-0.75cm} %idk why but needed more space
+\paragraph{}Além do \textit{parsing}, uma etapa crítica do projeto envolve a validação de campos, garantindo a integridade e consistência dos dados processados.
+\vspace{-0.3cm}
+\paragraph{}Os catálogos criados não apenas armazenam os dados de maneira eficiente, mas também servem como base para a execução de \textit{queries} (consultas). Utilizando diversas estruturas de dados adicionais, o projeto propõe a implementação de \textit{queries} que fornecem informações específicas a partir dos dados armazenados nos catálogos. Estas são formuladas com base em requisitos pré-definidos e, quando executadas, geram resultados que são posteriormente processados e apresentados no respetivo formato.
+\vspace{-0.3cm}  
+\paragraph{}A complexidade do projeto é ampliada pelo facto de nos ser fornecido um ficheiro de \textit{input}, onde cada linha contém um comando que corresponde ao tipo da \textit{query} e os argumentos associados. A execução desses comandos requer uma lógica adaptativa, garantindo que cada \textit{query} seja processada corretamente e que os resultados sejam armazenados nos respetivos ficheiros de \textit{output}.
+\vspace{-0.3cm}
+\paragraph{}Dessa forma, este projeto abrange uma variedade de conceitos essenciais, funcionando também como uma ponte de aprendizagem para programação orientada a objetos, desde manipulação de arquivos e \textit{parsing} de dados até a manipulação de estruturas de dados complexas e a execução dinâmica de consultas. O desafio reside não apenas na correta implementação desses aspetos individuais, mas também na integração eficiente e eficaz de todos os elementos para criar um sistema coeso e funcional.
+
+\section{Arquitetura do Projeto}
+\paragraph{}
+%batch mode implementada 
+%parsing que extrai os campos que nos permitem tratar da informacao
+%temos um interpretador responsavel por ler o ficheiro de comandos e %executar a respetiva query
+%um modulo que contem todas as queries bem como algumas estruturas de dados %auxiliares
+%um catalogo para cada uma das entidades que contem todos os dados sobre %estas, e um outro catalogo que corresponde a operacao logica do uniao dos %catalogos
+Utils: Módulo que contendo funções que nos vão auxiliar ao longo do programa.
+Parser: Módulo responsável por realizar o parsing dos ficheiros csv. 
+\paragraph{}Catalogs (Manager, Flights\_c, Reservations\_c, Users\_c, Passengers\_c): Módulos responsáveis por criar as estruturas de dados que ligam as várias entidades (Hash tables). O catálogo manager equivale à junção de todos os outros catálogos. Também contém os getters e setter dessas estruturas de dados.
+\paragraph{}Statistics: Módulo contendo estruturas de dados com informações relevantes à execução de determinadas queries. 
+\paragraph{}Input: Módulo responsável por realizar a validação dos ficheiros. 
+\paragraph{}Query: Módulo responsável pelo parser das querys, as querys em si e outras funções relevantes à sua execução., tal como funções que libertam memória alocada pelas queries. 
+\paragraph{}Output: Módulo responsável por criar e escrever os ficheiros de output para cada query, verificando a presença da flag ‘F’ nas queries. 
+\paragraph{}Entities (Flights, Reservations, Users, Passengers):  Módulos responsáveis por criar as estruturas de dados correspondente às entidades individuais de cada tipo de ficheiro csv. Também contém os getters e setters dessas estruturas de dados. 
+\paragraph{}Batch: Módulo responsável pelo modo de operação batch do programa. 
+
+
+Colocar foto como esta no guiao, sobre a nossa arquitetura
+\section{Desenvolvimento e Ideias Iniciais}
+\paragraph{}Após termos a arquitetura do projeto definida, preocupámo-nos então com o desenvolvimento do código do projeto. 
+\paragraph{}Começamos inicialmente por realizar um parser para os documentos csv, capaz de formatá-los dividindo cada linha do ficheiro em vários campos, sendo fácil assim manipulá-los para validação e organização nos catálogos. O parser seria capaz de receber um ficheiro csv, formatá-lo e passá-lo para uma função, recebida como argumento responsável por transformar a linha formatada numa entidade e validar essa mesma linha, escrevendo os erros na validação no ficheiro criado a esse destino.   
+\paragraph{}A validação dos ficheiros foi realizada tendo em conta os requisitos descritos no enunciado do projeto, traduzindo esses requisitos para código, em diversas funções. Uma parte trabalhosa na validação foi interagir com os valores das datas, pois era necessário de validar bastantes valores, o ano, o mês e o dia, e adicionalmente no caso do formato apresentar hora, as horas, os minutos e os segundos, tudo isto recebido em formato string. 
+\paragraph{}Em seguida criamos o módulo ‘batch’, responsável por criar encaminhar os argumentos que as funções de parsing precisavam além de chamar mais qualquer outra função que o programa precisa-se. Este módulo serviria então como a unidade central do modo de operação batch.  
+\paragraph{}Agora que tinhamos um caminho para transmitir e fazer parsing dos ficheiros csv tinhamos que criar estruturas de dados próprias para guardar as informações que eles contêm - uma espécia de base de dados.  Para isso criamos catálogos um para cada tipo de ficheiro (passageiros, voos, utilizadores e reservas), estes catálogos era constituídos por hash tables que recebiam um identificador como chave e devolviam a estrutura de dados da entidade correspondente, facilitando qualquer acesso aos dados que queiramos fazer. 
+\paragraph{}De seguida fomos para a criação de um sistema de execução de queries, começando por fazer, linha a linha, parsing das mesmas e depois executá-las dependendo do seu query\_id. Cada uma devolveria um resultado que seria escrito num ficheiro próprio de output, a formatação deste resultado dependeria na presença de uma flag ‘F’ junto ao identificador da query que faria com que o resultado tenho o formato field: value. 
+\paragraph{}Para a primeira fase do projeto decidimos realizar as primeiras 6 queries, pois determinamos que seriam as mais fáceis de se concluir dentro do prazo previsto. 
+\paragraph{}Query 1: “Listar o resumo de um utilizador, voo, ou reserva, consoante o identificador recebido por argumento.” A realização desta query consistiu em primeiro lugar identificar se o argumento se tratava de um utilizador, voo, ou reserva e então usar os funções ‘getters’ da respetiva entidade e guardar os resultados num array. 
+\paragraph{}Query 2: “Listar os voos ou reservas de um utilizador, se o segundo argumento for flights ou reservations, respetivamente, ordenados por data (da mais recente para a mais antiga). Caso não seja fornecido um segundo argumento, apresentar voos e reservas, juntamente com o tipo ( flight ou reservation).”  Aqui começamos primeiro por verficar o que temos de verificar, se são flights, reservations ou ambos, depois iteramos pelos dados pretnedidos e guardamo-os numa struct ResultEntry que, com 2 funções auxiliamos, ordenamos (segundos as datas) ,e , iterando sobre mais um ciclo escrevemos o resultado em formato de string. 
+\paragraph{}Query 3: “Apresentar a classificação média de um hotel, a partir do seu identificador.” Possivelmente a query mais fácil das seis, esta consiste em simplesmente iterar sobre a hash table das reservas, e adicionar a classificação de uma reserva ao cálculo da média caso o identificador do hotel seja o pretendido. 
+\paragraph{}Query 4: “Listar as reservas de um hotel, ordenadas por data de início (da mais recente para a mais antiga). Caso duas reservas tenham a mesma data, deve ser usado o identificador da reserva com o critério de desempate (de forma crescente).” Nesta query iteramos sobre o catálogo de reservas, e ao verificar se o identificador do hotel é o correto adicionamos a um array de reservas que depois é ordenado pelos critérios do enunciado devolvendo o resultado num array de strings ‘finalResult’. 
+\paragraph{}Query 5: “Listar os voos com origem num dado aeroporto, entre duas datas, ordenados por data de partida estimada (da mais antiga para a mais recente). Caso dois voos tenham a mesma data, o identificador do voo deverá ser usado como critério de desempate (de forma crescente). “  Tal como nas queries anteriores começamos por iterar sobre o catálogo das reservas e a verificar os identificadores de hoteis, depois ordenamos as reservas obtidas de acordo com os critérios do enunciado devolvendo o resultado num array de strings ‘finalResult’. 
+\paragraph{}Query 6: “Listar o top N aeroportos com mais passageiros, para um dado ano. Deverão ser contabilizados os voos com a data estimada de partida nesse ano. Caso dois aeroportos tenham o mesmo valor, deverá ser usado o nome do aeroporto como critério de desempate (de forma crescente).” Inicialmente para esta string iamos criar uma nova struct em statistics, para guardar o n de passageiros por ano de cada aeroporto, no entanto decidimos descartar esta ideia, (não sei bem explicar o resto). 
+\paragraph{}Um ponto importante a ter atenção foi, no final, verificar que tinhamos libertado todo espaço alocado na memória ao longo do programa, incluindo criar funções com o propósito de fazer ‘free’ dos resultados das queries. O descuidado com este detalhe leva a memory leaks, problema que tivemos que lidar com alguma frequência ao longo do desenvolvimento deste programa. 
+$Comecamos por fazer o parsing dos ficheiros;
+Depois optamos por validar todos os ficheiros;
+De seguida criamos as entidades para representar a informação analisada;
+Depois criamos a primeira versao dos nossos catalogos para armazenar as entidades com toda a informação guardada e processada;
+Através dos catalogos desenvolvemos as \textit{queries} (consultas), para isto foi necessario fazer algumas alteracoes nos catalogos bem como adicionar outras estruturas de dados; 
+Para finalizar esta fase tivemos apenas que definir um modulo para imprimir os resultados das \textit{queries} da forma pretendida, um ficheiro de output para cada linha do ficheiro input, correspondente a um comando, como visto anteriormente.$
+
+\section{Soluções e Resolução de problemas}
+Parsing: Fizemos um parsing simples, mas se calhar vale a pena mencionar alguma alteracao que possamos ter feito em ordem de corrigir algo ou por algo a funcionar.
+Validação do dataset e Criacao de entidades: tivemos que ter em atenção as copias por causa do encapsulamento, a alocação de memoria por causa de memory leaks e da construção de uma entidade de forma aproprieada para termos o comportamento desejado.
+Catalogos: Esta foi a parte mais desafiante do trabalho, conseguir inserir a informacao de forma correta e sem memory leaks, muitos problemas inesperados e algumas otimas (e outras nao tao otimas) solucoes!
+Queries: Esta parte foi mais dificil do que o antecipado mas grande parte dos problemas advinham dos catalogos ou do comportamento inesperado de algumas estruturas de dados e diversas funções da glib. 
+Output: Depois de arranjar a solução de usar o array result foi bastante facil desenvovler os ficheiros de output. 
+
+\subsection{Valgrind & Debugger (GDB)}
+Ferramentas usadas para localizar erros de memoria, bem como perceber se o programa esta a ter o comportamento esperado, analisando o estado do mesmo em várias alturas, executando linha a linha e recorrendo a breakpoints. Acesso a back trace stack (nao me lembro se é este o nome) que nos possibilitou encontrar o local do problema no nosso codigo.
+
+\section{Resultados Finais}
+Colocar os resultados das queries e algumas possiveis notas sobre o mesmo 
+\section{Conclusão}
+\paragraph{}Este projeto, embora desafiador e exigente em termos de tempo dedicado ao seu desenvolvimento, revelou-se gratificante ao proporcionar uma significativa melhoria nas nossas competências em engenharia informática. Especificamente, aprofundamos nossos conhecimentos no manuseamento de estruturas de dados e na leitura e escrita de ficheiros. Antecipando as exigências futuras na segunda fase, dedicamos atenção adiantado ao encapsulamento do programa, evitando possíveis reestruturações mais tarde. Tanto o codigo como a makefile atuais são, em princípio robustos o suficiente, possibilitanto reutilizá-los eficientemente na próxima etapa, no entanto poderá ser necessário realizar alguns ajustes para acomodar o modo interativo que terá que ser implementado. Outra coisa a salientar é o módulo statistics que nesta fase foi deixado vazio, no entanto as queries restantes, por serem mais complicadas poderão exigir que tiremos proveito deste módulo. 
+\end{document}
