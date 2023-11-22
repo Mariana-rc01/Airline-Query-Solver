@@ -137,6 +137,15 @@ void set_catalog_passenger(PASS_C catalog, PASS pass, char* user_id, char* fligh
     }
 }
 
+void remove_flight_array_from_hash_table(PASS_C pass, char* flight_id) {
+    gpointer flight = g_hash_table_lookup(pass->flights_id, flight_id);
+
+    if (flight != NULL) {
+        g_hash_table_remove(pass->flights, flight);
+
+        g_hash_table_remove(pass->flights_id, flight_id);
+    }
+}
 
 void free_passengers_c(PASS_C catalog){
     g_hash_table_destroy(catalog->flights);

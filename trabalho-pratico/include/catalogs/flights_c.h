@@ -96,6 +96,15 @@ GHashTable* get_hash_table_flight(FLIGHTS_C catalog);
  */
 void set_catalog_flight(FLIGHTS_C catalog, FLIGHT flight, char* id);
 
+/**
+ * @brief Removes a flight from the flights catalog.
+ *
+ * This function removes a flight identified by its ID from the flights catalog.
+ *
+ * @param flights A pointer to the flights catalog.
+ * @param flight_id The ID of the flight to be removed.
+ */
+void remove_flight_from_hash_table(FLIGHTS_C flights, char* flight_id);
 
 /**
  * @brief Free the allocated memory for the flight catalog.

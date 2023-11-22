@@ -144,9 +144,9 @@ void* query1(MANAGER manager,char** args){
  * another data source and are used for sorting and processing the results.
  */
 typedef struct {
-    char* id;      ///< Identifier associated with the result entry.
-    char* date;    ///< Date associated with the result entry.
-    char* type;    ///< Type associated with the result entry.
+    char* id;      /**< Identifier associated with the result entry. */
+    char* date;    /**< Date associated with the result entry. */
+    char* type;    /**< Type associated with the result entry. */
 } ResultEntry;
 
 /**

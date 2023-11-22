@@ -83,6 +83,16 @@ void set_catalog_flight(FLIGHTS_C catalog, FLIGHT flight, char* id){
     number_flights++;
 }
 
+void remove_flight_from_hash_table(FLIGHTS_C flights, char* flight_id) {
+    gpointer flight = g_hash_table_lookup(flights->flights_id, flight_id);
+
+    if (flight != NULL) {
+        g_hash_table_remove(flights->flights, flight);
+
+        g_hash_table_remove(flights->flights_id, flight_id);
+    }
+}
+
 void free_flight_c(FLIGHTS_C catalog){
     g_hash_table_destroy(catalog->flights);
     g_hash_table_destroy(catalog->flights_id);

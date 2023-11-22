@@ -116,7 +116,7 @@ int get_user_array_number_id(PASS_C catalog, char* id);
 /**
  * @brief Sets the catalog information for a passenger.
  *
- * This function adds to the catalog hash tables the records of a passenger,and 
+ * This function adds to the catalog hash tables the records of a passenger,and
  * links its keys with their corresponding ID string in other hash tables.
  *
  * @param catalog The passengers catalog.
@@ -126,6 +126,15 @@ int get_user_array_number_id(PASS_C catalog, char* id);
  */
 void set_catalog_passenger(PASS_C catalog, PASS pass, char* user_id, char* flight_id);
 
+/**
+ * @brief Removes a flight from the passengers catalog.
+ *
+ * This function removes a flight identified by its ID from the passengers catalog.
+ *
+ * @param pass A pointer to the passengers catalog.
+ * @param flight_id The ID of the flight to be removed.
+ */
+void remove_flight_array_from_hash_table(PASS_C pass, char* flight_id);
 
 /**
  * @brief Frees the memory used by the passengers catalog.

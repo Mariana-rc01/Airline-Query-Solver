@@ -25,6 +25,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include <glib.h>
 
 /**
  * @struct passengersF
@@ -81,6 +83,49 @@ int build_passengers(char** passengers_fields, void* catalog){
 
     char* copy_flight = strdup(passengers_fields[0]);
     char* copy_user = strdup(passengers_fields[1]);
+
+    FLIGHT flight = get_flight_by_id(flightsC, copy_flight);
+
+    // Check if the number of passengers exceeds the total number of seats
+    GPtrArray* passengersArray = get_flight_array_by_id(passengersC, copy_flight);
+    if (passengersArray && (int)passengersArray->len > get_flight_total_seats(flight)) {
+        FILE* errorP = fopen("Resultados/passengers_errors.csv", "a");
+        if (errorP != NULL) {
+            for (int i = 0; i < (int)passengersArray->len; i++) {
+                fprintf(errorP, "%s;%p\n", copy_flight, g_ptr_array_index(passengersArray, i));
+            }
+            fclose(errorP);
+        }
+
+        FILE* errorF = fopen("Resultados/flights_errors.csv", "a");
+        if (errorF != NULL) {
+            char* id = copy_flight;
+            char* airline = get_flight_airline(flight);
+            char* plane_model = get_flight_plane_model(flight);
+            int total_seats = get_flight_total_seats(flight);
+            char* origin = get_flight_origin(flight);
+            char* destination = get_flight_destination(flight);
+            char* schedule_d_d = get_flight_schedule_departure_date(flight);
+            char* schedule_a_d = get_flight_schedule_arrival_date(flight);
+            char* real_d_d = get_flight_real_departure_date(flight);
+            char* real_a_d = get_flight_real_arrival_date(flight);
+            char* pilot = get_flight_pilot(flight);
+            char* copilot = get_flight_copilot(flight);
+            char* notes = get_flight_notes(flight);
+
+            fprintf(errorF, "%s;%s;%s;%d;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", id, airline,plane_model,total_seats,
+            origin,destination,schedule_d_d, schedule_a_d, real_d_d, real_a_d, pilot, copilot, notes);
+            fclose(errorF);
+        }
+
+        // Remove the flight from the hash table
+        remove_flight_from_hash_table(flightsC, copy_flight);
+        remove_flight_array_from_hash_table(passengersC, copy_flight);
+
+        free(pass);
+        return 0;
+    }
+
     set_catalog_passenger(passengersC, pass, copy_user, copy_flight);
 
     insert_pass_flight_c(copy_user, passengersC, pass->flight);
