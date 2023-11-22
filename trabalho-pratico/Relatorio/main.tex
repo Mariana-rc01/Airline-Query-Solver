@@ -50,7 +50,6 @@
 \end{center}
 \newpage
 \tableofcontents
-\listoftables
 \listoffigures
 
 \newpage
@@ -82,7 +81,7 @@ Num módulo \textit{interpreter} identificamos o tipo de \textit{query} que quer
 \paragraph{}A Figura 1 apresenta um diagrama simplificado que ilustra as principais classes e suas interações no sistema. Este diagrama proporciona uma visão visual clara da estrutura do projeto.
 \begin{figure}[H]
 \begin{center}
-	\includegraphics[width=10cm]{Images/arquitetura.png} 
+	\includegraphics[width=15cm]{Images/arquitetura.png} 
         \caption{Representação da Arquitetura do Projeto}
 \end{center}
 \end{figure}
@@ -108,56 +107,93 @@ Alguns aspetos importantes a considerar sobre o nosso \textit{Makefile} são:
 \subsection{Conclusão}
 \paragraph{}A arquitetura proposta fornece uma base sólida para a implementação do projeto, garantindo a modularidade, a eficiência e a facilidade de manutenção. A interconexão fluida entre os módulos permite que o sistema atenda de forma eficaz aos requisitos funcionais, ao mesmo tempo que mantém a flexibilidade necessária para futuras expansões e melhorias.
 
-%Utils: Módulo que contendo funções que nos vão auxiliar ao longo do programa.
-%Parser: Módulo responsável por realizar o parsing dos ficheiros csv. 
-%\paragraph{}Catalogs (Manager, Flights\_c, Reservations\_c, Users\_c, %Passengers\_c): Módulos responsáveis por criar as estruturas de dados que %ligam as várias entidades (Hash tables). O catálogo manager equivale à %junção de todos os outros catálogos. Também contém os getters e setter %dessas estruturas de dados.
-%\paragraph{}Statistics: Módulo contendo estruturas de dados com informações %relevantes à execução de determinadas queries. 
-%\paragraph{}Input: Módulo responsável por realizar a validação dos %ficheiros. 
-%\paragraph{}Query: Módulo responsável pelo parser das querys, as querys em %si e outras funções relevantes à sua execução., tal como funções que %libertam memória alocada pelas queries. 
-%\paragraph{}Output: Módulo responsável por criar e escrever os ficheiros de %output para cada query, verificando a presença da flag ‘F’ nas queries. 
-%\paragraph{}Entities (Flights, Reservations, Users, Passengers):  Módulos %responsáveis por criar as estruturas de dados correspondente às entidades %individuais de cada tipo de ficheiro csv. Também contém os getters e 
-%setters dessas estruturas de dados. 
-%\paragraph{}Batch: Módulo responsável pelo modo de operação batch do %programa. 
-
 \section{Desenvolvimento e Ideias Iniciais}
-\paragraph{}Após termos a arquitetura do projeto definida, preocupámo-nos então com o desenvolvimento do código do projeto. 
-\paragraph{}Começamos inicialmente por realizar um parser para os documentos csv, capaz de formatá-los dividindo cada linha do ficheiro em vários campos, sendo fácil assim manipulá-los para validação e organização nos catálogos. O parser seria capaz de receber um ficheiro csv, formatá-lo e passá-lo para uma função, recebida como argumento responsável por transformar a linha formatada numa entidade e validar essa mesma linha, escrevendo os erros na validação no ficheiro criado a esse destino.   
-\paragraph{}A validação dos ficheiros foi realizada tendo em conta os requisitos descritos no enunciado do projeto, traduzindo esses requisitos para código, em diversas funções. Uma parte trabalhosa na validação foi interagir com os valores das datas, pois era necessário de validar bastantes valores, o ano, o mês e o dia, e adicionalmente no caso do formato apresentar hora, as horas, os minutos e os segundos, tudo isto recebido em formato string. 
-\paragraph{}Em seguida criamos o módulo ‘batch’, responsável por criar encaminhar os argumentos que as funções de parsing precisavam além de chamar mais qualquer outra função que o programa precisa-se. Este módulo serviria então como a unidade central do modo de operação batch.  
-\paragraph{}Agora que tinhamos um caminho para transmitir e fazer parsing dos ficheiros csv tinhamos que criar estruturas de dados próprias para guardar as informações que eles contêm - uma espécia de base de dados.  Para isso criamos catálogos um para cada tipo de ficheiro (passageiros, voos, utilizadores e reservas), estes catálogos era constituídos por hash tables que recebiam um identificador como chave e devolviam a estrutura de dados da entidade correspondente, facilitando qualquer acesso aos dados que queiramos fazer. 
-\paragraph{}De seguida fomos para a criação de um sistema de execução de queries, começando por fazer, linha a linha, parsing das mesmas e depois executá-las dependendo do seu query\_id. Cada uma devolveria um resultado que seria escrito num ficheiro próprio de output, a formatação deste resultado dependeria na presença de uma flag ‘F’ junto ao identificador da query que faria com que o resultado tenho o formato field: value. 
-\paragraph{}Para a primeira fase do projeto decidimos realizar as primeiras 6 queries, pois determinamos que seriam as mais fáceis de se concluir dentro do prazo previsto. 
+\paragraph{}Antes de entrar nos detalhes sobre o desenvolvimento do \textit{parser}, é relevante destacar a importância do \textit{makefile} e da validação de dados na fase inicial do projeto.
 
-$Comecamos por fazer o parsing dos ficheiros;
-Depois optamos por validar todos os ficheiros;
-De seguida criamos as entidades para representar a informação analisada;
-Depois criamos a primeira versao dos nossos catalogos para armazenar as entidades com toda a informação guardada e processada;
-Através dos catalogos desenvolvemos as \textit{queries} (consultas), para isto foi necessario fazer algumas alteracoes nos catalogos bem como adicionar outras estruturas de dados; 
-Para finalizar esta fase tivemos apenas que definir um modulo para imprimir os resultados das \textit{queries} da forma pretendida, um ficheiro de output para cada linha do ficheiro input, correspondente a um comando, como visto anteriormente.$
+\paragraph{}O \textit{makefile} foi concebido como uma ferramenta fundamental para a automatização do processo de compilação. Ele não apenas organizou a estrutura do projeto, facilitando a compilação e vinculação de diferentes módulos, mas também permitiu uma abordagem mais eficiente para gerir dependências e garantir a integridade do código.
+
+\paragraph{}A validação de dados, por sua vez, tornou-se um ponto fulcral durante o desenvolvimento. A garantia da qualidade e consistência dos dados foi estabelecida como uma prioridade. Essa fase inicial envolveu a implementação de mecanismos de verificação rigorosos para assegurar que o \textit{dataset} estivesse em conformidade com as expectativas do sistema. Isso não apenas contribuiu para a estabilidade do código, mas também preveniu potenciais problemas ao longo das etapas subsequentes do desenvolvimento. 
+
+\paragraph{}Após a definição da arquitetura do projeto, focamo-nos no desenvolvimento do código, iniciando com a implementação de um \textit{parser} para os ficheiros \textit{CSV}. O \textit{parser} desempenhou um papel crucial ao formatar as linhas do ficheiro em campos separados. Vale destacar que o \textit{parser} não executa validações diretamente; em vez disso, é nesse ponto que chamamos as funções específicas de validação, tornando o processo mais modular e compreensível.
+
+\paragraph{}Dando continuidade, introduzimos o módulo \textit{batch}, uma peça fundamental que não só encaminhava os argumentos essenciais para as funções de \textit{parsing}, mas era também responsável por chamar o módulo \textit{interpreter} que por sua vez lê o ficheiro de \textit{input}.
+
+\paragraph{}Com os mecanismos de \textit{parsing} consolidados, passamos à criação de estruturas de dados dedicadas para armazenar as informações dos ficheiros \textit{CSV}. Introduzimos catálogos específicos para cada tipo de ficheiro, como passageiros, voos, utilizadores e reservas. Esses catálogos foram implementados como \textit{hash tables} proporcionando um acesso rápido e eficiente aos dados. Nesta fase, adotamos uma estratégia que nós pensamos ser bastante interessante. Deparámo-nos com um erro ao associar a  \textit{string id} com a instância da entidade. Para isso, criamos vários \textit{pointer arrays} (estrutura da \textit{GLib} que representa um \textit{array} dinâmico) para podermos associar uma chave criada por nós (um valor inteiro) ao respetivo \textit{string id}. Depois criamos ainda \textit{hash tables} extra para podermos associar a \textit{string id} à chave criada por nós.
+
+\paragraph{}Ao avançar para a fase de execução de \textit{queries}, desenvolvemos um sistema capaz de analisar e executar \textit{queries}, gerando resultados que eram registados em ficheiros de saída designados por \textit{commandN\_output.txt} (onde N identifica o número da linha do ficheiro de \textit{input}). 
+
+\paragraph{}Na escolha das \textit{queries} a serem implementadas na primeira fase, optamos por aquelas que consideramos mais viáveis dentro do cronograma estabelecido. Por fim, conferimos atenção meticulosa à gestão de memória, garantindo não apenas a alocação adequada, mas também a libertação eficiente de todos os espaços alocados ao longo do programa, evitando assim possíveis \textit{memory leaks}, um desafio que enfrentamos e superamos ao longo do processo de desenvolvimento. Exploramos mais aprofundadamente numa secção seguinte estes \textit{memory leaks} e a sua resolução.
 
 \section{Soluções e Resolução de problemas}
-Parsing: Fizemos um parsing simples, mas se calhar vale a pena mencionar alguma alteracao que possamos ter feito em ordem de corrigir algo ou por algo a funcionar.
-Validação do dataset e Criacao de entidades: tivemos que ter em atenção as copias por causa do encapsulamento, a alocação de memoria por causa de memory leaks e da construção de uma entidade de forma aproprieada para termos o comportamento desejado.
-Catalogos: Esta foi a parte mais desafiante do trabalho, conseguir inserir a informacao de forma correta e sem memory leaks, muitos problemas inesperados e algumas otimas (e outras nao tao otimas) solucoes!
-Queries: Esta parte foi mais dificil do que o antecipado mas grande parte dos problemas advinham dos catalogos ou do comportamento inesperado de algumas estruturas de dados e diversas funções da glib. 
-Output: Depois de arranjar a solução de usar o array result foi bastante facil desenvolver os ficheiros de output. 
+\paragraph{}Durante a fase de \textit{parsing}, implementamos uma abordagem inicial, mas ao longo do desenvolvimento, percebemos a necessidade de ajustes para resolver questões específicas, tais como a criação dos ficheiros de erro neste processo, invés de serem criados mais tarde. 
+
+\paragraph{}A validação do \textit{dataset} e a criação de entidades foram etapas críticas. Enfrentamos desafios relacionados com o encapsulamento, garantindo que as cópias fossem tratadas de maneira apropriada. Além disso, a alocação de memória foi cuidadosamente gerenciada para evitar \textit{memory leaks}, e a construção adequada de entidades foi crucial para garantir o comportamento desejado do sistema.
+
+\paragraph{}A implementação dos catálogos representou uma das fases mais desafiadoras do projeto. Inserir informações de maneira correta e sem provocar \textit{memory leaks} exigiu uma atenção minuciosa. Enfrentamos diversos problemas inesperados, tais como, o \textit{insert} das entidades, que não era identificado como erro, no entanto estava a preencher as nossas bases de dados com lixo, tornando este um erro bastante difícil de identificar, que foi apenas óbvia quando identificamos outro erro quando tentamos libertar a memória alocada para os catálogos. No entanto, a resolução desses desafios proporcionou aprendizagens valiosas, resultando em soluções tanto otimizadas quanto aquelas que nos ensinaram a lidar com obstáculos inesperados.
+
+\paragraph{}A etapa de \textit{queries} foi mais complexa do que inicialmente prevíamos. Muitos dos problemas encontrados estavam relacionados aos catálogos ou ao comportamento inesperado de certas estruturas de dados e funções da \textit{GLib}. No entanto, encontrar as estratégias que nos permitissem não só executar as \textit{queries} de forma eficiente mas também poder ter acesso a informação que se encontra noutros módulos, foi demorado e apresentou o seu grau de complexidade. Superar esses desafios contribuiu para uma compreensão mais profunda do funcionamento do sistema e aprimorou a robustez do código.
+%complexidade aka torturante
+
+\paragraph{}Finalmente, ao encontrar uma solução eficaz para utilizar o \textit{array result}, a implementação da geração de ficheiros de \textit{output} tornou-se uma tarefa relativamente simples. Essa escolha estratégica facilitou o processo de desenvolvimento e proporcionou uma conclusão bem-sucedida para o projeto, destacando a importância de escolhas estruturais na resolução de desafios técnicos.
 
 \subsection{Valgrind & Debugger (GDB)}
-Ferramentas usadas para localizar erros de memoria, bem como perceber se o programa esta a ter o comportamento esperado, analisando o estado do mesmo em várias alturas, executando linha a linha e recorrendo a breakpoints. Acesso a back trace stack (nao me lembro se é este o nome) que nos possibilitou encontrar o local do problema no nosso codigo.
+\paragraph{}Para validar a correta execução do programa, utilizamos as ferramentas de depuração Valgrind e GDB. Apesar de distintas, essas ferramentas se complementam no processo de identificação e correção de erros. O Valgrind concentra-se principalmente em detectar \textit{memory leaks} (quando um programa aloca memória dinamicamente, mas não a libera adequadamente, resultando em desperdício de recursos de memória) e acessos indevidos (quando um programa tenta ler ou escrever em áreas de memória não alocadas para ele, podendo levar a comportamentos indesejados, falhas ou \textit{crashes}) durante a execução do programa. Por sua vez, o GDB contribui para esse propósito, permitindo a criação de pontos de interrupção (\textit{breakpoints}), nos quais podemos acessar os valores das variáveis do programa e realizar \textit{backtrace} para localizar a origem de um problema.
 
+\subsubsection{Guia de Utilização das Ferramentas}
+Para poder utilizar o GDB temos que executar os seguintes comandos:
+\begin{itemize}
+\item gdb ./programa-principal
+\item run <path\_datasets> <path\_ficheiro\_input>/input.txt
+\end{itemize}
+Para poder utilizar o Valgrind temos que executar os seguintes comandos:
+\begin{itemize}
+\item valgrind ./programa-principal <path\_datasets> <path\_ficheiro\_input>/input.txt
+\vspace{0.1cm}
+\par Ou para uma análise mais detalhada...
+\item valgrind —leak-check=full ./programa-principal <path\_datasets> <path\_ficheiro\_input>/input.txt
+\end{itemize}
+\paragraph{}É ainda importante mencionar que o projeto deve ser compilado antes de aceder a qualquer uma das ferramentas, através do comando make. Ainda podemos utilizar a \textit{flag DEBUG=1} para obter informações mais específicas sobre o erro.
+
+\paragraph{}Nas figuras que se seguem, podemos ver como é que o \textit{Valgrind} nos mostra a quantidade de \textit{memory leaks} que temos no projeto. Inicialmente identificamos imensos vazamentos durante a criação dos catálogos. É de notar que a quantidade de \textit{memory leaks} inicial Figura\ref{Figura1Valgrind} não representa todos os possíveis vazamentos, antes de obter os 23 \textit{MegaBytes} resolvemos outras imensas \textit{leaks}.
+\begin{figure}[H]
+\begin{center}
+	\includegraphics[width=15cm]{Images/valgrindPior.png} 
+        \caption{Quantidade de \textit{memory leaks} inicial}
+        \label{Figura1Valgrind}
+\end{center}
+\end{figure}
+\paragraph{}Depois de completados os catálogos, o desenvolvimento das \textit{queries} foi a etapa mais problemática pois, mesmo que a quantidade de \textit{leaks} seja menor, a sua resolução foi bastante mais complexa, pois mesmo identificando os locais corretos cuja memória necessitava de ser libertada, era muito fácil deixar alguns apontadores alocados ou então dar \textit{free} duplicados. 
+\begin{figure}[H]
+\begin{center}
+	\includegraphics[width=15cm]{Images/valgrindMédio.png} 
+        \caption{Quantidade de \textit{memory leaks} otimizada}
+        \label{Figura2Valgrind}
+\end{center}
+\end{figure}
+\paragraph{}Na fase final, conseguimos otimizar bastante o nosso código, não só em \textit{memory leaks} como também em memória total usada e tempo de execução. Infelizmente continuamos ainda com 100 \textit{Bytes} de memória perdida, porque mesmo com o problema identificado, a estratégia que usamos para resolver os restantes \textit{leaks} não resultou aqui. Estamos confiantes que na próxima fase serão resolvidos.
+\begin{figure}[H]
+\begin{center}
+	\includegraphics[width=15cm]{Images/valgrindMelhor.png} 
+        \caption{Quantidade de \textit{memory leaks} final}
+        \label{Figura3Valgrind}
+\end{center}
+\end{figure}
+\newpage
 \section{Resultados Finais}
 \paragraph{}\textit{Query 1}: “Listar o resumo de um utilizador, voo, ou reserva, consoante o identificador recebido por argumento.”
-A função \textit{query1} foi criada para extrair informações com base em um ID de entidade, que pode representar um voo, uma reserva ou um usuário, dependendo das condições de identificação. Ao receber um \textit{ID} como argumento, a função verifica se corresponde a um voo, reserva ou usuário, utilizando funções de obtenção específicas. Se a correspondência for encontrada, a função coleta informações pertinentes, como detalhes do voo, reserva ou usuário, e retorna um \textit{array} de strings dinamicamente alocado contendo esses dados. Além disso, a função faz a gestão adequada da memória, liberando-a quando necessário, e trata casos especiais, como usuários inativos, retornando NULL nesses cenários
+A função \textit{query1} foi criada para extrair informações com base em um ID de entidade, que pode representar um voo, uma reserva ou um usuário, dependendo das condições de identificação. Ao receber um \textit{ID} como argumento, a função verifica se corresponde a um voo, reserva ou usuário, utilizando funções de obtenção específicas. Se a correspondência for encontrada, a função coleta informações pertinentes, como detalhes do voo, reserva ou usuário, e retorna um \textit{array} de strings dinamicamente alocado contendo esses dados. Além disso, a função faz a gestão adequada da memória, libertando-a quando necessário, e trata casos especiais, como usuários inativos, retornando \textit{NULL} nessas situações.
 \paragraph{}\textit{Query 2}: “Listar os voos ou reservas de um utilizador, se o segundo argumento for \textit{flights} ou \textit{reservations}, respetivamente, ordenados por data (da mais recente para a mais antiga). Caso não seja fornecido um segundo argumento, apresentar voos e reservas, juntamente com o tipo (\textit{flight} ou \textit{reservation}).”
-A função \textit{query2} parece ser projetada para extrair informações relacionadas a voos e reservas associados a um usuário, permitindo a filtragem por tipo (todos, voos ou reservas) e a ordenação por data e identificador. A função utiliza estruturas de dados, como \textit{ResultEntry}, para representar informações de resultados, e implementa funções de comparação para ordenação. Ela manipula dinamicamente \textit{arrays} de \textit{IDs}, datas e tipos, iterando sobre voos e reservas associados ao usuário. Além disso, a função gerencia adequadamente a memória e retorna um array de strings formatado com informações ordenadas e específicas para cada tipo.
+A função \textit{query2} é projetada para extrair informações relacionadas a voos e reservas associados a um usuário, permitindo a filtragem por tipo (todos, voos ou reservas) e a ordenação por data e identificador. A função utiliza estruturas de dados, como \textit{ResultEntry}, para representar informações de resultados, e implementa funções de comparação para ordenação. Ela manipula dinamicamente \textit{arrays} de \textit{IDs}, datas e tipos, iterando sobre voos e reservas associados ao usuário. Além disso, a função gere adequadamente a memória e retorna um \textit{array} de \textit{strings} formatado com informações ordenadas e específicas para cada tipo.
 \paragraph{}\textit{Query 3}: “Apresentar a classificação média de um hotel, a partir do seu identificador.”
-A função \textit{query3} parece ser destinada a calcular e retornar a média das avaliações (\textit{ratings}) para reservas associadas a um determinado hotel, identificado pelo \textit{ID} fornecido como argumento. A função itera sobre as reservas no catálogo, verifica se cada reserva pertence ao hotel desejado e, se for o caso, acumula as avaliações para posterior cálculo da média. A função usa a estrutura  \textit{RESERV\_C} para aceder e manipular as informações necessárias. A média resultante é convertida para uma string antes de ser devolvida.
+A função \textit{query3} é destinada a calcular e retornar a média das avaliações (\textit{ratings}) para reservas associadas a um determinado hotel, identificado pelo \textit{ID} fornecido como argumento. A função itera sobre as reservas no catálogo, verifica se cada reserva pertence ao hotel desejado e, se for o caso, acumula as avaliações para posterior cálculo da média. A função usa a estrutura \textit{RESERV\_C} para aceder e manipular as informações necessárias. A média resultante é convertida para uma string antes de ser devolvida.
 \paragraph{}\textit{Query 4}: “Listar as reservas de um hotel, ordenadas por data de início (da mais recente para a mais antiga). Caso duas reservas tenham a mesma data, deve ser usado o identificador da reserva com o critério de desempate (de forma crescente).”A função \textit{query4}  destina-se a extrair e organizar informações sobre reservas associadas a um hotel específico, identificado pelo \textit{ID} fornecido como argumento. A função utiliza  a estrutura para representar informações de reservas, e implementa funções de comparação para ordenação com base em datas e \textit{IDs}. A função itera sobre as reservas no catálogo, verifica se cada reserva pertence ao hotel desejado e, se for o caso, armazena as informações relevantes em \textit{arrays}. Em seguida, ela utiliza uma função de ordenação para organizar essas informações e cria um \textit{array} de strings formatadas com os detalhes das reservas ordenadas.
 \paragraph{}\textit{Query 5}: “Listar os voos com origem num dado aeroporto, entre duas datas, ordenados por data de partida estimada (da mais antiga para a mais recente). Caso dois voos tenham a mesma data, o identificador do voo deverá ser usado como critério de desempate (de forma crescente).“
-A função \textit{query5} destina-se a organizar informações sobre voos com base na origem, na data de início e na data de fim fornecidas como argumentos. Ela utiliza a estrutura \textit{FlightInfo} para representar informações de voos e implementa funções de comparação para ordenação com base em datas e \textit{IDs}. A função itera sobre os voos no catálogo, verifica se cada voo atende aos critérios de origem e datas especificados, armazena as informações relevantes em \textit{arrays} e, em seguida, utiliza uma função de ordenação para organizar essas informações. O resultado final é um \textit{array} de strings formatadas com os detalhes dos voos ordenados.
+A função \textit{query5} organiza informações sobre voos com base na origem, na data de início e na data de fim fornecidas como argumentos. Ela utiliza a estrutura \textit{FlightInfo} para representar informações de voos e implementa funções de comparação para ordenação com base em datas e \textit{IDs}. A função itera sobre os voos no catálogo, verifica se cada voo atende aos critérios de origem e datas especificados, armazena as informações relevantes em \textit{arrays} e, em seguida, utiliza uma função de ordenação para organizar essas informações. O resultado final é um \textit{array} de strings formatadas com os detalhes dos voos ordenados.
 \paragraph{}\textit{Query 6}: “Listar o top N aeroportos com mais passageiros, para um dado ano. Deverão ser contabilizados os voos com a data estimada de partida nesse ano. Caso dois aeroportos tenham o mesmo valor, deverá ser usado o nome do aeroporto como critério de desempate (de forma crescente).”
 A função \textit{query6} processa informações sobre o número de passageiros em aeroportos durante um determinado ano. Utilizando estruturas de dados adequadas, ela itera sobre os voos do catálogo, identifica os aeroportos associados a esses voos e calcula o total de passageiros para cada aeroporto. Os resultados são ordenados em ordem decrescente com base no número de passageiros. A função retorna um \textit{array} de \textit{strings} contendo o nome do aeroporto e o número total de passageiros para os N aeroportos mais movimentados no ano especificado.
-\paragraph{}Um ponto importante a ter atenção foi, no final, verificar que tinhamos libertado todo espaço alocado na memória ao longo do programa, incluindo criar funções com o propósito de fazer \textit{free} dos resultados das \textit{queries}. O descuidado com este detalhe leva a \textit{memory leaks}, problema que tivemos que lidar com alguma frequência ao longo do desenvolvimento deste programa. 
+
+Nota: Para todas as \textit{queries} definimos funções de \textit{output} conforme era pedido no enunciado, pois é de lembrar que todas estas consultas têm dois modos, o normal e o formatado, que é identificado por um "F" ao lado da \textit{query\_id} em cada linha do ficheiro de \textit{input}.
+
 \section{Conclusão}
 \paragraph{}Concluir este projeto representou uma jornada desafiadora, mas extremamente enriquecedora, que se traduziu numa notável evolução das nossas competências em engenharia informática. Durante o processo de desenvolvimento, concentramo-nos intensamente na manipulação avançada de estruturas de dados e na otimização das operações de leitura e escrita de ficheiros. Esta abordagem estratégica não apenas fortaleceu o nosso domínio técnico, mas também estabeleceu uma base sólida para as exigências futuras.
 \paragraph{}Destacamos, desde cedo, a importância do encapsulamento do programa, antecipando as necessidades subsequentes. Essa decisão não reflete apenas a consistência do nosso processo de desenvolvimento, mas também minimiza a necessidade de reestruturações significativas no futuro. Tanto o código quanto a \textit{makefile}, na sua configuração atual, demonstram robustez, proporcionando uma plataforma eficiente para serem reaproveitados na próxima etapa.
