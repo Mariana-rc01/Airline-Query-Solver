@@ -43,7 +43,7 @@ FLIGHT create_flight(void);
  * @param flight A pointer to the flight struct.
  * @param id The flight ID.
  */
-void set_flight_id(FLIGHT flight, gpointer id);
+void set_flight_id(FLIGHT flight, char* id);
 
 /**
  * @brief Sets the airline for the flight.
@@ -135,7 +135,7 @@ void set_flight_notes(FLIGHT flight, char* notes);
  * @param flight A pointer to the flight struct.
  * @return The flight ID.
  */
-int get_flight_id(FLIGHT flight);
+char* get_flight_id(FLIGHT flight);
 
 /**
  * @brief Gets the airline for the flight.

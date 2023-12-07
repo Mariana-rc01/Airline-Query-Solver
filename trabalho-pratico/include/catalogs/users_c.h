@@ -47,7 +47,7 @@ USERS_C create_user_c(void);
  * @param user The user to be inserted.
  * @param catalog The user catalog.
  */
-void insert_user_c(USER user, USERS_C catalog, gpointer key);
+void insert_user_c(USER user, USERS_C catalog, char* key);
 
 /**
  * @brief Retrieves a user by user ID from the users catalog.
@@ -59,40 +59,6 @@ void insert_user_c(USER user, USERS_C catalog, gpointer key);
 USER get_user_by_id(USERS_C catalog, char* id);
 
 /**
- * @brief Retrieves a user by user ID (stored as a gpointer) from the users catalog.
- *
- * @param catalog The users catalog.
- * @param user_id The user ID stored as a gpointer.
- * @return The user object if found, or NULL if not found.
- */
-USER get_user_by_gpointer(USERS_C catalog, gpointer user_id);
-
-/**
- * @brief Retrieves the key (user ID) associated with a given user object.
- *
- * @param catalog The users catalog.
- * @param value The user object.
- * @return The user ID (key) if found, or NULL if not found.
- */
-char* get_key_by_value(USERS_C catalog, gpointer value);
-
-/**
- * @brief Calculates the length of the users catalog array.
- *
- * @param catalog The users catalog.
- * @return The length of the users catalog array.
- */
-int calculate_array_length(USERS_C catalog);
-
-/**
- * @brief Retrieves the keys of the users catalog as an array.
- *
- * @param catalog The users catalog.
- * @return An array of user IDs.
- */
-gpointer* get_keys_as_array(USERS_C catalog);
-
-/**
  * @brief Updates the total amount spent by a user in the users catalog.
  *
  * @param catalog The users catalog.
@@ -100,18 +66,6 @@ gpointer* get_keys_as_array(USERS_C catalog);
  * @param cost The additional cost to be added to the user's total.
  */
 void update_user_c(USERS_C catalog, char* id, double cost);
-
-/**
- * @brief Sets the catalog information for a user.
- *
- * This function adds to the catalog hash table the records of an user, and 
- * links its keys with their corresponding ID string in other hash tables.
- * 
- * @param catalog The users catalog.
- * @param user The user object.
- * @param id The user ID.
- */
-void set_catalog_user(USERS_C catalog, USER user, char* id);
 
 /**
  * @brief Free the allocated memory for the user catalog.

@@ -43,14 +43,14 @@ RESERV create_reservation(void);
  * @param res A pointer to the reservations struct.
  * @param i The reservation ID.
  */
-void set_reservation_id(RESERV res, gpointer i);
+void set_reservation_id(RESERV res, char* i);
 
 /**
  * @brief Sets the user ID associated with the reservation.
  * @param res A pointer to the reservations struct.
  * @param u_id The user ID.
  */
-void set_user_id_R(RESERV res, gpointer u_id);
+void set_user_id_R(RESERV res, char* u_id);
 
 /**
  * @brief Sets the hotel ID associated with the reservation.
@@ -74,20 +74,6 @@ void set_hotel_name(RESERV res, char* h_name);
 void set_hotel_stars(RESERV res, char* stars);
 
 /**
- * @brief Sets the city tax information for the reservation.
- * @param res A pointer to the reservations struct.
- * @param c_tax The city tax information.
- */
-void set_city_tax(RESERV res, char* c_tax);
-
-/**
- * @brief Sets the hotel's address.
- * @param res A pointer to the reservations struct.
- * @param address The hotel address.
- */
-void set_address(RESERV res, char* address);
-
-/**
  * @brief Sets the start date of the reservation.
  * @param res A pointer to the reservations struct.
  * @param b_date The start date.
@@ -102,13 +88,6 @@ void set_begin_date(RESERV res, char* b_date);
 void set_end_date(RESERV res, char* e_date);
 
 /**
- * @brief Sets the price per night for the reservation.
- * @param res A pointer to the reservations struct.
- * @param price The price per night.
- */
-void set_price_per_night(RESERV res, char* price);
-
-/**
  * @brief Sets information about breakfast inclusion for the reservation.
  * @param res A pointer to the reservations struct.
  * @param inc_breakfast Information about breakfast inclusion.
@@ -116,25 +95,11 @@ void set_price_per_night(RESERV res, char* price);
 void set_includes_breakfast(RESERV res, char* inc_breakfast);
 
 /**
- * @brief Sets details about the room for the reservation.
- * @param res A pointer to the reservations struct.
- * @param r_details Details about the room.
- */
-void set_room_details(RESERV res, char* r_details);
-
-/**
  * @brief Sets the rating associated with the reservation.
  * @param res A pointer to the reservations struct.
  * @param ratin The rating.
  */
 void set_rating(RESERV res, char* ratin);
-
-/**
- * @brief Sets the user's comment on the reservation.
- * @param res A pointer to the reservations struct.
- * @param comm The user's comment.
- */
-void set_comment(RESERV res, char* comm);
 
 /**
  * @brief Sets the reservation's cost.
@@ -148,14 +113,14 @@ void set_cost(RESERV res, double cost);
  * @param res A pointer to the reservations struct.
  * @return The reservation ID.
  */
-int get_reservation_id(RESERV res);
+char* get_reservation_id(RESERV res);
 
 /**
  * @brief Gets the user ID associated with the reservation.
  * @param res A pointer to the reservations struct.
  * @return The user ID.
  */
-int get_user_id_R(RESERV res);
+char* get_user_id_R(RESERV res);
 
 /**
  * @brief Gets the hotel ID associated with the reservation.
@@ -179,20 +144,6 @@ char* get_hotel_name(RESERV res);
 char* get_hotel_stars(RESERV res);
 
 /**
- * @brief Gets the city tax information for the reservation.
- * @param res A pointer to the reservations struct.
- * @return The city tax information.
- */
-char* get_city_tax(RESERV res);
-
-/**
- * @brief Gets the hotel's address.
- * @param res A pointer to the reservations struct.
- * @return The hotel address.
- */
-char* get_address(RESERV res);
-
-/**
  * @brief Gets the start date of the reservation.
  * @param res A pointer to the reservations struct.
  * @return The start date.
@@ -207,13 +158,6 @@ char* get_begin_date(RESERV res);
 char* get_end_date(RESERV res);
 
 /**
- * @brief Gets the price per night for the reservation.
- * @param res A pointer to the reservations struct.
- * @return The price per night.
- */
-char* get_price_per_night(RESERV res);
-
-/**
  * @brief Gets information about breakfast inclusion for the reservation.
  * @param res A pointer to the reservations struct.
  * @return Information about breakfast inclusion.
@@ -221,25 +165,11 @@ char* get_price_per_night(RESERV res);
 char* get_includes_breakfast(RESERV res);
 
 /**
- * @brief Gets details about the room for the reservation.
- * @param res A pointer to the reservations struct.
- * @return Details about the room.
- */
-char* get_room_details(RESERV res);
-
-/**
  * @brief Gets the rating associated with the reservation.
  * @param res A pointer to the reservations struct.
  * @return The rating.
  */
 char* get_rating(RESERV res);
-
-/**
- * @brief Gets the user's comment on the reservation.
- * @param res A pointer to the reservations struct.
- * @return The user's comment.
- */
-char* get_comment(RESERV res);
 
 /**
  * @brief Gets the cost of the reservation.

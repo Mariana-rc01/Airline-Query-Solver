@@ -46,7 +46,7 @@ USER create_user(void);
  * @param user A pointer to the user struct.
  * @param id The user ID.
  */
-void set_user_id(USER user, gpointer id);
+void set_user_id(USER user, char* id);
 
 /**
  * @brief Sets the user's name.
@@ -54,20 +54,6 @@ void set_user_id(USER user, gpointer id);
  * @param name The user's name.
  */
 void set_user_name(USER user, char* name);
-
-/**
- * @brief Sets the user's email address.
- * @param user A pointer to the user struct.
- * @param email The user's email address.
- */
-void set_user_email(USER user, char* email);
-
-/**
- * @brief Sets the user's phone number.
- * @param user A pointer to the user struct.
- * @param phone_number The user's phone number.
- */
-void set_user_phone_number(USER user, char* phone_number);
 
 /**
  * @brief Sets the user's birth date.
@@ -98,27 +84,6 @@ void set_user_passport(USER user, char* passport);
 void set_user_country_code(USER user, char* country_code);
 
 /**
- * @brief Sets the user's address.
- * @param user A pointer to the user struct.
- * @param address The user's address.
- */
-void set_user_address(USER user, char* address);
-
-/**
- * @brief Sets the user's account creation date and time.
- * @param user A pointer to the user struct.
- * @param account_creation The account creation date and time.
- */
-void set_user_account_creation(USER user, char* account_creation);
-
-/**
- * @brief Sets the user's payment method.
- * @param user A pointer to the user struct.
- * @param pay_method The user's payment method.
- */
-void set_user_pay_method(USER user, char* pay_method);
-
-/**
  * @brief Sets the user's account status.
  * @param user A pointer to the user struct.
  * @param account_status The user's account status.
@@ -137,7 +102,7 @@ void set_user_total_spent(USER user, double total_spent);
  * @param user A pointer to the user struct.
  * @return The user ID.
  */
-int get_user_id(USER user);
+char* get_user_id(USER user);
 
 /**
  * @brief Gets the user's name.
@@ -145,20 +110,6 @@ int get_user_id(USER user);
  * @return The user's name.
  */
 char* get_user_name(USER user);
-
-/**
- * @brief Gets the user's email address.
- * @param user A pointer to the user struct.
- * @return The user's email address.
- */
-char* get_user_email(USER user);
-
-/**
- * @brief Gets the user's phone number.
- * @param user A pointer to the user struct.
- * @return The user's phone number.
- */
-char* get_user_phone_number(USER user);
 
 /**
  * @brief Gets the user's birth date.
@@ -187,27 +138,6 @@ char* get_user_passport(USER user);
  * @return The user's country code.
  */
 char* get_user_country_code(USER user);
-
-/**
- * @brief Gets the user's address.
- * @param user A pointer to the user struct.
- * @return The user's address.
- */
-char* get_user_address(USER user);
-
-/**
- * @brief Gets the user's account creation date and time.
- * @param user A pointer to the user struct.
- * @return The account creation date and time.
- */
-char* get_user_account_creation(USER user);
-
-/**
- * @brief Gets the user's payment method.
- * @param user A pointer to the user struct.
- * @return The user's payment method.
- */
-char* get_user_pay_method(USER user);
 
 /**
  * @brief Gets the user's account status.

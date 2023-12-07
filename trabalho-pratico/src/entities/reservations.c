@@ -34,49 +34,41 @@
  * @brief Represents a reservation record.
  */
 struct reservations {
-    gpointer id; /**< Unique reservation ID. */
-    gpointer user_id; /**< User's ID associated with the reservation. */
+    char* id; /**< Unique reservation ID. */
+    char* user_id; /**< User's ID associated with the reservation. */
     char* hotel_id; /**< Hotel's ID associated with the reservation. */
     char* hotel_name; /**< Name of the hotel. */
     char* hotel_stars; /**< Number of stars rating for the hotel. */
-    char* city_tax; /**< City tax information. */
-    char* address; /**< Hotel's address. */
     char* begin_date; /**< Start date of the reservation. */
     char* end_date; /**< End date of the reservation. */
-    char* price_per_night; /**< Price per night for the reservation. */
     char* includes_breakfast; /**< Information about breakfast inclusion. */
-    char* room_details; /**< Details about the room. */
     char* rating; /**< Rating associated with the reservation. */
-    char* comment; /**< User's comment on the reservation. */
     double cost; /**< Cost of the reservation. */
 };
 
 RESERV create_reservation(void){
     RESERV new = malloc(sizeof(struct reservations));
 
+    new->id = NULL;
+    new->user_id = NULL;
     new->hotel_id = NULL;
     new->hotel_name = NULL;
     new->hotel_stars = 0;
-    new->city_tax = NULL;
-    new->address = NULL;
     new->begin_date = NULL;
     new->end_date = NULL;
-    new->price_per_night = NULL;
     new->includes_breakfast = NULL;
-    new->room_details = NULL;
     new->rating = NULL;
-    new->comment = NULL;
     new->cost = 0;
 
     return new;
 }
 
-void set_reservation_id(RESERV res, gpointer id){
-    res->id = id;
+void set_reservation_id(RESERV res, char* id){
+    res->id = strdup(id);
 }
 
-void set_user_id_R(RESERV res, gpointer u_id){
-    res->user_id = u_id;
+void set_user_id_R(RESERV res, char* u_id){
+    res->user_id = strdup(u_id);
 }
 
 void set_hotel_id(RESERV res, char* h_id){
@@ -91,14 +83,6 @@ void set_hotel_stars(RESERV res, char* stars){
     res->hotel_stars = strdup(stars);
 }
 
-void set_city_tax(RESERV res, char* c_tax){
-    res->city_tax = strdup(c_tax);
-}
-
-void set_address(RESERV res, char* address){
-    res->address = strdup(address);
-}
-
 void set_begin_date(RESERV res, char* b_date){
     res->begin_date = strdup(b_date);
 }
@@ -107,17 +91,9 @@ void set_end_date(RESERV res, char* e_date){
     res->end_date = strdup(e_date);
 }
 
-void set_price_per_night(RESERV res, char* price){
-    res->price_per_night = strdup(price);
-}
-
 void set_includes_breakfast(RESERV res, char* inc_breakfast){
     if (inc_breakfast == NULL) res->includes_breakfast = NULL;
     else res->includes_breakfast = strdup(inc_breakfast);
-}
-
-void set_room_details(RESERV res, char* r_details){
-    res->room_details = strdup(r_details);
 }
 
 void set_rating(RESERV res, char* ratin){
@@ -125,20 +101,16 @@ void set_rating(RESERV res, char* ratin){
     else res->rating = strdup(ratin);
 }
 
-void set_comment(RESERV res, char* comm){
-    res->comment = strdup(comm);
-}
-
 void set_cost(RESERV res, double cost){
     res->cost = cost;
 }
 
-int get_reservation_id(RESERV res){
-    return GPOINTER_TO_INT(res->id);
+char* get_reservation_id(RESERV res){
+    return strdup(res->id);
 }
 
-int get_user_id_R(RESERV res){
-    return GPOINTER_TO_INT(res->user_id);
+char* get_user_id_R(RESERV res){
+    return strdup(res->user_id);
 }
 
 char* get_hotel_id(RESERV res){
@@ -153,14 +125,6 @@ char* get_hotel_stars(RESERV res){
     return strdup(res->hotel_stars);
 }
 
-char* get_city_tax(RESERV res){
-    return strdup(res->city_tax);
-}
-
-char* get_address(RESERV res){
-    return strdup(res->address);
-}
-
 char* get_begin_date(RESERV res){
     return strdup(res->begin_date);
 }
@@ -169,26 +133,14 @@ char* get_end_date(RESERV res){
     return strdup(res->end_date);
 }
 
-char* get_price_per_night(RESERV res){
-    return strdup(res->price_per_night);
-}
-
 char* get_includes_breakfast(RESERV res){
     if (!res->includes_breakfast) return NULL;
     else return strdup(res->includes_breakfast);
 }
 
-char* get_room_details(RESERV res){
-    return strdup(res->room_details);
-}
-
 char* get_rating(RESERV res){
     if (!res->rating) return NULL;
     else return strdup(res->rating);
-}
-
-char* get_comment(RESERV res){
-    return strdup(res->comment);
 }
 
 double get_cost(RESERV res){
@@ -199,15 +151,10 @@ void free_reservations(RESERV res){
     free(res->hotel_id);
     free(res->hotel_name);
     free(res->hotel_stars);
-    free(res->city_tax);
-    free(res->address);
     free(res->begin_date);
     free(res->end_date);
-    free(res->price_per_night);
     free(res->includes_breakfast);
-    free(res->room_details);
     free(res->rating);
-    free(res->comment);
 
     free(res);
 }
@@ -240,19 +187,15 @@ int build_reservations(char** reservations_fields, void* catalog){
     RESERV res = create_reservation();
     char* breakfast = first_letter_to_upper(reservations_fields[10]);
 
-    set_catalog_reserv(reservsC,res,reservations_fields[0],reservations_fields[1]);
+    set_reservation_id(res,reservations_fields[0]);
+    set_user_id_R(res,reservations_fields[1]);
     set_hotel_id(res,reservations_fields[2]);
     set_hotel_name(res,reservations_fields[3]);
     set_hotel_stars(res,reservations_fields[4]);
-    set_city_tax(res,reservations_fields[5]);
-    set_address(res,reservations_fields[6]);
     set_begin_date(res,reservations_fields[7]);
     set_end_date(res,reservations_fields[8]);
-    set_price_per_night(res,reservations_fields[9]);
     set_includes_breakfast(res,breakfast);
-    set_room_details(res,reservations_fields[11]);
     set_rating(res,reservations_fields[12]);
-    set_comment(res,reservations_fields[13]);
 
     double cost = 0;
     char beginD[3];

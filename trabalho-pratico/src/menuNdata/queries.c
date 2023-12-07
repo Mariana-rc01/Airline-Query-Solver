@@ -305,12 +305,11 @@ void* query2(MANAGER manager,char** args){
 
         // Iterate over reservations
         for (int i = 0; i < (int)reservations->len; i++) {
-            gpointer reservationI = g_ptr_array_index(reservations, i);
-            RESERV reservation = get_reservations_by_gpointer(reservC,reservationI);
-            char* reservs = get_reserv_from_key(reservC, reservationI);
+            char* reservationI = g_ptr_array_index(reservations, i);
+            RESERV reservation = get_reservations_by_id(reservC,reservationI);
             char* date = get_begin_date(reservation);
 
-            char* id_reserv = strdup(reservs);
+            char* id_reserv = strdup(reservationI);
             ids[count] = id_reserv;
             dates[count] = concat(date," 00:00:00");
             types[count] = "reservation";
@@ -323,12 +322,11 @@ void* query2(MANAGER manager,char** args){
 
         // Iterate over reservations
         for (int i = 0; i < (int)reservations->len; i++) {
-            gpointer reservationI = g_ptr_array_index(reservations, i);
-            RESERV reservation = get_reservations_by_gpointer(reservC,reservationI);
-            char* reservs = get_reserv_from_key(reservC, reservationI);
+            char* reservationI = g_ptr_array_index(reservations, i);
+            RESERV reservation = get_reservations_by_id(reservC,reservationI);
             char* date = get_begin_date(reservation);
 
-            char* id_reserv = strdup(reservs);
+            char* id_reserv = strdup(reservationI);
             ids[count] = id_reserv;
             dates[count] = concat(date," 00:00:00");
             types[count] = "reservation";
@@ -560,7 +558,7 @@ void* query4(MANAGER manager,char** args){
 
         // Verify if a reservation belongs to a given hotel
         if (strcmp(hotel_idC, hotel_id) == 0) {
-            reservations_array[i] = strdup(get_reserv_from_key(catalog,GINT_TO_POINTER(get_reservation_id(reservation))));
+            reservations_array[i] = get_reservation_id(reservation);
             dates_array[i] = get_begin_date(reservation);
             i++;
         }
@@ -576,7 +574,7 @@ void* query4(MANAGER manager,char** args){
         RESERV reservation = get_reservations_by_id(catalog,reservations_array[j-1]);
         char* begin = get_begin_date(reservation);
         char* end = get_end_date(reservation);
-        char* user = get_user_from_key(catalog, GINT_TO_POINTER(get_user_id_R(reservation)));
+        char* user = get_user_id_R(reservation);
         char* rating = get_rating(reservation);
 
         int total_size = snprintf(NULL, 0,"%s;%s;%s;%s;%s;%f", reservations_array[j-1],
@@ -699,7 +697,7 @@ void* query5(MANAGER manager,char** args){
         // Verify if a reservation belongs to the desire hotel
         if (strcmp(originC, origin) == 0 &&
         (compare_datesF(begin_date,date) >= 0 && compare_datesF(date,end_date) >= 0)) {
-            flights_array[i] = get_flight_from_key(catalog,GINT_TO_POINTER(get_flight_id(flight)));
+            flights_array[i] = get_flight_id(flight);
             dates_array[i] = get_flight_schedule_arrival_date(flight);
             i++;
         }
@@ -732,6 +730,7 @@ void* query5(MANAGER manager,char** args){
         schedule_departure_date, destination, airline,plane_model);
 
         finalResult[j] = formatted_string;
+        free(flights_array[j-1]);
         free(schedule_departure_date);
         free(destination);
         free(airline);
@@ -832,7 +831,7 @@ void* query6(MANAGER manager,char** args){
         char* origin = get_flight_origin(flight);
         char* destination = get_flight_destination(flight);
 
-        char* id_flight = get_flight_from_key(catalog, GINT_TO_POINTER(get_flight_id(flight)));
+        char* id_flight = get_flight_id(flight);
         int pass = get_flight_array_number_by_id(passengers, id_flight);
 
         // Verify if a airport belongs to the desired year
@@ -862,6 +861,7 @@ void* query6(MANAGER manager,char** args){
         free(truncatedString);
         free(origin);
         free(destination);
+        free(id_flight);
     }
 
     // Sort flights using compare function

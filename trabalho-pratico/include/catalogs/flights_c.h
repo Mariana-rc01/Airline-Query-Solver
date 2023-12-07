@@ -46,7 +46,7 @@ FLIGHTS_C create_flight_c(void);
  * @param flight The flight to be inserted.
  * @param catalog The flight catalog.
  */
-void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog, gpointer key);
+void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog, char* key);
 
 /**
  * @brief Get a flight by its ID.
@@ -59,42 +59,12 @@ void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog, gpointer key);
 FLIGHT get_flight_by_id(FLIGHTS_C catalog, char* id);
 
 /**
- * @brief Retrieves a flight by flight ID (stored as a gpointer) from the flights catalog hash table.
- *
- * @param catalog The flights catalog.
- * @param flight_id The flight ID stored as a gpointer.
- * @return The flight if found, or NULL if not found.
- */
-FLIGHT get_flight_by_gpointer(FLIGHTS_C catalog, gpointer flight_id);
-
-/**
- * @brief Retrieves the flight key from the key array based on the flight pointer.
- *
- * @param catalog The flights catalog.
- * @param flight The flight pointer.
- * @return The flight key if found, or NULL if not found.
- */
-char* get_flight_from_key(FLIGHTS_C catalog, gpointer flight);
-
-/**
  * @brief Retrieves the hash table of flights from the flights catalog.
  *
  * @param catalog The flights catalog.
  * @return The hash table of flights.
  */
 GHashTable* get_hash_table_flight(FLIGHTS_C catalog);
-
-/**
- * @brief Sets the catalog information for a flight.
- *
- * This function adds to the catalog hash tables the records of a flight,and 
- * links its keys with their corresponding ID string in other hash tables.
- *
- * @param catalog The flights catalog.
- * @param flight The flight object.
- * @param id The flight ID.
- */
-void set_catalog_flight(FLIGHTS_C catalog, FLIGHT flight, char* id);
 
 /**
  * @brief Removes a flight from the flights catalog.

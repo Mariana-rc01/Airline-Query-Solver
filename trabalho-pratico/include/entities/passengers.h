@@ -22,56 +22,9 @@
 #ifndef PASSENGERS_H
 #define PASSENGERS_H
 
-/**
- * @typedef PASS
- * @brief Typedef for struct passengers pointer.
- */
-typedef struct passengers *PASS;
-
 #include "catalogs/users_c.h"
 #include "catalogs/flights_c.h"
 #include "IO/input.h"
-
-
-/**
- * @brief Creates a new passengers struct with default values.
- * @return A pointer to the newly created passenger.
- */
-PASS create_passengers(void);
-
-/**
- * @brief Sets the flight ID associated with the passenger.
- * @param pass A pointer to the passenger struct.
- * @param id The flight ID.
- */
-void set_flight_P(PASS pass, gpointer id);
-
-/**
- * @brief Sets the user ID of the passenger.
- * @param pass A pointer to the passenger struct.
- * @param id The user ID of the passenger.
- */
-void set_user_P(PASS pass, gpointer id);
-
-/**
- * @brief Gets the flight ID associated with the passenger.
- * @param pass A pointer to the passenger struct.
- * @return The flight ID.
- */
-int get_flight_P(PASS pass);
-
-/**
- * @brief Gets the user ID of the passenger.
- * @param pass A pointer to the passenger struct.
- * @return The user ID of the passenger.
- */
-int get_user_P(PASS pass);
-
-/**
- * @brief Frees memory associated with a passenger struct.
- * @param pass A pointer to the passenger struct.
- */
-void free_passengers(PASS pass);
 
 /**
  * @brief Verifies the validity of passenger data.

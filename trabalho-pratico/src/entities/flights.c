@@ -31,7 +31,7 @@
  * @brief Represents flight information.
  */
 struct flight {
-    gpointer id; /**< Unique flight ID. */
+    char* id; /**< Unique flight ID. */
     char* airline; /**< Airline name. */
     char* plane_model; /**< Model of the plane. */
     int total_seats; /**< Total number of seats in the plane. */
@@ -48,6 +48,7 @@ struct flight {
 
 FLIGHT create_flight(void){
     FLIGHT new = malloc(sizeof(struct flight));
+    new->id = NULL;
     new->airline = NULL;
     new->plane_model = NULL;
     new->total_seats = 0;
@@ -64,8 +65,8 @@ FLIGHT create_flight(void){
     return new;
 }
 
-void set_flight_id(FLIGHT flight, gpointer id){
-    flight->id = id;
+void set_flight_id(FLIGHT flight, char* id){
+    flight->id = strdup(id);
 }
 
 void set_flight_airline(FLIGHT flight, char* airline){
@@ -116,8 +117,8 @@ void set_flight_notes(FLIGHT flight, char* notes){
     flight->notes = strdup(notes);
 }
 
-int get_flight_id(FLIGHT flight){
-    return GPOINTER_TO_INT(flight->id);
+char* get_flight_id(FLIGHT flight){
+    return strdup(flight->id);
 }
 
 char* get_flight_airline(FLIGHT flight){
@@ -216,7 +217,7 @@ int build_flight(char** flight_fields, void* catalog){
     char* origin = case_insensitive(flight_fields[4]);
     char* destination = case_insensitive(flight_fields[5]);
 
-    set_catalog_flight(flightsC, flight,flight_fields[0]);
+    set_flight_id(flight,flight_fields[0]);
     set_flight_airline(flight,flight_fields[1]);
     set_flight_plane_model(flight,flight_fields[2]);
     set_flight_total_seats(flight,flight_fields[3]);

@@ -27,56 +27,21 @@
  */
 struct users_catalog {
     GHashTable* users; /**< Hash table that maps user IDs to user objects. */
-    GHashTable* users_id; /**< Hash table that maps id_user(int) to id_user(char)*/
 };
 
 USERS_C create_user_c(void){
     USERS_C new = malloc(sizeof(struct users_catalog));
 
-    new->users = g_hash_table_new_full(NULL, g_direct_equal, NULL, (GDestroyNotify)free_user);
-    new->users_id = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
+    new->users = g_hash_table_new_full(g_str_hash, g_str_equal, free, (GDestroyNotify)free_user);
     return new;
 }
 
-void insert_user_c(USER user, USERS_C catalog, gpointer key){
+void insert_user_c(USER user, USERS_C catalog, char* key){
     g_hash_table_insert(catalog->users, key, user);
 }
 
 USER get_user_by_id(USERS_C catalog, char* id){
-    gpointer user_id = g_hash_table_lookup(catalog->users_id, id);
-    if (user_id == NULL) return NULL;
-    return get_user_by_gpointer(catalog, user_id);
-}
-
-USER get_user_by_gpointer(USERS_C catalog, gpointer user_id){
-    return g_hash_table_lookup(catalog->users,user_id);
-}
-
-char* get_key_by_value(USERS_C catalog, gpointer value){
-    GHashTableIter iter;
-    gpointer key, val;
-
-    g_hash_table_iter_init(&iter, catalog->users_id);
-    while (g_hash_table_iter_next(&iter, &key, &val)) {
-        if (val == value) {
-            return key;
-        }
-    }
-
-    return NULL;
-}
-
-int calculate_array_length(USERS_C catalog) {
-    guint size = g_hash_table_size(catalog->users_id);
-
-    return (int)size-4721;
-}
-
-
-gpointer* get_keys_as_array(USERS_C catalog){
-    guint size = g_hash_table_size(catalog->users);
-    gpointer* keys = g_hash_table_get_keys_as_array(catalog->users, &size);
-    return keys;
+    return g_hash_table_lookup(catalog->users,id);
 }
 
 void update_user_c(USERS_C catalog, char* id, double cost){
@@ -87,22 +52,7 @@ void update_user_c(USERS_C catalog, char* id, double cost){
     set_user_total_spent(user, total + cost);
 }
 
-void set_catalog_user(USERS_C catalog, USER user, char* id) {
-    static int number_users = 1;
-
-    // Copy the user ID and insert it into the user ID hash table
-    char* copy_id = g_strdup(id);
-    gpointer user_id = GINT_TO_POINTER(number_users);
-    g_hash_table_insert(catalog->users_id, copy_id, user_id);
-
-    set_user_id(user, user_id);
-
-    number_users++;
-}
-
-
 void free_user_c(USERS_C catalog){
     g_hash_table_destroy(catalog->users);
-    g_hash_table_destroy(catalog->users_id);
     free(catalog);
 }
