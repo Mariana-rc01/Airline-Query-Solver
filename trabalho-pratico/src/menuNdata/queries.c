@@ -146,7 +146,6 @@ void* query1(MANAGER manager,char** args){
 typedef struct {
     char* id;      /**< Identifier associated with the result entry. */
     char* date;    /**< Date associated with the result entry. */
-    char* type;    /**< Type associated with the result entry. */
 } ResultEntry;
 
 /**
@@ -221,42 +220,6 @@ int compare_results(const void* a, const void* b) {
     return strcmp(entryA->id, entryB->id);
 }
 
-/**
- * @brief Sorts an array of results based on dates and IDs in case of a tie.
- *
- * This function takes arrays of IDs, dates, and types and sorts their content based on
- * chronological order (dates) and alphabetical order (IDs). The input arrays are then
- * modified to represent their sorted order.
- *
- * @param id An array of user IDs.
- * @param result_count The number of entries in the arrays.
- * @param date An array of date strings.
- * @param types An array of result types.
- */
-void sort_results2(char** id, int result_count, char** date, char** types) {
-    ResultEntry* result_array = malloc(sizeof(ResultEntry) * result_count);
-
-    // Fill UserInfo array with user data
-    for (int i = 0; i < result_count; i++) {
-        result_array[i].id = id[i];
-        result_array[i].date = date[i];
-        result_array[i].type = types[i];
-    }
-
-    // Sort User array
-    qsort(result_array, result_count, sizeof(ResultEntry), compare_results);
-
-    // Reorganize the arrays based of the sorted UserInfo array
-    for (int i = 0; i < result_count; i++) {
-        id[i] = result_array[i].id;
-        date[i] = result_array[i].date;
-        types[i] = result_array[i].type;
-    }
-
-    // Free alocated memory
-    free(result_array);
-}
-
 void* query2(MANAGER manager,char** args){
     char* user = args[0];
     int length_args = 0;
@@ -265,25 +228,18 @@ void* query2(MANAGER manager,char** args){
     FLIGHTS_C flightsC = get_flights_c(manager);
     RESERV_C reservC = get_reserv_c(manager);
 
-    char** ids = malloc(sizeof(char*)*256);
-    char** dates = malloc(sizeof(char*)*256);
-    char** types = malloc(sizeof(char*)*256);
-    int count = 0;
-
     //Check if user_id exists
     if (!userE){
-        free(ids);
-        free(dates);
-        free(types);
         return NULL;
     }
 
+    ResultEntry* result_array = malloc(sizeof(ResultEntry) * 256);
+    int count = 0;
+
     char* status = get_user_account_status(userE);
     if (strcmp(status, "INACTIVE") == 0){
+        free(result_array);
         free(status);
-        free(ids);
-        free(dates);
-        free(types);
         return NULL;
     }
     else if (length_args == 1){ //list all types
@@ -297,9 +253,8 @@ void* query2(MANAGER manager,char** args){
             char* date = get_flight_schedule_departure_date(flight);
 
             char* id_flight = strdup(flightI);
-            ids[count] = id_flight;
-            dates[count] = date;
-            types[count] = "flight";
+            result_array[count].id = id_flight;
+            result_array[count].date = date;
             count++;
         }
 
@@ -310,9 +265,8 @@ void* query2(MANAGER manager,char** args){
             char* date = get_begin_date(reservation);
 
             char* id_reserv = strdup(reservationI);
-            ids[count] = id_reserv;
-            dates[count] = concat(date," 00:00:00");
-            types[count] = "reservation";
+            result_array[count].id = id_reserv;
+            result_array[count].date = concat(date," 00:00:00");
             count++;
             free(date);
         }
@@ -327,9 +281,8 @@ void* query2(MANAGER manager,char** args){
             char* date = get_begin_date(reservation);
 
             char* id_reserv = strdup(reservationI);
-            ids[count] = id_reserv;
-            dates[count] = concat(date," 00:00:00");
-            types[count] = "reservation";
+            result_array[count].id = id_reserv;
+            result_array[count].date = concat(date," 00:00:00");
             count++;
             free(date);
         }
@@ -344,53 +297,43 @@ void* query2(MANAGER manager,char** args){
             char* date = get_flight_schedule_departure_date(flight);
 
             char* id_flight = strdup(flightI);
-            ids[count] = id_flight;
-            dates[count] = date;
-            types[count] = "flight";
+            result_array[count].id = id_flight;
+            result_array[count].date = date;
             count++;
         }
     }
     else {
-        free(status);
-        free(ids);
-        free(types);
-        free(dates);
+        free(result_array);
         return NULL;
     }
 
     // Sort ressults
     char** finalResult = malloc(sizeof(char*)*256);
     finalResult[0] = int_to_string(count);
-    sort_results2(ids, count, dates, types);
+    qsort(result_array, count, sizeof(ResultEntry), compare_results);
 
-    if (length_args == 1) finalResult[1] = "all";
+    if (length_args == 1) finalResult[1] = NULL;
     else finalResult[1] = strdup(args[1]);
     for (int j = 2; j < count+2; j++) {
-        char* date = strndup(dates[j-2], 10);
-        char* id = ids[j-2];
-        char* type = types[j-2];
-        int total_size = snprintf(NULL, 0,"%s;%s;%s", id, date, type) + 1;
+        char* date = strndup(result_array[j-2].date, 10);
+        char* id = result_array[j-2].id;
+        int total_size = snprintf(NULL, 0,"%s;%s", id, date) + 1;
 
         // Alocatte memory to formatted string
         char* formatted_string = malloc(sizeof(char*)*total_size);
 
         // Create formatted string
-        snprintf(formatted_string, total_size, "%s;%s;%s", id, date, type);
+        snprintf(formatted_string, total_size, "%s;%s", id, date);
 
         finalResult[j] = strdup(formatted_string);
         free(formatted_string);
         free(date);
-    }
-
-    for (int j = 0; j < count;j++){
-        free(ids[j]);
-        free(dates[j]);
+        free(result_array[j-2].id);
+        free(result_array[j-2].date);
     }
 
     free(status);
-    free(ids);
-    free(dates);
-    free(types);
+    free(result_array);
     return finalResult;
 }
 

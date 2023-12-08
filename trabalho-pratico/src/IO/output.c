@@ -95,34 +95,36 @@ void output_query2(FILE* file, void* output){
     char** result_array = (char**)output;
     int length = ourAtoi(result_array[0]);
     char* type = result_array[1];
-    if (strcmp(type,"all") == 0){
+    if (!type){
+        for (int i = 2; i < length + 2; i++) {
+            if (i != (length + 1)) {
+                if (result_array[i][0] == 'B'){
+                    fprintf(file, "%s;reservation\n", result_array[i]);
+                }
+                else fprintf(file, "%s;flight\n", result_array[i]);
+                free(result_array[i]);
+            }
+            else {
+                if (result_array[i][0] == 'B'){
+                    fprintf(file, "%s;reservation", result_array[i]);
+                }
+                else fprintf(file, "%s;flight", result_array[i]);
+                free(result_array[i]);
+            }
+        }
+    }
+    else {
         for (int i = 2; i < length + 2; i++) {
             if (i != (length + 1)) {
                 fprintf(file, "%s\n", result_array[i]);
                 free(result_array[i]);
             }
             else {
-                result_array[i][strlen(result_array[i])] ='\0';
-                char *truncatedString = strndup(result_array[i], strlen(result_array[i]));
-                fprintf(file,"%s\n",truncatedString);
-                free(truncatedString);
+                fprintf(file, "%s", result_array[i]);
+                free(result_array[i]);
             }
         }
-    }
-    else {
-        for (int i = 2; i < length + 2; i++) {
-            char* id = strtok(result_array[i], ";");
-            char* dateTime = strtok(NULL, ";");
-            dateTime[strlen(dateTime)] = '\0';
-
-            if (i != (length + 1)) fprintf(file, "%s;%s\n", id, dateTime);
-            else {
-                char *truncatedString = strndup(dateTime, strlen(dateTime));
-                fprintf(file,"%s;%s\n", id,truncatedString);
-                free(truncatedString);
-            }
-            free(id);
-        }
+        free(type);
     }
 }
 
@@ -130,22 +132,24 @@ void output_query2F(FILE* file, void* output){
     char** result_array = (char**)output;
     int length = ourAtoi(result_array[0]);
     char* type = result_array[1];
-    if (strcmp(type,"all") == 0){
+    if (!type){
         for (int i = 2; i < length + 2; i++) {
             char* id = strtok(result_array[i], ";");
             char* dateTime = strtok(NULL, ";");
-            char* type = strtok(NULL, ";");
             fprintf(file, "--- %d ---\n", i-1);
             fprintf(file, "id: %s\n",id);
             fprintf(file,"date: %s\n",dateTime);
             if (i != (length+1)){
-                fprintf(file,"type: %s\n\n",type);
+                if (id[0] == 'B'){
+                    fprintf(file, "type: reservation\n\n");
+                }
+                else fprintf(file, "type: flight\n\n");
             }
             else {
-                type[strlen(type)] = '\0';
-                char *truncatedString = strndup(type, strlen(type));
-                fprintf(file,"type: %s\n",truncatedString);
-                free(truncatedString);
+                if (id[0] == 'B'){
+                    fprintf(file, "type: reservation");
+                }
+                else fprintf(file, "type: flight");
             }
             free(id);
         }
@@ -168,6 +172,7 @@ void output_query2F(FILE* file, void* output){
             }
             free(id);
         }
+        free(type);
     }
 }
 
