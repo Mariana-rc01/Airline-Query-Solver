@@ -58,6 +58,7 @@ void insert_pass_user_c(char* flight_id, PASS_C catalog, char* key){
     if (g_hash_table_contains(catalog->users, key)){
         GPtrArray* flightArray = g_hash_table_lookup(catalog->users,key);
         g_ptr_array_add(flightArray, flight_id);
+        free(key);
     }
     else {
         GPtrArray* flightArray = g_ptr_array_new();

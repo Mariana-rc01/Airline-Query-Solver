@@ -35,7 +35,7 @@ RESERV_C create_reservations_c(void){
 
     new->reserv = g_hash_table_new_full(g_str_hash, g_str_equal, free, (GDestroyNotify)free_reservations);
 
-    new->user = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
+    new->user = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, NULL);
 
     return new;
 }

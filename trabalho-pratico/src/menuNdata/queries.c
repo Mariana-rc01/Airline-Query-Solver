@@ -589,6 +589,7 @@ void* query4(MANAGER manager,char** args){
 
         finalResult[j] = formatted_string;
         free(begin);
+        free(user);
         free(end);
         free(rating);
         free(dates_array[j-1]);

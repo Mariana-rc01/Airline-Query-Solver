@@ -148,6 +148,7 @@ double get_cost(RESERV res){
 }
 
 void free_reservations(RESERV res){
+    free(res->user_id);
     free(res->hotel_id);
     free(res->hotel_name);
     free(res->hotel_stars);
