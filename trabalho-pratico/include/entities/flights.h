@@ -129,6 +129,7 @@ void set_flight_copilot(FLIGHT flight, char* copilot);
  */
 void set_flight_notes(FLIGHT flight, char* notes);
 
+void set_flight_nPassengers(FLIGHT flight, int n);
 
 /**
  * @brief Gets the flight ID.
@@ -220,6 +221,8 @@ char* get_flight_copilot(FLIGHT flight);
  * @return Additional notes.
  */
 char* get_flight_notes(FLIGHT flight);
+
+int get_flight_nPassengers(FLIGHT flight);
 
 /**
  * @brief Frees memory associated with a flight struct.

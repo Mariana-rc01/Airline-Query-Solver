@@ -52,6 +52,14 @@ GHashTable* get_hash_table_flight(FLIGHTS_C catalog){
     return catalog->flights;
 }
 
+void update_flight_c(FLIGHTS_C catalog, char* id){
+    FLIGHT flight = get_flight_by_id(catalog, id);
+    if (flight == NULL) return;
+    int total = get_flight_nPassengers(flight);
+
+    set_flight_nPassengers(flight, total + 1);
+}
+
 void remove_flight_from_hash_table(FLIGHTS_C flights, char* flight_id) {
     g_hash_table_remove(flights->flights, flight_id);
 }

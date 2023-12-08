@@ -91,6 +91,7 @@ int build_passengers(char** passengers_fields, void* catalog){
 
     //insert_pass_flight_c(copy_user, passengersC, strdup(passengers_fields[0]));
     insert_pass_user_c(copy_flight,passengersC, copy_user);
+    update_flight_c(flightsC,copy_flight);
 
     return 1;
 }

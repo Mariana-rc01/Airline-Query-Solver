@@ -44,6 +44,7 @@ struct flight {
     char* pilot; /**< Pilot's name. */
     char* copilot; /**< Copilot's name. */
     char* notes; /**< Additional notes. */
+    int nPassengers; /**< Number of passengers. */
 };
 
 FLIGHT create_flight(void){
@@ -61,6 +62,7 @@ FLIGHT create_flight(void){
     new->pilot = NULL;
     new->copilot = NULL;
     new->notes = NULL;
+    new->nPassengers = 0;
 
     return new;
 }
@@ -117,6 +119,10 @@ void set_flight_notes(FLIGHT flight, char* notes){
     flight->notes = strdup(notes);
 }
 
+void set_flight_nPassengers(FLIGHT flight, int n){
+    flight->nPassengers = n;
+}
+
 char* get_flight_id(FLIGHT flight){
     return strdup(flight->id);
 }
@@ -167,6 +173,10 @@ char* get_flight_copilot(FLIGHT flight){
 
 char* get_flight_notes(FLIGHT flight){
     return strdup(flight->notes);
+}
+
+int get_flight_nPassengers(FLIGHT flight){
+    return flight->nPassengers;
 }
 
 void free_flight(FLIGHT flight){

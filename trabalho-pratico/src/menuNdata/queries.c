@@ -636,7 +636,6 @@ void* query6(MANAGER manager,char** args){
     char* Year = args[0];
     int N = ourAtoi(args[1]);
     FLIGHTS_C catalog = get_flights_c(manager);
-    PASS_C passengers = get_pass_c(manager);
 
     AirportInfo* array = malloc(sizeof(AirportInfo) * 512);
 
@@ -657,7 +656,7 @@ void* query6(MANAGER manager,char** args){
         char* destination = get_flight_destination(flight);
 
         char* id_flight = get_flight_id(flight);
-        int pass = get_flight_array_number_by_id(passengers, id_flight);
+        int pass = get_flight_nPassengers(flight);
 
         // Verify if a airport belongs to the desired year
         if (strcmp(Year,truncatedString) == 0){
@@ -691,7 +690,6 @@ void* query6(MANAGER manager,char** args){
 
     // Sort flights using compare function
     qsort(array, i, sizeof(AirportInfo), sort_airports);
-
 
     char** finalResult = malloc(sizeof(char*)*600);
     finalResult[0] = int_to_string(N);

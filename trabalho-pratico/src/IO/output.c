@@ -271,10 +271,7 @@ void output_query6(FILE* file, void* output){
     for (int i = 1; i < length + 1; i++) {
         if (i != length) fprintf(file, "%s\n", result_array[i]);
         else {
-            result_array[i][strlen(result_array[i])] ='\0';
-            char *truncatedString = strndup(result_array[i], strlen(result_array[i]));
-            fprintf(file,"%s\n",truncatedString);
-            free(truncatedString);
+            fprintf(file,"%s",result_array[i]);
         }
     }
 }
@@ -294,7 +291,7 @@ void output_query6F(FILE* file, void* output){
         } else {
             token[strlen(token)] = '\0';
             char *truncatedString = strndup(token, strlen(token));
-            fprintf(file,"passengers: %s\n",truncatedString);
+            fprintf(file,"passengers: %s",truncatedString);
             free(truncatedString);
         }
     }

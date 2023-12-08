@@ -66,6 +66,8 @@ FLIGHT get_flight_by_id(FLIGHTS_C catalog, char* id);
  */
 GHashTable* get_hash_table_flight(FLIGHTS_C catalog);
 
+void update_flight_c(FLIGHTS_C catalog, char* id);
+
 /**
  * @brief Removes a flight from the flights catalog.
  *
