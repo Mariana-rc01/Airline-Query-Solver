@@ -102,14 +102,12 @@ void output_query2(FILE* file, void* output){
                     fprintf(file, "%s;reservation\n", result_array[i]);
                 }
                 else fprintf(file, "%s;flight\n", result_array[i]);
-                free(result_array[i]);
             }
             else {
                 if (result_array[i][0] == 'B'){
-                    fprintf(file, "%s;reservation", result_array[i]);
+                    fprintf(file, "%s;reservation\n", result_array[i]);
                 }
-                else fprintf(file, "%s;flight", result_array[i]);
-                free(result_array[i]);
+                else fprintf(file, "%s;flight\n", result_array[i]);
             }
         }
     }
@@ -117,11 +115,12 @@ void output_query2(FILE* file, void* output){
         for (int i = 2; i < length + 2; i++) {
             if (i != (length + 1)) {
                 fprintf(file, "%s\n", result_array[i]);
-                free(result_array[i]);
             }
             else {
-                fprintf(file, "%s", result_array[i]);
-                free(result_array[i]);
+                result_array[i][strlen(result_array[i])] ='\0';
+                char *truncatedString = strndup(result_array[i], strlen(result_array[i]));
+                fprintf(file,"%s\n",truncatedString);
+                free(truncatedString);
             }
         }
         free(type);
@@ -147,11 +146,10 @@ void output_query2F(FILE* file, void* output){
             }
             else {
                 if (id[0] == 'B'){
-                    fprintf(file, "type: reservation");
+                    fprintf(file, "type: reservation\n");
                 }
-                else fprintf(file, "type: flight");
+                else fprintf(file, "type: flight\n");
             }
-            free(id);
         }
     }
     else {
@@ -170,7 +168,6 @@ void output_query2F(FILE* file, void* output){
                 fprintf(file,"date: %s\n",truncatedString);
                 free(truncatedString);
             }
-            free(id);
         }
         free(type);
     }
@@ -271,7 +268,10 @@ void output_query6(FILE* file, void* output){
     for (int i = 1; i < length + 1; i++) {
         if (i != length) fprintf(file, "%s\n", result_array[i]);
         else {
-            fprintf(file,"%s",result_array[i]);
+            result_array[i][strlen(result_array[i])] ='\0';
+            char *truncatedString = strndup(result_array[i], strlen(result_array[i]));
+            fprintf(file,"%s\n",truncatedString);
+            free(truncatedString);
         }
     }
 }
@@ -291,7 +291,7 @@ void output_query6F(FILE* file, void* output){
         } else {
             token[strlen(token)] = '\0';
             char *truncatedString = strndup(token, strlen(token));
-            fprintf(file,"passengers: %s",truncatedString);
+            fprintf(file,"passengers: %s\n",truncatedString);
             free(truncatedString);
         }
     }

@@ -42,15 +42,6 @@ typedef struct passengers_catalog *PASS_C;
 PASS_C create_passengers_c(void);
 
 /**
- * @brief Inserts a user ID into the array of passengers associated with a flight in the passengers catalog.
- *
- * @param user_id The user ID to be inserted.
- * @param catalog The passengers catalog.
- * @param key The key (flight ID) to associate with the user in the hash table.
- */
-void insert_pass_flight_c(char* user_id, PASS_C catalog, char* key);
-
-/**
  * @brief Inserts a flight ID into the array of flights associated with a user in the passengers catalog.
  *
  * @param flight_id The flight ID to be inserted.
@@ -58,24 +49,6 @@ void insert_pass_flight_c(char* user_id, PASS_C catalog, char* key);
  * @param key The key (user ID) to associate with the flight in the hash table.
  */
 void insert_pass_user_c(char* flight_id, PASS_C catalog, char* key);
-
-/**
- * @brief Retrieves the array of flight IDs associated with a user by user ID.
- *
- * @param catalog The passengers catalog.
- * @param id The user ID.
- * @return The array of flight IDs if found, or NULL if not found.
- */
-GPtrArray* get_flight_array_by_id(PASS_C catalog, char* id);
-
-/**
- * @brief Retrieves the number of flight IDs associated with a user by user ID.
- *
- * @param catalog The passengers catalog.
- * @param id The user ID.
- * @return The number of flight IDs if found, or 0 if not found.
- */
-int get_flight_array_number_by_id(PASS_C catalog, char* id);
 
 /**
  * @brief Retrieves the array of user IDs associated with a flight by flight ID.
@@ -94,16 +67,6 @@ GPtrArray* get_user_array_by_id(PASS_C catalog, char* id);
  * @return The number of user IDs if found, or 0 if not found.
  */
 int get_user_array_number_id(PASS_C catalog, char* id);
-
-/**
- * @brief Removes a flight from the passengers catalog.
- *
- * This function removes a flight identified by its ID from the passengers catalog.
- *
- * @param pass A pointer to the passengers catalog.
- * @param flight_id The ID of the flight to be removed.
- */
-void remove_flight_array_from_hash_table(PASS_C pass, char* flight_id);
 
 /**
  * @brief Frees the memory used by the passengers catalog.

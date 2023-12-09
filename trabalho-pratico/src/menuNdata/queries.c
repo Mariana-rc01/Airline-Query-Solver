@@ -51,7 +51,7 @@ void* query1(MANAGER manager,char** args){
         }
 
         // Get the number of flights in the array based on the flight ID
-        int flight_array_number = get_flight_array_number_by_id(get_pass_c(manager), entity);
+        int flight_array_number = get_flight_nPassengers(flight);
         result[6] = int_to_string(flight_array_number);
 
         // Get the delay of the flight
@@ -631,7 +631,7 @@ int findAirportPosition(AirportInfo* array, int size, const char* airport) {
 }
 
 // receives <Year> and N
-// retorn airport name and number of passengers
+// return airport name and number of passengers
 void* query6(MANAGER manager,char** args){
     char* Year = args[0];
     int N = ourAtoi(args[1]);
@@ -761,7 +761,11 @@ void free_query2(void* result){
         return;
     }
     char** resultF = (char**) result;
+    int n = ourAtoi(resultF[0]);
     free(resultF[0]);
+    for (int i = 2; i < n+2; i++) {
+        free(resultF[i]);
+    }
     free(resultF);
 }
 

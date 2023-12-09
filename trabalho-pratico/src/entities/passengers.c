@@ -48,19 +48,10 @@ int build_passengers(char** passengers_fields, void* catalog){
     char* copy_flight = strdup(passengers_fields[0]);
     char* copy_user = strdup(passengers_fields[1]);
 
-    /*FLIGHT flight = get_flight_by_id(flightsC, copy_flight);
+    FLIGHT flight = get_flight_by_id(flightsC, copy_flight);
 
     // Check if the number of passengers exceeds the total number of seats
-    GPtrArray* passengersArray = get_flight_array_by_id(passengersC, copy_flight);
-    if (passengersArray && (int)passengersArray->len > get_flight_total_seats(flight)) {
-        FILE* errorP = fopen("Resultados/passengers_errors.csv", "a");
-        if (errorP != NULL) {
-            for (int i = 0; i < (int)passengersArray->len; i++) {
-                fprintf(errorP, "%s;%p\n", copy_flight, g_ptr_array_index(passengersArray, i));
-            }
-            fclose(errorP);
-        }
-
+    if (get_flight_nPassengers(flight) > get_flight_total_seats(flight)) {
         FILE* errorF = fopen("Resultados/flights_errors.csv", "a");
         if (errorF != NULL) {
             char* id = copy_flight;
@@ -84,12 +75,9 @@ int build_passengers(char** passengers_fields, void* catalog){
 
         // Remove the flight from the hash table
         remove_flight_from_hash_table(flightsC, copy_flight);
-        remove_flight_array_from_hash_table(passengersC, copy_flight);
-
         return 0;
-    }*/
+    }
 
-    //insert_pass_flight_c(copy_user, passengersC, strdup(passengers_fields[0]));
     insert_pass_user_c(copy_flight,passengersC, copy_user);
     update_flight_c(flightsC,copy_flight);
 
