@@ -26,8 +26,8 @@
 void* parser_query(MANAGER catalog,char* line){
     int i = 0;
     char** args = malloc(sizeof(char*) * MAX_ARGS);
-    char* copia = strdup(line);
-    char* token = strtok(copia, " ");
+    char* copy = strdup(line);
+    char* token = strtok(copy, " ");
 
     while (token != NULL && i < MAX_ARGS) {
         if (token[0] == '"') {
@@ -36,7 +36,12 @@ void* parser_query(MANAGER catalog,char* line){
             removeQuotes(temp);
 
             token = strtok(NULL,"\"");
-            char* temp1 = concat(temp,token);
+            char* temp1;
+            if (temp[strlen(temp)-2] == '\"') {
+                temp[strlen(temp)-2] = '\0';
+                temp1 = strdup(temp);
+            }
+            else temp1 = concat(temp,token);
             args[i] = temp1;
             i++;
         } else {
@@ -49,8 +54,8 @@ void* parser_query(MANAGER catalog,char* line){
 
     args[i] = NULL;
 
-    free(copia);
-    free(token);
+    free(copy);
+    if (token != NULL) free(token);
 
     int query;
     if(args[0][1] != '0') query = args[0][0] - '0';
@@ -63,6 +68,7 @@ void* parser_query(MANAGER catalog,char* line){
     void* result = queries[query-1](catalog, args+1);
 
     for (int k = 0; k < i; k++) free(args[k]);
+
     free(args);
 
     return result;

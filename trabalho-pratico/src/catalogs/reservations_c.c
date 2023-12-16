@@ -28,14 +28,15 @@
 struct reservations_catalog {
     GHashTable* reserv; /**< Hash table to store reservation records. */
     GHashTable* user; /**< Hash table to store all user's reservations*/
+    GHashTable* hotel; /**< Hash table to store all hotel's reservations.*/
 };
 
 RESERV_C create_reservations_c(void){
     RESERV_C new = malloc(sizeof(struct reservations_catalog));
 
     new->reserv = g_hash_table_new_full(g_str_hash, g_str_equal, free, (GDestroyNotify)free_reservations);
-
     new->user = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, NULL);
+    new->hotel = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, NULL);
 
     return new;
 }
@@ -53,6 +54,18 @@ void insert_usersReservations_c(char* reserv_id, RESERV_C catalog, char* key){
         GPtrArray* reservations = g_ptr_array_new();
         g_ptr_array_add(reservations, reserv_id);
         g_hash_table_insert(catalog->user, key, reservations);
+    }
+}
+
+void insert_hotelsReservations_c(char* reserv_id, RESERV_C catalog, char* key){
+    if(g_hash_table_contains(catalog->hotel, key)){
+        GPtrArray* reservations = g_hash_table_lookup(catalog->hotel, key);
+        g_ptr_array_add(reservations, reserv_id);
+    }
+    else{
+        GPtrArray* reservations = g_ptr_array_new();
+        g_ptr_array_add(reservations, reserv_id);
+        g_hash_table_insert(catalog->hotel, key, reservations);
     }
 }
 

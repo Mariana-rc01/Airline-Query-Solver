@@ -41,9 +41,6 @@ struct flight {
     char* schedule_arrival_date; /**< Scheduled arrival date and time. */
     char* real_departure_date; /**< Real departure date and time. */
     char* real_arrival_date; /**< Real arrival date and time. */
-    char* pilot; /**< Pilot's name. */
-    char* copilot; /**< Copilot's name. */
-    char* notes; /**< Additional notes. */
     int nPassengers; /**< Number of passengers. */
 };
 
@@ -59,9 +56,6 @@ FLIGHT create_flight(void){
     new->schedule_arrival_date = NULL;
     new->real_departure_date = NULL;
     new->real_arrival_date = NULL;
-    new->pilot = NULL;
-    new->copilot = NULL;
-    new->notes = NULL;
     new->nPassengers = 0;
 
     return new;
@@ -105,18 +99,6 @@ void set_flight_real_departure_date(FLIGHT flight, char* real_departure_date){
 
 void set_flight_real_arrival_date(FLIGHT flight, char* real_arrival_date){
     flight->real_arrival_date = strdup(real_arrival_date);
-}
-
-void set_flight_pilot(FLIGHT flight, char* pilot){
-    flight->pilot = strdup(pilot);
-}
-
-void set_flight_copilot(FLIGHT flight, char* copilot){
-    flight->copilot = strdup(copilot);
-}
-
-void set_flight_notes(FLIGHT flight, char* notes){
-    flight->notes = strdup(notes);
 }
 
 void set_flight_nPassengers(FLIGHT flight, int n){
@@ -163,18 +145,6 @@ char* get_flight_real_arrival_date(FLIGHT flight){
     return strdup(flight->real_arrival_date);
 }
 
-char* get_flight_pilot(FLIGHT flight){
-    return strdup(flight->pilot);
-}
-
-char* get_flight_copilot(FLIGHT flight){
-    return strdup(flight->copilot);
-}
-
-char* get_flight_notes(FLIGHT flight){
-    return strdup(flight->notes);
-}
-
 int get_flight_nPassengers(FLIGHT flight){
     return flight->nPassengers;
 }
@@ -188,9 +158,6 @@ void free_flight(FLIGHT flight){
     free(flight->schedule_arrival_date);
     free(flight->real_departure_date);
     free(flight->real_arrival_date);
-    free(flight->pilot);
-    free(flight->copilot);
-    free(flight->notes);
 
     free(flight);
 }
@@ -237,9 +204,6 @@ int build_flight(char** flight_fields, void* catalog){
     set_flight_schedule_arrival_date(flight,flight_fields[7]);
     set_flight_real_departure_date(flight,flight_fields[8]);
     set_flight_real_arrival_date(flight,flight_fields[9]);
-    set_flight_pilot(flight,flight_fields[10]);
-    set_flight_copilot(flight,flight_fields[11]);
-    set_flight_notes(flight,flight_fields[12]);
 
     insert_flight_c(flight,flightsC,flight->id);
 

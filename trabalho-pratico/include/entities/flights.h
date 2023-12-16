@@ -109,26 +109,10 @@ void set_flight_real_departure_date(FLIGHT flight, char* real_departure_date);
 void set_flight_real_arrival_date(FLIGHT flight, char* real_arrival_date);
 
 /**
- * @brief Sets the pilot's name for the flight.
+ * @brief Sets the number of passengers of the flight.
  * @param flight A pointer to the flight struct.
- * @param pilot The pilot's name.
+ * @param n Number of passengers.
  */
-void set_flight_pilot(FLIGHT flight, char* pilot);
-
-/**
- * @brief Sets the copilot's name for the flight.
- * @param flight A pointer to the flight struct.
- * @param copilot The copilot's name.
- */
-void set_flight_copilot(FLIGHT flight, char* copilot);
-
-/**
- * @brief Sets additional notes for the flight.
- * @param flight A pointer to the flight struct.
- * @param notes Additional notes.
- */
-void set_flight_notes(FLIGHT flight, char* notes);
-
 void set_flight_nPassengers(FLIGHT flight, int n);
 
 /**
@@ -202,26 +186,10 @@ char* get_flight_real_departure_date(FLIGHT flight);
 char* get_flight_real_arrival_date(FLIGHT flight);
 
 /**
- * @brief Gets the pilot's name for the flight.
+ * @brief Gets the number of passengers of the flight.
  * @param flight A pointer to the flight struct.
- * @return The pilot's name.
+ * @param n Number of passengers.
  */
-char* get_flight_pilot(FLIGHT flight);
-
-/**
- * @brief Gets the copilot's name for the flight.
- * @param flight A pointer to the flight struct.
- * @return The copilot's name.
- */
-char* get_flight_copilot(FLIGHT flight);
-
-/**
- * @brief Gets additional notes for the flight.
- * @param flight A pointer to the flight struct.
- * @return Additional notes.
- */
-char* get_flight_notes(FLIGHT flight);
-
 int get_flight_nPassengers(FLIGHT flight);
 
 /**

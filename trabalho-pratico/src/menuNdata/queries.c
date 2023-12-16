@@ -440,12 +440,13 @@ void* query4(MANAGER manager,char** args){
     RESERV_C catalog = get_reserv_c(manager);
 
     // Create an array to store pointers to the reservations
-    ResultEntry* reserv_array = malloc(sizeof(ResultEntry) * 1024);
+    int initialCapacity = 500;
+    ResultEntry* reserv_array = malloc(sizeof(ResultEntry) * initialCapacity);
     int i = 0;
 
     GHashTable* reserv = get_hash_table_reserv(catalog);
 
-    // Iterate over catalog reservations
+    // Iterar sobre as reservas no catálogo
     GHashTableIter iter;
     gpointer key, value;
     g_hash_table_iter_init(&iter, reserv);
@@ -453,8 +454,14 @@ void* query4(MANAGER manager,char** args){
         RESERV reservation = (RESERV)value;
         char* hotel_idC = get_hotel_id(reservation);
 
-        // Verify if a reservation belongs to a given hotel
+        // Verificar se uma reserva pertence a um hotel específico
         if (strcmp(hotel_idC, hotel_id) == 0) {
+            if (i >= initialCapacity) {
+                // Se atingir a capacidade máxima, dobre o tamanho
+                initialCapacity *= 2;
+                reserv_array = realloc(reserv_array, sizeof(ResultEntry) * initialCapacity);
+            }
+
             reserv_array[i].id = get_reservation_id(reservation);
             reserv_array[i].date = get_begin_date(reservation);
             i++;
@@ -465,7 +472,7 @@ void* query4(MANAGER manager,char** args){
     // Sort reservations using sort function
     qsort(reserv_array, i, sizeof(ResultEntry), compare_reservations);
 
-    char** finalResult = malloc(sizeof(char*)*600);
+    char** finalResult = malloc(sizeof(char*)*(i+1));
     finalResult[0] = int_to_string(i);
     for (int j = 1; j < i+1; j++) {
         RESERV reservation = get_reservations_by_id(catalog,reserv_array[j-1].id);
@@ -505,7 +512,8 @@ void* query5(MANAGER manager,char** args){
     FLIGHTS_C catalog = get_flights_c(manager);
 
     // Create an array to store pointers to reservations
-    ResultEntry* flight_array = malloc(sizeof(ResultEntry) * 1024);
+    int initialCapacity = 500;
+    ResultEntry* flight_array = malloc(sizeof(ResultEntry) * initialCapacity);
 
     int i = 0;
 
@@ -523,6 +531,11 @@ void* query5(MANAGER manager,char** args){
         // Verify if a reservation belongs to the desire hotel
         if (strcmp(originC, origin) == 0 &&
         (compare_datesF(begin_date,date) >= 0 && compare_datesF(date,end_date) >= 0)) {
+            if (i >= initialCapacity) {
+                // Se atingir a capacidade máxima, dobre o tamanho
+                initialCapacity *= 2;
+                flight_array = realloc(flight_array, sizeof(ResultEntry) * initialCapacity);
+            }
             flight_array[i].id = get_flight_id(flight);
             flight_array[i].date = get_flight_schedule_arrival_date(flight);
             i++;
@@ -534,7 +547,7 @@ void* query5(MANAGER manager,char** args){
     // Sort flights using compare function
     qsort(flight_array, i, sizeof(ResultEntry), compare_results);
 
-    char** finalResult = malloc(sizeof(char*)*600);
+    char** finalResult = malloc(sizeof(char*)*(i+1));
     finalResult[0] = int_to_string(i);
     for (int j = 1; j < i+1; j++) {
         //id;schedule_departure_date;destination;airline;plane_model
@@ -637,7 +650,8 @@ void* query6(MANAGER manager,char** args){
     int N = ourAtoi(args[1]);
     FLIGHTS_C catalog = get_flights_c(manager);
 
-    AirportInfo* array = malloc(sizeof(AirportInfo) * 512);
+    int initialCapacity = 500;
+    AirportInfo* array = malloc(sizeof(AirportInfo) * initialCapacity);
 
     int i = 0;
 
@@ -666,6 +680,11 @@ void* query6(MANAGER manager,char** args){
                 array[airportPosition].nPassengers += pass;
             }
             else {
+                if (i >= initialCapacity) {
+                    // Se atingir a capacidade máxima, dobre o tamanho
+                    initialCapacity *= 2;
+                    array = realloc(array, sizeof(AirportInfo) * initialCapacity);
+                }
                 array[i].name = strdup(origin);
                 array[i].nPassengers = pass;
                 i++;
@@ -676,6 +695,11 @@ void* query6(MANAGER manager,char** args){
                 array[airportPositionD].nPassengers += pass;
             }
             else {
+                if (i >= initialCapacity) {
+                    // Se atingir a capacidade máxima, dobre o tamanho
+                    initialCapacity *= 2;
+                    array = realloc(array, sizeof(AirportInfo) * initialCapacity);
+                }
                 array[i].name = strdup(destination);
                 array[i].nPassengers = pass;
                 i++;
@@ -691,8 +715,8 @@ void* query6(MANAGER manager,char** args){
     // Sort flights using compare function
     qsort(array, i, sizeof(AirportInfo), sort_airports);
 
-    char** finalResult = malloc(sizeof(char*)*600);
-    finalResult[0] = int_to_string(N);
+    char** finalResult = malloc(sizeof(char*)*(N+1));
+    finalResult[0] = (i < N ? int_to_string(i) : int_to_string(N));
     for (int j = 1; j < i+1 && j<N+1; j++) {
         int total_size = snprintf(NULL, 0,"%s;%d", array[j-1].name,
         array[j-1].nPassengers) + 1;
