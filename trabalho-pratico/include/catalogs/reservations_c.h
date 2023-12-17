@@ -54,6 +54,8 @@ void insert_reservations_c(RESERV reserv, RESERV_C catalog, char* key);
  */
 void insert_usersReservations_c(char* reserv_id, RESERV_C catalog, char* key);
 
+void insert_hotelsReservations_c(char* reserv_id, RESERV_C catalog, char* key);
+
 /**
  * @brief Gets a reservation record by its ID.
  *
@@ -81,6 +83,8 @@ RESERV get_reservations_by_id(RESERV_C catalog, char* id);
  * @return The array of reservation IDs if found, or NULL if not found.
  */
 GPtrArray* get_user_reserv_array_by_id(RESERV_C catalog, char* user_id);
+
+GPtrArray* get_hotel_reserv_array_by_id(RESERV_C catalog, char* hotel_id);
 
 /**
  * @brief Retrieves the number of reservation IDs associated with a user by user ID.

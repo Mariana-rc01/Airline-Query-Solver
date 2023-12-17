@@ -77,6 +77,10 @@ GPtrArray* get_user_reserv_array_by_id(RESERV_C catalog, char* user_id){
     return g_hash_table_lookup(catalog->user, user_id);
 }
 
+GPtrArray* get_hotel_reserv_array_by_id(RESERV_C catalog, char* hotel_id){
+    return g_hash_table_lookup(catalog->hotel, hotel_id);
+}
+
 int get_user_array_reserv_id(RESERV_C catalog, char* id){
     GPtrArray* user_array = get_user_reserv_array_by_id(catalog, id);
     if (!user_array) return 0;
@@ -105,6 +109,18 @@ void free_reservations_c(RESERV_C catalog){
     }
 
     g_hash_table_destroy(catalog->user);
+
+    // Free user hash table
+    GHashTableIter iter1;
+    gpointer hotel_id, hotel_reservations;
+    g_hash_table_iter_init(&iter1, catalog->hotel);
+    while (g_hash_table_iter_next(&iter1, &hotel_id, &hotel_reservations)) {
+        // Free the GPtrArray associated with each user
+        GPtrArray *reservations_array = hotel_reservations;
+        g_ptr_array_free(reservations_array, TRUE);
+    }
+
+    g_hash_table_destroy(catalog->hotel);
 
     free(catalog);
 }

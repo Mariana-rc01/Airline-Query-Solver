@@ -45,7 +45,8 @@ void output_query(FILE* output_file, void* output, int query_id) {
 void output_query1(FILE* file, void* output){
     char** result = (char**) output;
     for (int i = 0; i < 8; i++) {
-        fprintf(file, "%s", result[i]);
+        if(result[i] == NULL) fprintf(file, "False");
+        else fprintf(file, "%s", result[i]);
 
         if (i != 7) {
             fprintf(file, ";");

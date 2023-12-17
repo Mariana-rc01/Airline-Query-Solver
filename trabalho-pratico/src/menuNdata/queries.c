@@ -188,7 +188,7 @@ int compare_datesF(char* itemA, char* itemB) {
 
     //Compare minutes
     if (minB != minA){
-        return minB - minA; //Sort minutesin descending order
+        return minB - minA; //Sort minutes in descending order
     }
 
     return segB - segA; //Sort seconds in descending order
@@ -341,22 +341,15 @@ void* query3(MANAGER manager,char** args){
     char* hotel_id = args[0];
     RESERV_C catalog = get_reserv_c(manager);
 
-    // Create array that contains pointers to reservation
     double rating = 0;
     int i = 0;
 
-    GHashTable* reserv = get_hash_table_reserv(catalog);
+    GPtrArray* hotel_array = get_hotel_reserv_array_by_id(catalog, hotel_id);
 
-    // Iterate over reservations in the catalog
-    GHashTableIter iter;
-    gpointer key, value;
-    g_hash_table_iter_init(&iter, reserv);
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
-        RESERV reservation = (RESERV)value;
-        char* hotel_idC = get_hotel_id(reservation);
-
-        // Verify if a reservation belongs to the desired hotel
-        if (strcmp(hotel_idC, hotel_id) == 0) {
+    if (hotel_array != NULL){
+        for (guint j = 0; j < hotel_array->len; j++) {
+            char* reserv_id = g_ptr_array_index(hotel_array, j);
+            RESERV reservation = get_reservations_by_id(catalog, reserv_id);
             char* ratingH = get_rating(reservation);
             double add;
             sscanf(ratingH, "%lf", &add);
@@ -364,10 +357,9 @@ void* query3(MANAGER manager,char** args){
             i++;
             free(ratingH);
         }
-        free(hotel_idC);
+        rating = rating/(double)i;
     }
-
-    rating = rating/(double)i;
+    else rating = 0;
 
     char* finalResult = double_to_string(rating);
 
@@ -444,29 +436,24 @@ void* query4(MANAGER manager,char** args){
     ResultEntry* reserv_array = malloc(sizeof(ResultEntry) * initialCapacity);
     int i = 0;
 
-    GHashTable* reserv = get_hash_table_reserv(catalog);
+    GPtrArray* hotel_array = get_hotel_reserv_array_by_id(catalog, hotel_id);
 
-    // Iterar sobre as reservas no catálogo
-    GHashTableIter iter;
-    gpointer key, value;
-    g_hash_table_iter_init(&iter, reserv);
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
-        RESERV reservation = (RESERV)value;
-        char* hotel_idC = get_hotel_id(reservation);
-
-        // Verificar se uma reserva pertence a um hotel específico
-        if (strcmp(hotel_idC, hotel_id) == 0) {
+    if (hotel_array != NULL){
+        for (guint j = 0; j < hotel_array->len; j++) {
             if (i >= initialCapacity) {
-                // Se atingir a capacidade máxima, dobre o tamanho
                 initialCapacity *= 2;
                 reserv_array = realloc(reserv_array, sizeof(ResultEntry) * initialCapacity);
             }
-
+            char* reserv_id = g_ptr_array_index(hotel_array, j);
+            RESERV reservation = get_reservations_by_id(catalog, reserv_id);
             reserv_array[i].id = get_reservation_id(reservation);
             reserv_array[i].date = get_begin_date(reservation);
             i++;
         }
-        free(hotel_idC);
+    }
+    else {
+        free(reserv_array);
+        return NULL;
     }
 
     // Sort reservations using sort function
@@ -532,7 +519,6 @@ void* query5(MANAGER manager,char** args){
         if (strcmp(originC, origin) == 0 &&
         (compare_datesF(begin_date,date) >= 0 && compare_datesF(date,end_date) >= 0)) {
             if (i >= initialCapacity) {
-                // Se atingir a capacidade máxima, dobre o tamanho
                 initialCapacity *= 2;
                 flight_array = realloc(flight_array, sizeof(ResultEntry) * initialCapacity);
             }
@@ -681,7 +667,6 @@ void* query6(MANAGER manager,char** args){
             }
             else {
                 if (i >= initialCapacity) {
-                    // Se atingir a capacidade máxima, dobre o tamanho
                     initialCapacity *= 2;
                     array = realloc(array, sizeof(AirportInfo) * initialCapacity);
                 }
@@ -775,7 +760,7 @@ void free_query1(void* result){
     }
     char** resultF = (char**) result;
     for (int i = 0; i < 8; i++) {
-        free(resultF[i]);
+        if(resultF[i] != NULL) free(resultF[i]);
     }
     free(resultF);
 }

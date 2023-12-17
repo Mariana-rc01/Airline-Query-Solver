@@ -134,7 +134,7 @@ char* get_end_date(RESERV res){
 }
 
 char* get_includes_breakfast(RESERV res){
-    if (!res->includes_breakfast) return NULL;
+    if (res->includes_breakfast == NULL) return NULL;
     else return strdup(res->includes_breakfast);
 }
 
@@ -154,7 +154,7 @@ void free_reservations(RESERV res){
     free(res->hotel_stars);
     free(res->begin_date);
     free(res->end_date);
-    free(res->includes_breakfast);
+    if (res->includes_breakfast != NULL) free(res->includes_breakfast);
     free(res->rating);
 
     free(res);
@@ -218,6 +218,7 @@ int build_reservations(char** reservations_fields, void* catalog){
 
     insert_reservations_c(res, reservsC, res->id);
     insert_usersReservations_c(res->id, reservsC, res->user_id);
+    insert_hotelsReservations_c(res->id, reservsC, res->hotel_id);
 
     update_user_c(usersC,reservations_fields[1],cost);
 
