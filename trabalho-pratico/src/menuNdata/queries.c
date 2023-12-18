@@ -512,7 +512,7 @@ void* query5(MANAGER manager,char** args){
     g_hash_table_iter_init(&iter, flights);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         FLIGHT flight = (FLIGHT)value;
-        char* date = get_flight_schedule_arrival_date(flight);
+        char* date = get_flight_schedule_departure_date(flight);
         char* originC = get_flight_origin(flight);
 
         // Verify if a reservation belongs to the desire hotel
@@ -523,7 +523,7 @@ void* query5(MANAGER manager,char** args){
                 flight_array = realloc(flight_array, sizeof(ResultEntry) * initialCapacity);
             }
             flight_array[i].id = get_flight_id(flight);
-            flight_array[i].date = get_flight_schedule_arrival_date(flight);
+            flight_array[i].date = get_flight_schedule_departure_date(flight);
             i++;
         }
         free(date);

@@ -46,6 +46,7 @@ void output_query1(FILE* file, void* output){
     char** result = (char**) output;
     for (int i = 0; i < 8; i++) {
         if(result[i] == NULL) fprintf(file, "False");
+        else if(strcmp(result[i],"T") == 0) fprintf(file, "True");
         else fprintf(file, "%s", result[i]);
 
         if (i != 7) {
@@ -86,7 +87,9 @@ void output_query1F(FILE* file, void* output){
         fprintf(file,"hotel_stars: %s\n",result[2]);
         fprintf(file,"begin_date: %s\n", result[3]);
         fprintf(file,"end_date: %s\n", result[4]);
-        fprintf(file,"includes_breakfast: %s\n", result[5]);
+        if(result[5] == NULL) fprintf(file,"includes_breakfast: False\n");
+        else if(strcmp(result[5],"T") == 0) fprintf(file, "includes_breakfast: True\n");
+        else fprintf(file,"includes_breakfast: %s\n", result[5]);
         fprintf(file,"nights: %s\n", result[6]);
         fprintf(file,"total_price: %s\n", result[7]);
     }
