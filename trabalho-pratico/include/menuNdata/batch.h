@@ -1,7 +1,7 @@
 /**
  * @file batch.h
  * @brief Module that contains functions for executing the batch execution mode aswell as functions 
- * for setting up the catalogs and statistics and executing queries.
+ * for setting up the catalogs and executing queries.
  *
  */
 

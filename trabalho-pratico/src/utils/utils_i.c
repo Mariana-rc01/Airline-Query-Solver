@@ -1,6 +1,6 @@
 /**
- * @file statistics.h
- * @brief Module that connects the entities
+ * @file utils_i.c
+ * @brief 
  */
 
 /*
@@ -18,21 +18,3 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-#ifndef STATISTICS_H
-#define STATISTICS_H
-
-/**
- * @typedef STATS
- * @brief A pointer to the statistics structure.
- *
- */
-typedef struct statistics* STATS;
-
-#include "catalogs/reservations_c.h"
-#include "catalogs/users_c.h"
-#include "entities/users.h"
-#include "entities/flights.h"
-
-
-#endif

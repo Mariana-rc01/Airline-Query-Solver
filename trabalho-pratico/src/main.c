@@ -27,6 +27,7 @@
 #include "IO/parser.h"
 #include "IO/input.h"
 #include "menuNdata/batch.h"
+#include "menuNdata/interactive.h"
 
 
 #include <stdio.h>
@@ -50,7 +51,7 @@ int main(int argc, char** argsv){
         return 0;
     }
     if(argc == 1) {
-        printf("Interactive mode not yet implemented");
+        interactive();
         return 0;
     }
     else{

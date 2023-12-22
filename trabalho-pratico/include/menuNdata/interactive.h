@@ -1,0 +1,31 @@
+/**
+ * @file interactive.h
+ * @brief Module that contains functions for executing the interactive execution mode aswell as functions 
+ * for setting up the catalogs and executing queries.
+ *
+ */
+
+/*
+ *   Copyright 2023  Hugo Abelheira, Luís França, Mariana Rocha
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+#ifndef INTERACTIVE_H
+#define INTERACTIVE_H
+
+#include "catalogs/manager_c.h"
+#include "interactive/home.h"
+
+void interactive(void);
+
+#endif 

@@ -20,7 +20,7 @@
 
 CC             := gcc
 CFLAGS         := -Wall -Wextra -Werror -pedantic $(shell pkg-config --cflags glib-2.0) -fexec-charset=UTF-8
-LIBS           := -lm $(shell pkg-config --libs glib-2.0)
+LIBS           := -lm $(shell pkg-config --libs glib-2.0) -lncurses
 DEBUG_CFLAGS   := -g
 RELEASE_CFLAGS := -O2
 

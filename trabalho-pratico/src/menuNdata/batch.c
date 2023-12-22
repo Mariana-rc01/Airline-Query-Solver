@@ -1,6 +1,6 @@
 /**
  * @file batch.c
- * @brief Contains the code related to the bath mode
+ * @brief Contains the code related to the batch mode
  */
 
 /*

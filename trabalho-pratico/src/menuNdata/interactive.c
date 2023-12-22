@@ -1,6 +1,7 @@
 /**
- * @file statistics.c
- * @brief Module that connects all the entities
+ * @file interactive.c
+ * @brief Contains the code related to the interactive mode
+ *
  */
 
 /*
@@ -17,22 +18,21 @@
  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
-*/
+ */
 
-#include "menuNdata/statistics.h"
-#include "utils/utils.h"
-
-#include <glib.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "menuNdata/interactive.h"
 #include <string.h>
 
-/**
- * @struct statistics
- * @brief Structure containing usefull statistics
- *
- */
-struct statistics{
-    int n;
-};
+void interactive(void){
 
+    USERS_C users_catalog = create_user_c();
+    FLIGHTS_C flights_catalog = create_flight_c();
+    RESERV_C reservations_catalog = create_reservations_c();
+    PASS_C passengers_catalog = create_passengers_c();
+    MANAGER manager_catalog = create_manager_c(users_catalog,flights_catalog,reservations_catalog,passengers_catalog);
+
+    home();
+
+    free_manager_c(manager_catalog);
+
+}
