@@ -28,7 +28,7 @@
 void home(void){
     initscr();
 
-    char* options[3] = {"AirLine Query Solver","Instructions","Exit"};
+    //char* options[3] = {"AirLine Query Solver","Instructions","Exit"};
     // creating a window;
     // with height = 15 and width = 20
     // also with start x axis 2 and start y axis = 10
