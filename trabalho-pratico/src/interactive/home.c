@@ -39,12 +39,12 @@ void drawWindow(WINDOW *win, Buttons *options, int selected, char* title){
     mvwprintw(win, 0, 1, "%s", title);
     // Imprime as opções
     for (int i = 0; i < MAX_OPTIONS; i++) {
-        mvwprintw(win, options[i].y, options[i].x, options[i].label);
+        mvwprintw(win, options[i].y, options[i].x, "%s",options[i].label);
     }
 
     // Destaca a opção selecionada
     wattron(win, A_REVERSE); // Ativa a inversão de cores (para destacar)
-    mvwprintw(win, options[selected].y, options[selected].x, options[selected].label);
+    mvwprintw(win, options[selected].y, options[selected].x, "%s", options[selected].label);
     wattroff(win, A_REVERSE); // Desativa a inversão de cores
 
     // Atualiza a tela
