@@ -1,8 +1,6 @@
 /**
- * @file interactive.h
- * @brief Module that contains functions for executing the interactive execution mode aswell as functions 
- * for setting up the catalogs and executing queries.
- *
+ * @file instructions.h
+ * @brief
  */
 
 /*
@@ -20,13 +18,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-#ifndef INTERACTIVE_H
-#define INTERACTIVE_H
 
-#include "catalogs/manager_c.h"
-#include "interactive/home.h"
-#include "interactive/instructions.h"
 
-void interactive(void);
+#ifndef INSTRUCTIONS_H
+#define INSTRUCTIONS_H
 
-#endif 
+void instructions(void);
+
+#endif
