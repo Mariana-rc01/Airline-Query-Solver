@@ -19,4 +19,4 @@
  *   limitations under the License.
  */
 
-void naoestarvazia();
+void naoestarvazia(void);

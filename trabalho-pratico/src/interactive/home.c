@@ -25,31 +25,97 @@
 #include <ncurses.h>
 #include <string.h>
 
-void home(void){
-    initscr();
+#define MAX_OPTIONS 3
 
-    //char* options[3] = {"AirLine Query Solver","Instructions","Exit"};
-    // creating a window;
-    // with height = 15 and width = 20
-    // also with start x axis 2 and start y axis = 10
-    // (height, width,x,y)
-    // A janela tem que ficar centrada
-    // A janela ajusta-se consoante o numero de opçoes e qual o maior tamanho 
-    WINDOW* win = newwin(15, 20, 2, 10);
+// Estrutura para representar um botão
+typedef struct {
+    int x, y; // Posição do botão
+    char *label; // Texto do botão
+} Buttons;
+
+// Função para desenhar as opções
+void drawWindow(WINDOW *win, Buttons *options, int selected, char* title){
+    box(win, 0, 0);
+    mvwprintw(win, 0, 1, "%s", title);
+    // Imprime as opções
+    for (int i = 0; i < MAX_OPTIONS; i++) {
+        mvwprintw(win, options[i].y, options[i].x, options[i].label);
+    }
+
+    // Destaca a opção selecionada
+    wattron(win, A_REVERSE); // Ativa a inversão de cores (para destacar)
+    mvwprintw(win, options[selected].y, options[selected].x, options[selected].label);
+    wattroff(win, A_REVERSE); // Desativa a inversão de cores
+
+    // Atualiza a tela
+    wrefresh(win);
+}
+
+void home(void) {
+    initscr();
+    cbreak();
+    keypad(stdscr, TRUE);
+    mousemask(ALL_MOUSE_EVENTS, NULL);
+
+    // Criar uma janela principal
+    WINDOW *home_win = newwin(10, 30, 2, 5);
     refresh();
 
-    // making box border with default border styles
-    box(win, 0, 0);
+    int ch;
+    MEVENT event;
+    char* title = "Interactive Mode";
 
-    // move and print in window
-    mvwprintw(win, 0, 1, "Interactive Mode");
-    // Mostrar aqui os botoes de options
+    // Defina suas opções e suas posições aqui
+    Buttons options[MAX_OPTIONS] = {
+        {2, 2, "AirLine Query Solver"},
+        {2, 4, "Instructions"},
+        {2, 6, "Exit"}
+    };
 
-    // Selecionar uma opçao e meter cores quando anda pelas opções e quando carregar, mudar para essa página
+    // Índice da opção selecionada
+    int selectedOption = 0;
 
-    // refreshing the window
-    wrefresh(win);
+    // Desenha as opções inicialmente
+    drawWindow(home_win, options, selectedOption, title);
 
-    getch();
+    while ((ch = getch()) != 27) {
+        switch (ch){
+            case KEY_MOUSE:
+                if (getmouse(&event) == OK) {
+                    // Verifica se o clique do mouse ocorreu dentro de uma opção
+                    for (int i = 0; i < MAX_OPTIONS; i++) {
+                        if ((event.x >= options[i].x && event.x < options[i].x + (int)strlen(options[i].label)) &&
+                            (event.y == options[i].y)) {
+                            // Ação quando uma opção é selecionada (pode redirecionar para outra página, etc.)
+                            mvprintw(15, 1, "Selecionado: %s", options[i].label);
+                            refresh();
+                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS; // com o - 1 ele sobe infinitamente
+                            break; // perceber melhor o comportamento do rato
+                        }
+                    }
+                }
+                break;
+            case KEY_UP:
+                selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                break;
+            case KEY_DOWN:
+                selectedOption = (selectedOption + 1) % MAX_OPTIONS;
+                break;
+            case '\n':
+                selectedOption = selectedOption  % MAX_OPTIONS;
+                char* option = options[selectedOption].label;
+                if (strcmp(option, "Instructions") == 0){
+                    werase(home_win); // ver como dar clean up da window
+                    instructions();
+                }
+                break;
+        }
+
+        // Atualiza as opções na tela
+        drawWindow(home_win, options, selectedOption, title);
+    }
+
     endwin();
 }
+
+
