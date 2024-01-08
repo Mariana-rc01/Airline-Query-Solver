@@ -23,6 +23,8 @@
 #ifndef INSTRUCTIONS_H
 #define INSTRUCTIONS_H
 
+#include "interactive/home.h"
+
 void instructions(void);
 
 #endif

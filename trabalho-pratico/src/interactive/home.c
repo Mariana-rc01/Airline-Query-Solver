@@ -105,8 +105,25 @@ void home(void) {
                 selectedOption = selectedOption  % MAX_OPTIONS;
                 char* option = options[selectedOption].label;
                 if (strcmp(option, "Instructions") == 0){
-                    werase(home_win); // ver como dar clean up da window
+                    // Apaga a janela principal
+                    werase(home_win);
+                    // Atualiza a tela para garantir que a janela principal seja removida
+                    wrefresh(home_win);
+                    // Sai do modo ncurses
+                    endwin();
+                    // Chama a função de instruções
                     instructions();
+                    // Sai do programa após exibir as instruções
+                    exit(0);
+                }
+                if (strcmp(option, "Exit") == 0){
+                    // Apaga a janela principal
+                    werase(home_win);
+                    // Atualiza a tela para garantir que a janela principal seja removida
+                    wrefresh(home_win);
+                    // Sai do modo ncurses
+                    endwin();
+                    exit(0);
                 }
                 break;
         }
@@ -114,7 +131,7 @@ void home(void) {
         // Atualiza as opções na tela
         drawWindow(home_win, options, selectedOption, title);
     }
-
+    delwin(home_win);
     endwin();
 }
 

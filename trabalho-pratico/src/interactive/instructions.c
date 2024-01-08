@@ -26,38 +26,150 @@
 #include <ncurses.h>
 #include <string.h>
 
+/* O que não está a dar bem nas instructions:
+A linha vertical da direita nao está a ser bem colocada quando imprimimos texto que muda de linha
+*/
+
+// Deve ser mudado para os utils
+void printLongText(WINDOW* win, int* text_y, int text_x, const char* text) {
+    int max_x = 65;
+    int max_y = 23;
+    size_t text_len = strlen(text);
+
+    while (text_len > 0 && *text_y < max_y - 2) {
+        int available_width = max_x - text_x - 2; // Espaço disponível para a linha atual
+
+        if (text_len > (size_t)available_width) {
+            // Imprimir parte da string que cabe na largura disponível
+            mvwprintw(win, (*text_y)++, text_x, "%.*s", available_width, text);
+            text += available_width;
+            text_len -= available_width;
+        } else {
+            mvwprintw(win, (*text_y)++, text_x, "%-*s", max_x - 2, text);
+            text_len = 0;
+        }
+    }
+}
+
+
 void instructions(void){
     initscr();
+    start_color();
+    keypad(stdscr, TRUE);
 
-    // Cada text aparece numa página em separado, é suposto haver setas para mudar entre os textos, mas
-    // a página mantém-se
-    char text1[] = "Introdução do programa, o que é e o que faz (em inglês)";
+    start_color();
+    init_pair(1, COLOR_RED, COLOR_BLACK);
 
-    char text2[] = "Como usar o progama; preencher com os setups desejados, explicar settings e o seu funcionamento detalhadamente";
-
-    char text3[] = "Explicação detalhada de cada query e aqui vai aparecer menu deslizante";
-
-    // Este botão aparece no canto inferior direito
     char option[] = "[Go Back]";
+    char arrow_left[] = "<";
+    char arrow_right[] = ">";
 
-    // creating a window;
-    WINDOW* win = newwin(15, 50, 2, 10);
+    int max_y = 23, max_x = 65;
+
+    WINDOW* win = newwin(max_y, max_x, 0, 0);
     refresh();
 
-    // making box border with default border styles
-    box(win, 0, 0);
+    int ch;
+    int current_text = 1;
+    int max_texts = 3;
+    int text_offset = 0;  // Offset vertical no texto
 
-    // move and print in window
-    mvwprintw(win, 0, 1, "Instructions");
-    mvwprintw(win, 1, 1, "%s", text1);
-    (void) text2;
-    (void) text3;
-    (void) option;
+    while (1){
+        wclear(win);
+        box(win, 0, 0);
+        mvwprintw(win, 0, 1, "Instructions");
+
+        int text_y = 1;
+        int text_x = 1;
+
+        char filename[57];
+        snprintf(filename, sizeof(filename), "src/interactive/instructions_page%d.txt", current_text);
+
+        FILE *file = fopen(filename, "r");
+
+        int verify = 0;
+
+        if (file != NULL){
+            char buffer[1024];
+            // Ajuste: Pular linhas conforme o deslocamento vertical
+            for (int i = 0; i < text_offset; ++i){
+                if (fgets(buffer, sizeof(buffer), file) == NULL){
+                    break;  // Chegamos ao final do arquivo
+                }
+            }
+            while (fgets(buffer, sizeof(buffer), file) != NULL && text_y < max_y - 2){
+                printLongText(win, &text_y, text_x, buffer);
+            }
+
+            // Verificar se há mais linhas no arquivo
+            if (fgets(buffer, sizeof(buffer), file) == NULL){
+                verify = 1;
+            }
+
+            fclose(file);
+        }
+        else {
+            mvwprintw(win, text_y++, text_x, "Erro ao abrir o ficheiro %s", filename);
+        }
+
+        box(win, 0, 0);
+        mvwprintw(win, 0, 1, "Instructions");
 
 
-    // refreshing the window
-    wrefresh(win);
+        mvwprintw(win, max_y - 2, 2, "%s", arrow_left);
+        mvwprintw(win, max_y - 2, 4, "%s", arrow_right);
 
-    getch();
-    endwin();
+        wattron(win, COLOR_PAIR(1));
+        mvwprintw(win, max_y - 2, max_x - strlen(option) - 2, "%s", option);
+        wattroff(win, COLOR_PAIR(1));
+
+        wrefresh(win);
+
+        ch = getch();
+        MEVENT event;
+
+        switch (ch){
+            case KEY_MOUSE:
+                if (ch == KEY_MOUSE && getmouse(&event) == OK) {
+                    if (event.x == 2 && event.y == max_y - 2) {
+                        current_text = (current_text - 2 + max_texts) % max_texts + 1;
+                    }
+                    else if (event.x == 4 && event.y == max_y - 2){
+                        ch = KEY_RIGHT;
+                    }
+                    else {
+                        wclear(win);
+                        wrefresh(win);
+                        endwin();
+                        home();
+                        exit(0);
+                    }
+                }
+                else break;
+            case KEY_LEFT:
+                current_text = (current_text - 2 + max_texts) % max_texts + 1;
+                break;
+            case KEY_RIGHT:
+                current_text = (current_text) % max_texts + 1;
+                break;
+            case KEY_UP:
+                if (text_offset > 0) {
+                    text_offset--;
+                    verify = 0;
+                }
+                break;
+            case KEY_DOWN:
+                if (!verify) text_offset++;
+                break;
+            case '\n':
+                wclear(win);
+                wrefresh(win);
+                endwin();
+                home();
+                exit(0);
+                break;
+            default:
+                break;
+        }
+    }
 }
