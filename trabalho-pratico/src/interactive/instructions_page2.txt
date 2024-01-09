@@ -1,1 +1,49 @@
-2Como usar o programa; preencher com os setups desejados, explicar settings e o seu funcionamento detalhadamente
+
+Our goal was to ensure that the service would be as easy to 
+navigate as possible. 
+As you've likely noticed, the home page consists of three 
+main options:
+
+I) AirLine Query Solver: The primary option, guiding you to 
+the settings where you can configure the dataset path 
+and output format. 
+Once the configuration is complete, you can proceed to run 
+the Solver.
+
+II) Instructions: The menu you are currently exploring. 
+Clearly self-explanatory, it provides all the information 
+necessary about our software.
+
+III) Exit: Another easily understandable option. Selecting 
+this will close our software, cleaning all necessary memory 
+to run the system.
+
+
+Now, let's delve into the Settings:
+
+IV) Dataset Path: It is essential to provide the path to the 
+folder containing the dataset files (ESPECIFICAR FILES?). 
+After entering the path, you can save your selection and 
+modify it as needed. 
+Our service is ready to efficiently populate the catalogs 
+with the correct data.
+
+V) Output Format: Choose the desired output format.
+The selected option will be highlighted by a blue box. 
+
+    - TXT format: Presents the output in separated txt files
+    generated and viewable on the user's local system.
+
+    - One by One: Displays all outputs sequentially on a 
+    single window.
+
+    - Per page: Presents the output on a window with 
+    multiple pages featuring a navigation system for quick 
+    access to any entry. For this option, the user can 
+    either choose the total number of pages or specify the 
+    number of outputs per page, with the system calculating 
+    the suitable number of pages.
+    
+Once satisfied with the selected settings, 
+the user can proceed to run the Solver.
+

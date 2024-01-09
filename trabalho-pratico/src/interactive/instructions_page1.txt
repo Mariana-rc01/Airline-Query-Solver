@@ -1,1 +1,10 @@
-1Introducao do programa, o que  e o que faz (em ingles)
+
+Welcome to the interactive mode of our AirLine Query Solver! 
+This feature is designed to provide a user-friendly 
+environment for anyone utilizing our software, specifically 
+tailored for queries related to airport data.
+
+The primary objective of this service is to analyze and draw 
+conclusions from specific types of queries based on provided 
+datasets. Users can input the path to the dataset, allowing 
+the system to generate insightful results.

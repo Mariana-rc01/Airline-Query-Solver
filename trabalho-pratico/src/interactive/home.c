@@ -93,18 +93,17 @@ void home(SETTINGS setts) {
                     // Sai do programa após exibir as instruções
                     exit(0);
                 }
-
                 if (strcmp(option, "Instructions") == 0){
-                    // Apaga a janela principal
-                    werase(home_win);
-                    // Atualiza a tela para garantir que a janela principal seja removida
-                    wrefresh(home_win);
-                    // Sai do modo ncurses
-                    endwin();
-                    // Chama a função de instruções
-                    instructions(setts);
-                    // Sai do programa após exibir as instruções
-                    exit(0);
+                        // Apaga a janela principal
+                        werase(home_win);
+                        // Atualiza a tela para garantir que a janela principal seja removida
+                        wrefresh(home_win);
+                        // Sai do modo ncurses
+                        endwin();
+                        // Chama a função de instruções
+                        instructions(setts);
+                        // Sai do programa após exibir as instruções
+                        exit(0);
                 }
                 if (strcmp(option, "Exit") == 0){
                     // Apaga a janela principal

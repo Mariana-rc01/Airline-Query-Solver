@@ -1,24 +1,99 @@
-3
-Explicacao detalhada de cada query e aqui vai aparecer menu deslizante
+Query 1: List the summary of a user, flight, or reservation 
+based on the received identifier as an argument. It is 
+guaranteed that there are no repeated identifiers among 
+different entities. The query should return the following 
+information:
 
-Query 1: Listar o resumo de um utilizador, voo, ou reserva, consoante o identificador recebido por argumento.
-E garantido que nao existem identificadores repetidos entre as diferentes entidades.
-A query deverá retornar as seguintes informacoes:
+        User
+        (name, sex, age, country_code, number_of_flights,
+        number_of_reservations, total_spent)
 
-Utilizador
-(name,sex,age,country_code,number_of_flights,number_of_reservations,total_spent)
+        Flight
+        (airline, plane_model, origin, destination, 
+        schedule_departure_date, schedule_arrival_date, 
+        passengers, delay)
 
-Voo
-(airline,plane_model,origin,destination,schedule_departure_date,schedule_arrival_date,passengers,delay)
+        Reservation
+        (hotel_id, hotel_name, hotel_stars, begin_date, 
+        end_date, includes_breakfast, nights, total_price)
 
-Reserva
-(hotel_id,hotel_name,hotel_stars,begin_date,end_date,includes_breakfast,nights,total_price)
+Query 2: List the flights or reservations of a user, 
+if the second argument is flights or reservations, 
+respectively, sorted by date (from the most recent 
+to the oldest). If a second argument is not provided, 
+display both flights and reservations along with 
+their types (flight or reservation). 
+For flights, date = schedule_departure_date (excluding 
+the hours/minutes/seconds in the output), while for 
+reservations, date = begin_date. In case of a tie, sort 
+by identifier (in ascending order).
 
-Query 2: Listar os voos ou reservas de um utilizador, se o segundo argumento for flights ou reservations,
-respetivamente, ordenados por data (da mais recente para a mais antiga). Caso não seja fornecido
-um segundo argumento, apresentar voos e reservas, juntamente com o tipo (flight ou reservation).
-Para os voos, date = schedule_departure_date (contudo, devera ser descartada a componente das
-horas/minutos/segundos no output), enquanto que para as reservas, date = begin_date.
-Em caso de empate, ordenar pelo identificador (de forma crescente).
+Query 3: Present the average rating of a hotel 
+based on its identifier.
+
+Query 4: List the reservations of a hotel, sorted by 
+start date (from the most recent to the oldest). 
+If two reservations have the same date, use the 
+reservation identifier as a tiebreaker (in ascending order).
+
+Query 5: List the flights departing from a given airport 
+between two dates, sorted by estimated departure date 
+(from the most recent to the oldest). A flight is considered
+between <begin_date> and <end_date> if its estimated 
+departure date is between <begin_date> and 
+<end_date> (both inclusive). If two flights have the same 
+date, use the flight identifier as a tiebreaker 
+(ascending order).
+
+Query 6: List the top N airports with the most 
+passengers for a given year. Flights with estimated 
+departure dates in that year should be considered. If two 
+airports have the same value, use the airport name 
+as a tiebreaker (ascending order).
+
+Query 7: List the top N airports with the highest
+median delays. Delays at an airport are calculated
+from the difference between the estimated and actual 
+departure date for flights departing from that airport. 
+The delay value should be presented in seconds. If two 
+airports have the same median, use the airport name 
+as a tiebreaker (ascending order).
+
+Query 8: Present the total revenue of a hotel between 
+two dates (inclusive) based on its identifier. The hotel's 
+revenue should consider only the price per night 
+(price_per_night) of all reservations with nights 
+between the two dates. For example, if a hotel has 
+only one reservation at 100Eur/night from 2023/10/01 
+to 2023/10/10, and we want to know the revenue between 
+2023/10/01 and 2023/10/02, it should return 200Eur 
+(two nights). However, if the reservation is between 
+2023/10/01 and 2023/10/02, it should return 
+100Eur (one night).
+
+Query 9: List all users whose names start with the prefix 
+passed as an argument, sorted by name (in ascending order). 
+If two users have the same name, use their identifier 
+as a tiebreaker (ascending order). 
+Inactive users should not be considered in the search.
+
+Query 10: Present various general metrics of the 
+application. The considered metrics are: the number 
+of new registered users (according to the 
+account_creation field); the number of flights 
+(according to the schedule_departure_date field); 
+the number of passengers; the number of unique passengers; 
+the number of reservations (according to the 
+begin_date field). If the query is executed without 
+arguments, present the  aggregated data per year for all 
+years the application has records. If the query is 
+executed with one argument, year, present the data for 
+that year aggregated by month. Finally, if the query is 
+executed with two arguments, year and month, present the 
+data for that yearand month aggregated by day. The output 
+should be sorted in ascending order according to 
+the year/month/day.
 
 
+
+Será necessário especificar aqui o comando e o output correto também?

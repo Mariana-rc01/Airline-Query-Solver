@@ -132,10 +132,10 @@ void instructions(SETTINGS setts){
             case KEY_MOUSE:
                 if (ch == KEY_MOUSE && getmouse(&event) == OK) {
                     if (event.x == 2 && event.y == max_y - 2) {
-                        current_text = (current_text - 2 + max_texts) % max_texts + 1;
+                        current_text = (current_text + 1 + max_texts) % max_texts - 1;
                     }
                     else if (event.x == 4 && event.y == max_y - 2){
-                        ch = KEY_RIGHT;
+                        current_text = (current_text - 2 + max_texts) % max_texts + 1;
                     }
                     else {
                         wclear(win);
