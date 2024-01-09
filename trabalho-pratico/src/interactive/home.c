@@ -1,6 +1,6 @@
 /**
  * @file home.c
- * @brief 
+ * @brief
  */
 
 /*
@@ -20,45 +20,21 @@
  */
 
 #include "interactive/home.h"
-#include <stdlib.h>
+
 #include <stdio.h>
 #include <ncurses.h>
 #include <string.h>
 
 #define MAX_OPTIONS 3
 
-// Estrutura para representar um botão
-typedef struct {
-    int x, y; // Posição do botão
-    char *label; // Texto do botão
-} Buttons;
-
-// Função para desenhar as opções
-void drawWindow(WINDOW *win, Buttons *options, int selected, char* title){
-    box(win, 0, 0);
-    mvwprintw(win, 0, 1, "%s", title);
-    // Imprime as opções
-    for (int i = 0; i < MAX_OPTIONS; i++) {
-        mvwprintw(win, options[i].y, options[i].x, "%s",options[i].label);
-    }
-
-    // Destaca a opção selecionada
-    wattron(win, A_REVERSE); // Ativa a inversão de cores (para destacar)
-    mvwprintw(win, options[selected].y, options[selected].x, "%s", options[selected].label);
-    wattroff(win, A_REVERSE); // Desativa a inversão de cores
-
-    // Atualiza a tela
-    wrefresh(win);
-}
-
-void home(void) {
+void home(SETTINGS setts) {
     initscr();
     cbreak();
     keypad(stdscr, TRUE);
     mousemask(ALL_MOUSE_EVENTS, NULL);
 
     // Criar uma janela principal
-    WINDOW *home_win = newwin(10, 30, 2, 5);
+    WINDOW* home_win = newwin(10, 30, 2, 5);
     refresh();
 
     int ch;
@@ -66,17 +42,17 @@ void home(void) {
     char* title = "Interactive Mode";
 
     // Defina suas opções e suas posições aqui
-    Buttons options[MAX_OPTIONS] = {
-        {2, 2, "AirLine Query Solver"},
-        {2, 4, "Instructions"},
-        {2, 6, "Exit"}
+    BUTTONS options[MAX_OPTIONS] = {
+        create_button("AirLine Query Solver",2,2),
+        create_button("Instructions",2,4),
+        create_button("Exit",2,6)
     };
 
     // Índice da opção selecionada
     int selectedOption = 0;
 
     // Desenha as opções inicialmente
-    drawWindow(home_win, options, selectedOption, title);
+    drawWindow(home_win, options, selectedOption, title, MAX_OPTIONS, 0);
 
     while ((ch = getch()) != 27) {
         switch (ch){
@@ -84,10 +60,10 @@ void home(void) {
                 if (getmouse(&event) == OK) {
                     // Verifica se o clique do mouse ocorreu dentro de uma opção
                     for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= options[i].x && event.x < options[i].x + (int)strlen(options[i].label)) &&
-                            (event.y == options[i].y)) {
+                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
+                            (event.y == get_y_B(options[i]))) {
                             // Ação quando uma opção é selecionada (pode redirecionar para outra página, etc.)
-                            mvprintw(15, 1, "Selecionado: %s", options[i].label);
+                            mvprintw(15, 1, "Selecionado: %s", get_label_B(options[i]));
                             refresh();
                             selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS; // com o - 1 ele sobe infinitamente
                             break; // perceber melhor o comportamento do rato
@@ -103,7 +79,21 @@ void home(void) {
                 break;
             case '\n':
                 selectedOption = selectedOption  % MAX_OPTIONS;
-                char* option = options[selectedOption].label;
+                char* option = get_label_B(options[selectedOption]);
+
+                if (strcmp(option, "AirLine Query Solver") == 0){
+                    // Apaga a janela principal
+                    werase(home_win);
+                    // Atualiza a tela para garantir que a janela principal seja removida
+                    wrefresh(home_win);
+                    // Sai do modo ncurses
+                    endwin();
+                    // Chama a função de instruções
+                    settingsConfig(setts);
+                    // Sai do programa após exibir as instruções
+                    exit(0);
+                }
+
                 if (strcmp(option, "Instructions") == 0){
                     // Apaga a janela principal
                     werase(home_win);
@@ -112,7 +102,7 @@ void home(void) {
                     // Sai do modo ncurses
                     endwin();
                     // Chama a função de instruções
-                    instructions();
+                    instructions(setts);
                     // Sai do programa após exibir as instruções
                     exit(0);
                 }
@@ -129,7 +119,7 @@ void home(void) {
         }
 
         // Atualiza as opções na tela
-        drawWindow(home_win, options, selectedOption, title);
+        drawWindow(home_win, options, selectedOption, title, MAX_OPTIONS, 0);
     }
     delwin(home_win);
     endwin();

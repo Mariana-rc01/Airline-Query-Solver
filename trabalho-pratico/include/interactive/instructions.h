@@ -23,8 +23,9 @@
 #ifndef INSTRUCTIONS_H
 #define INSTRUCTIONS_H
 
+#include "menuNdata/interactive.h"
 #include "interactive/home.h"
 
-void instructions(void);
+void instructions(SETTINGS setts);
 
 #endif

@@ -22,4 +22,18 @@
 #ifndef UTILS_I
 #define UTILS_I
 
+#include <ncurses.h>
+
+typedef struct button *BUTTONS;
+
+BUTTONS create_button(char* label, int x, int y);
+
+int get_x_B(BUTTONS button);
+
+int get_y_B(BUTTONS button);
+
+char* get_label_B(BUTTONS button);
+
+void drawWindow(WINDOW *win, BUTTONS* options, int selected, char* title, int n, int color);
+
 #endif

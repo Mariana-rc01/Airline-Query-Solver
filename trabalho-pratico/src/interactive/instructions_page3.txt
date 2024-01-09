@@ -1,9 +1,9 @@
 3
-Explicação detalhada de cada query e aqui vai aparecer menu deslizante
+Explicacao detalhada de cada query e aqui vai aparecer menu deslizante
 
 Query 1: Listar o resumo de um utilizador, voo, ou reserva, consoante o identificador recebido por argumento.
-E garantido que não existem identificadores repetidos entre as diferentes entidades.
-A query deverá retornar as seguintes informações:
+E garantido que nao existem identificadores repetidos entre as diferentes entidades.
+A query deverá retornar as seguintes informacoes:
 
 Utilizador
 (name,sex,age,country_code,number_of_flights,number_of_reservations,total_spent)
@@ -17,7 +17,7 @@ Reserva
 Query 2: Listar os voos ou reservas de um utilizador, se o segundo argumento for flights ou reservations,
 respetivamente, ordenados por data (da mais recente para a mais antiga). Caso não seja fornecido
 um segundo argumento, apresentar voos e reservas, juntamente com o tipo (flight ou reservation).
-Para os voos, date = schedule_departure_date (contudo, deverá ser descartada a componente das
+Para os voos, date = schedule_departure_date (contudo, devera ser descartada a componente das
 horas/minutos/segundos no output), enquanto que para as reservas, date = begin_date.
 Em caso de empate, ordenar pelo identificador (de forma crescente).
 

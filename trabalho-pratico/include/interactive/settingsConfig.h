@@ -1,6 +1,6 @@
 /**
- * @file home.h
- * @brief 
+ * @file settings.h
+ * @brief
  */
 
 /*
@@ -19,14 +19,14 @@
  *   limitations under the License.
  */
 
-#ifndef HOME_H
-#define HOME_H
+
+#ifndef SETTINGSCONFIG_H
+#define SETTINGSCONFIG_H
 
 #include "menuNdata/interactive.h"
+#include "interactive/home.h"
 #include "utils/utils_i.h"
-#include "interactive/settingsConfig.h"
-#include "interactive/instructions.h"
 
-void home(SETTINGS settings);
+void settingsConfig(SETTINGS setts);
 
 #endif

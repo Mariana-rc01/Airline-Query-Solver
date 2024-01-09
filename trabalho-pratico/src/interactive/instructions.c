@@ -52,7 +52,7 @@ void printLongText(WINDOW* win, int* text_y, int text_x, const char* text) {
 }
 
 
-void instructions(void){
+void instructions(SETTINGS setts){
     initscr();
     start_color();
     keypad(stdscr, TRUE);
@@ -141,7 +141,7 @@ void instructions(void){
                         wclear(win);
                         wrefresh(win);
                         endwin();
-                        home();
+                        home(setts);
                         exit(0);
                     }
                 }
@@ -165,7 +165,7 @@ void instructions(void){
                 wclear(win);
                 wrefresh(win);
                 endwin();
-                home();
+                home(setts);
                 exit(0);
                 break;
             default:

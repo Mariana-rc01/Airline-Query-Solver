@@ -24,9 +24,27 @@
 #define INTERACTIVE_H
 
 #include "catalogs/manager_c.h"
+
+typedef struct setting *SETTINGS;
+
 #include "interactive/home.h"
-#include "interactive/instructions.h"
+
+SETTINGS create_settings(void);
+
+void set_datasetPath_S(SETTINGS setts, char* path);
+
+void set_output_S(SETTINGS setts, int n);
+
+void set_nPages_S(SETTINGS setts, int n);
+
+void set_nOutputs_S(SETTINGS setts, int n);
+
+int get_output_S(SETTINGS setts);
+
+int get_nPages_S(SETTINGS setts);
+
+int get_nOutputs_S(SETTINGS setts);
 
 void interactive(void);
 
-#endif 
+#endif
