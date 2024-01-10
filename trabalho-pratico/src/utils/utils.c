@@ -239,18 +239,32 @@ int get_flight_delay(FLIGHT flight){
     return result;
 }
 
+int dates_timespan ( char* begin, char* end) {
+    int yearB, monthB, dayB, dayE, monthE, yearE;
+    int result = 0;
+    sscanf(begin,"%d/%d/%d",&yearB, &monthB, &dayB);
+    sscanf(end,"%d/%d/%d",&yearE, &monthE, &dayE);
+
+    free(begin);
+    free(end);
+    
+    result =  (dayE-dayB);
+    return (result);
+}
+
 int get_number_of_nights(RESERV reserv){
+    int yearB, monthB, dayB, dayE, monthE, yearE;
     char* begin = get_begin_date(reserv);
     char* end = get_end_date(reserv);
-    int yearB, monthB, dayB, dayE, monthE, yearE;
 
     sscanf(begin,"%d/%d/%d",&yearB, &monthB, &dayB);
     sscanf(end,"%d/%d/%d",&yearE, &monthE, &dayE);
 
     free(begin);
     free(end);
+    
+    return(dayE-dayB);
 
-    return (dayE - dayB);
 }
 
 char* int_to_string(int number){

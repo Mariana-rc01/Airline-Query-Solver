@@ -724,20 +724,282 @@ void* query6(MANAGER manager,char** args){
     return finalResult;
 }
 
-void* query7(MANAGER catalog,char** args){
-    (void) catalog;
+
+typedef struct {
+    char* name;
+    int* delays;
+    int n_delays;
+    int median;
+} AirportInfo2;
+
+int sort_airports2(const void* a, const void* b) {
+    AirportInfo2* f_a = (AirportInfo2*)a;
+    AirportInfo2* f_b = (AirportInfo2*)b;
+
+    // Compare number of passengers
+    int delay_compare = f_b->median - f_a->median;
+    if (delay_compare != 0) {
+        return delay_compare;
+    }
+
+    // If the number of passengers is the same, use airport name as a tiebreaker
+    int compare = strcmp(f_a->name, f_b->name);
+    return compare;
+}
+
+int findAirportPosition2(AirportInfo2* array, int size, const char* airport) {
+    for (int i = 0; i < size; i++) {
+        if (strcmp(array[i].name, airport) == 0) {
+            // The airport name was found in the array
+            return i;
+        }
+    }
+    // Airport name was not found in the array
+    return -1;
+}
+
+int calc_median(int* x, int N) {
+    int aux, i;
+    //sort
+    for (i = 0; i < N; i++) {
+        if (x[i] > x[i+1]) {
+            aux = x[i+1];
+            x[i+1] = x[i];
+            x[i] = aux;
+        }
+    }
+    return (x[N/2]);
+}
+//Listar o top N aeroportos com a maior mediana de atrasos.
+void* query7(MANAGER manager,char** args){
+    //guardar todas os atrasos num array para cada aeroporto e obter a mediana
+    printf("started");
+    int N = ourAtoi(args[0]);
+    FLIGHTS_C catalog = get_flights_c(manager); 
+    GHashTable* flights = get_hash_table_flight(catalog); 
+    int i = 0;
+    //int j;
+    int initialCapacity = 500; 
+    AirportInfo2* array = malloc(sizeof(AirportInfo2) * initialCapacity); 
+    int delay;
+    // Iterate over catalog reservations
+    GHashTableIter iter; 
+    gpointer key, value; 
+    g_hash_table_iter_init(&iter, flights); printf("did a thing");
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        FLIGHT flight = (FLIGHT) value;
+
+        char* airport = get_flight_origin(flight);
+        char* scheduled_date = get_flight_schedule_departure_date(flight);
+        char* real_date = get_flight_real_departure_date(flight);
+
+        //char* id_flight = get_flight_id(flight);
+        //int pass = get_flight_nPassengers(flight);
+        delay = calculate_flight_delay(scheduled_date, real_date);
+        int airportPosition = findAirportPosition2(array, i, airport);
+        if (airportPosition != -1){ 
+            //addDelay(AirportInfo2 airport, int delay); 
+            //j = array[airportPosition].n_delays;
+            array[airportPosition].delays[array[airportPosition].n_delays] = delay;
+            array[airportPosition].n_delays++;
+            }
+        else {
+            if (i >= initialCapacity) {
+                initialCapacity *= 2;
+                array = realloc(array, sizeof(AirportInfo2) * initialCapacity);
+                }
+            array[i].name = strdup(airport);
+            array[i].delays[0] = delay;
+            array[i].n_delays = 1;
+            i++;
+            }
+        free(airport);
+        free(scheduled_date);
+        free(real_date);
+    } 
+
+    for(i=0; array[i].name != NULL; i++) {
+        array[i].median = calc_median(array[i].delays, array[i].n_delays);
+    } 
+
+    qsort(array, i, sizeof(AirportInfo), sort_airports2); 
+
+    char** finalResult = malloc(sizeof(char*)*(N+1));
+    finalResult[0] = (i < N ? int_to_string(i) : int_to_string(N));
+    for (int j = 1; j < i+1 && j<N+1; j++) {
+        int total_size = snprintf(NULL, 0,"%s;%d", array[j-1].name,
+        array[j-1].median) + 1;
+
+        // Alocatte memory to a formatted string
+        char* formatted_string = malloc(total_size);
+
+        // Create fromatted string
+        snprintf(formatted_string, total_size, "%s;%d", array[j-1].name, array[j-1].median);
+
+        finalResult[j] = formatted_string;
+    } 
+
+    for(int j = 0; j < i; j++){
+        free(array[j].name);
+    }
+
+    free(array);
+
+    return finalResult;
+    /*
+    (void) manager;
+    (void) args;
+    return args;*/
+}
+
+int compare_dates_timeless(char* itemA, char* itemB) {
+    // Comparar anos
+    int yearA, monthA, dayA;
+    sscanf(itemA, "%d/%d/%d", &yearA, &monthA, &dayA);
+
+    int yearB, monthB, dayB;
+    sscanf(itemB, "%d/%d/%d", &yearB, &monthB, &dayB);
+
+    if (yearA != yearB){
+        return yearB - yearA;  // Sort by year in descending order
+    }
+
+    // Compare months
+    if (monthA != monthB){
+        return monthB - monthA;  // sort by month in descending order
+    }
+
+    // Compare days
+    return dayB - dayA;  // Sort days by descending order
+
+}
+
+
+/*Apresentar a receita total de um hotel entre duas datas (inclusive), a partir do seu identificador.
+As receitas de um hotel devem considerar apenas o preço por noite (price_per_night) de todas as
+reservas com noites entre as duas datas. E.g., caso um hotel tenha apenas uma reserva de 100€/noite
+de 2023/10/01 a 2023/10/10, e quisermos saber as receitas entre 2023/10/01 a 2023/10/02, deverá ser
+retornado 200€ (duas noites). Por outro lado, caso a reserva seja entre 2023/10/01 a 2023/10/02,
+deverá ser retornado 100€ (uma noite).*/
+
+void* query8(MANAGER manager, char** args){
+    char* hotel_id = strdup(args[0]);
+    RESERV_C catalog = get_reserv_c(manager);
+    int price, n_nights, result = 0;
+    char* begin = strdup(args[1]);
+    char* end = strdup(args[2]);
+    
+    GPtrArray* hotel_array = get_hotel_reserv_array_by_id(catalog, hotel_id);
+
+    if (hotel_array != NULL){
+        for (guint j = 0; j < hotel_array->len; j++) {
+            n_nights = 0;
+            char* reserv_id = g_ptr_array_index(hotel_array, j);
+            RESERV reservation = get_reservations_by_id(catalog, reserv_id);
+            char* begin_date = get_begin_date(reservation);
+            char* end_date = get_end_date(reservation);
+            price = get_price_per_night(reservation);
+            
+            if(compare_dates_timeless(end_date,begin) <= 0 && compare_dates_timeless(begin_date,end) >= 0) {
+                n_nights = 0;
+                char* test_begin = strdup((compare_dates_timeless(begin, begin_date) > 0) ? begin_date : begin);
+                char* test_end = strdup((compare_dates_timeless(end, end_date) > 0) ? end : end_date);                
+                if(strcmp(test_end, end)==0) {n_nights++;}
+                n_nights += dates_timespan(test_begin, test_end);
+                result+= (price * n_nights) ;
+            }
+            free(begin_date);
+            free(end_date);
+        }
+        
+    }
+    free(begin);
+    free(end);
+    free(hotel_id);
+    char* finalResult = int_to_string(result);
+
+    return finalResult;
+}
+
+
+typedef struct {
+    char* user;
+    char* user_id;
+} User_list;
+
+int sort_users(const void* a, const void* b) {
+    User_list* f_a = (User_list*)a;
+    User_list* f_b = (User_list*)b;
+
+    int result;
+
+    result = strcmp(f_a->user, f_b->user);
+    if(result == 0) {result = strcmp(f_a->user_id, f_b->user_id);}
+    return result;
+}
+
+
+
+void* query9(MANAGER manager,char** args) {
+    /*USERS_C catalog = get_users_c(manager);
+    GHashTable* users= get_hash_table_users(catalog);
+    GHashTableIter iter;
+    gpointer key, value;
+    char* prefix = args[0];
+    int i = 0; 
+    int initialCapacity = 500;
+    
+    User_list* user_list = malloc(sizeof(User_list) * initialCapacity);
+    g_hash_table_iter_init(&iter, users);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
+        USER entity = (USER) value;
+        char* user = get_user_name(entity);
+        char* user_status = get_user_account_status(entity);
+        if (strncmp(prefix, user, strlen(prefix)) == 0 && strcmp(user_status, "INACTIVE") != 0){
+            char* user_id = get_user_id(entity);
+            if (i >= initialCapacity) {
+                    initialCapacity *= 2;
+                    user_list = realloc(user_list, sizeof(User_list) * initialCapacity);
+                }
+            user_list[i].user = user;
+            user_list[i].user_id = user_id;
+            i++;
+            free(user_id);            
+        }
+        free(user);
+        free(user_status);
+    }
+
+    qsort(user_list, i, sizeof(User_list), sort_users);
+
+    char** finalResult = malloc(sizeof(char*)*(i+1));
+    finalResult[0] = int_to_string(i);
+    for (int j = 1; j < i+1 && j<i+1; j++) {
+        int total_size = snprintf(NULL, 0,"%s;%s", user_list[j-1].user_id,
+        user_list[j-1].user) + 1;
+
+        // Alocatte memory to a formatted string
+        char* formatted_string = malloc(sizeof(char*)*total_size);
+
+        // Create fromatted string
+        snprintf(formatted_string, total_size, "%s;%s", user_list[j-1].user_id, user_list[j-1].user);
+
+        finalResult[j] = formatted_string;
+    }
+
+    for(int j = 0; j < i; j++){
+        free(user_list[j].user_id);
+        free(user_list[j].user);
+    }
+
+    free(user_list);
+
+    return finalResult;*/
+    (void) manager;
+    (void) args;
     return args;
 }
 
-void* query8(MANAGER catalog,char** args){
-    (void) catalog;
-    return args;
-}
-
-void* query9(MANAGER catalog,char** args) {
-    (void) catalog;
-    return args;
-}
 
 void* query10(MANAGER catalog,char** args){
     (void) catalog;
@@ -823,14 +1085,36 @@ void free_query6(void* result){
 }
 
 void free_query7(void* result){
+    /*    if (result == NULL) {
+        return;
+    }
+    char** resultF = (char**) result;
+    int n = ourAtoi(resultF[0]);
+    for (int i = 0; i < n+1; i++) {
+        free(resultF[i]);
+    }
+    free(resultF);*/
     (void) result;
 }
 
 void free_query8(void* result){
-    (void) result;
+    if (result == NULL) {
+    return;
+    }
+    char** resultF = (char**) result;
+    free(resultF);
 }
 
 void free_query9(void* result) {
+    /*    if (result == NULL) {
+        return;
+    }
+    char** resultF = (char**) result;
+    int n = ourAtoi(resultF[0]);
+    for (int i = 0; i < n+1; i++) {
+        free(resultF[i]);
+    }
+    free(resultF);*/
     (void) result;
 }
 

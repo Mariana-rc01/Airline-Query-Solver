@@ -44,6 +44,7 @@ struct reservations {
     char* includes_breakfast; /**< Information about breakfast inclusion. */
     char* rating; /**< Rating associated with the reservation. */
     double cost; /**< Cost of the reservation. */
+    int price_per_night; /**<Price of a single of the reservation*/
 };
 
 RESERV create_reservation(void){
@@ -59,6 +60,7 @@ RESERV create_reservation(void){
     new->includes_breakfast = NULL;
     new->rating = NULL;
     new->cost = 0;
+    new->price_per_night = 0;
 
     return new;
 }
@@ -104,6 +106,9 @@ void set_rating(RESERV res, char* ratin){
 void set_cost(RESERV res, double cost){
     res->cost = cost;
 }
+void set_price_per_night(RESERV res, int ppn){
+    res->price_per_night = ppn;
+}
 
 char* get_reservation_id(RESERV res){
     return strdup(res->id);
@@ -145,6 +150,10 @@ char* get_rating(RESERV res){
 
 double get_cost(RESERV res){
     return (res->cost);
+}
+
+int get_price_per_night(RESERV res){
+    return (res->price_per_night);
 }
 
 void free_reservations(RESERV res){
@@ -212,6 +221,7 @@ int build_reservations(char** reservations_fields, void* catalog){
     int nNights = ourAtoi(endD) - ourAtoi(beginD);
 
     int price_per_night = ourAtoi(reservations_fields[9]);
+    set_price_per_night(res, price_per_night);
     int city_tax = ourAtoi(reservations_fields[5]);
     cost = price_per_night * nNights + ((price_per_night * nNights) / (double)100) * city_tax;
     set_cost(res,cost);
