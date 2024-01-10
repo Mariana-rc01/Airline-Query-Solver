@@ -22,13 +22,30 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "catalogs/manager_c.h"
 #include "entities/flights.h"
+#include "entities/passengers.h"
+#include "entities/users.h"
 #include "entities/reservations.h"
+#include "IO/parser.h"
 
 #include <glib.h>
 #include <stdio.h>
 
 #define SYSTEM_DATE "2023/10/01"
+
+/**
+ * @brief Sets up the catalog using input files and parses data into catalogs.
+ *
+ * This function initializes the catalog and statistics, reads and parses data from CSV files,
+ * and write the information to each catalog.
+ * It also checks for errors during parsing and creates error files if needed.
+ *
+ * @param manager_catalog The catalog manager conataing a catalog for each entity type(users, flights, reservations and passengers).
+ * @param path1 The path  to the folder containing input CSV files.
+ * @return 0 on success, -1 on failure.
+ */
+int set_catalogs(MANAGER manager_catalog, char* path1);
 
 /**
  * @brief Verifies if a character is a digit
@@ -37,6 +54,8 @@
  * @return Bool
  */
 int isDigit(char c);
+
+int isNumber(const char* str);
 
 /**
  * @brief Verifies if a character is a letter

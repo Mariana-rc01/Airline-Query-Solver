@@ -26,6 +26,7 @@
 #include "menuNdata/interactive.h"
 #include "interactive/home.h"
 #include "utils/utils_i.h"
+#include "utils/utils.h"
 
 void settingsConfig(SETTINGS setts);
 

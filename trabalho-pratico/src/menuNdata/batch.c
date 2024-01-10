@@ -26,67 +26,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-int set_catalogs(MANAGER manager_catalog, char* path1){
-    FILE *flights_file, *passengers_file, *users_file, *reservations_file;
-    FILE *flights_error_file, *passengers_error_file, *users_error_file, *reservations_error_file;
-
-    char* flight_path = concat(path1, "/flights.csv");
-    flights_file = fopen(flight_path, "r");
-
-    char* passenger_path = concat(path1, "/passengers.csv");
-    passengers_file = fopen(passenger_path, "r");
-
-    char* user_path = concat(path1, "/users.csv");
-    users_file = fopen(user_path, "r");
-
-    char* reservation_path = concat(path1, "/reservations.csv");
-    reservations_file = fopen(reservation_path, "r");
-
-    flights_error_file = fopen("Resultados/flights_errors.csv", "w");
-    passengers_error_file = fopen("Resultados/passengers_errors.csv", "w");
-    users_error_file = fopen("Resultados/users_errors.csv", "w");
-    reservations_error_file = fopen("Resultados/reservations_errors.csv", "w");
-
-    USERS_C users = get_users_c(manager_catalog);
-    parseF(users_file, 12, build_user, users, users_error_file);
-
-    FLIGHTS_C flights = get_flights_c(manager_catalog);
-    parseF(flights_file, 13, build_flight, flights, flights_error_file);
-    parseF(reservations_file, 14, build_reservations, manager_catalog, reservations_error_file);
-    parseF(passengers_file, 2, build_passengers, manager_catalog, passengers_error_file);
-
-    free(flight_path);
-    free(passenger_path);
-    free(user_path);
-    free(reservation_path);
-
-    fclose(flights_file);
-    fclose(passengers_file);
-    fclose(users_file);
-    fclose(reservations_file);
-
-    // Verifies if the error files contain any data
-    if (isFileEmpty(flights_error_file)) {
-        remove("flights_errors.csv");
-    }
-    if (isFileEmpty(passengers_error_file)) {
-        remove("passengers_errors.csv");
-    }
-    if (isFileEmpty(users_error_file)) {
-        remove("users_errors.csv");
-    }
-    if (isFileEmpty(reservations_error_file)) {
-        remove("reservations_errors.csv");
-    }
-
-    fclose(flights_error_file);
-    fclose(passengers_error_file);
-    fclose(users_error_file);
-    fclose(reservations_error_file);
-
-    return 0;
-}
-
 void batch (char* path1, char* path2){
 
     USERS_C users_catalog = create_user_c();

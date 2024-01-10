@@ -22,7 +22,6 @@
 #define RESERVATIONS_C_H
 
 #include "entities/reservations.h"
-#include "utils/utils.h"
 
 #include <glib.h>
 
@@ -31,6 +30,8 @@
  * @brief A pointer to a reservations catalog.
  */
 typedef struct reservations_catalog *RESERV_C;
+
+#include "utils/utils.h"
 
 /**
  * @brief Creates a new reservations catalog.

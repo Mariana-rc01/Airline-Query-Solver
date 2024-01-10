@@ -33,17 +33,27 @@ SETTINGS create_settings(void);
 
 void set_datasetPath_S(SETTINGS setts, char* path);
 
+void set_changedPath_S(SETTINGS setts, int n);
+
 void set_output_S(SETTINGS setts, int n);
 
 void set_nPages_S(SETTINGS setts, int n);
 
 void set_nOutputs_S(SETTINGS setts, int n);
 
+void set_catalog_S(SETTINGS setts);
+
+char* get_datasetPath_S(SETTINGS setts);
+
+int get_changedPath_S(SETTINGS setts);
+
 int get_output_S(SETTINGS setts);
 
 int get_nPages_S(SETTINGS setts);
 
 int get_nOutputs_S(SETTINGS setts);
+
+MANAGER get_catalog_S(SETTINGS setts);
 
 void interactive(void);
 

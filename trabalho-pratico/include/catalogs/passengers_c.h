@@ -22,8 +22,6 @@
 #ifndef PASSENGERS_C_H
 #define PASSENGERS_C_H
 
-#include "entities/passengers.h"
-#include "utils/utils.h"
 
 #include <glib.h>
 
@@ -33,7 +31,7 @@
  */
 typedef struct passengers_catalog *PASS_C;
 
-#include "entities/passengers.h"
+#include "utils/utils.h"
 
 /**
  * @brief Creates a new passengers catalog.

@@ -26,29 +26,13 @@
 #include <ncurses.h>
 #include <string.h>
 
-/*
-O que é preciso fazer aqui:
-done - desenhar box de settings
-done - dataset configuration -> menuflutuante1
-done - output configuration -> botões com opções
-- na opção per page -> menuflutuante2
-done - [RUN] [Go Back]
-done - menuflutuante1 - insere a path
-- menuflutuante2 - insere o nº de páginas ou o nº de outputs por página
-
-- ao clicar em RUN -> verificar se existem os ficheiros csv's com a path dada e se nao tiverem
-diz para corrigir ou usar o default
-quando clica em RUN se der tudo okay, preenche os catálogos, apagando possíveis preenchimentos
-que lá estejam caso a path tenha sido mudada apenas, só se changedPath estiver a 1
-*/
-
 #include "interactive/settingsConfig.h"
 
 #include <stdio.h>
 #include <ncurses.h>
 #include <string.h>
 
-#define MAX_OPTIONS 6
+#define MAX_OPTIONS 7
 
 // Defina o número máximo de opções do menu flutuante
 #define MAX_FLOAT_MENU_OPTIONS 3
@@ -70,40 +54,6 @@ void destroyFloatMenu(WINDOW* floatWin) {
     delwin(floatWin);
 }
 
-#include <ctype.h>
-
-void menuFloat2(SETTINGS settings) {
-    int selectedOption = 0;
-    (void) settings;
-
-    WINDOW* floatWin = newwin(MAX_FLOAT_MENU_OPTIONS + 3, 55, 5, 4);
-    BUTTONS floatMenu2[3] = {
-        create_button("Number of Pages: ", 1, 2),
-        create_button("Number of Outputs per Page: ", 2, 3),
-        create_button("[Save & Go Back]", 35, 4),
-    };
-
-    drawFloatMenu(floatWin, "Per Page", floatMenu2, 3);
-
-    int ch;
-
-    while ((ch = wgetch(floatWin)) != 27) {
-        switch (ch) {
-            case KEY_UP:
-                selectedOption = (selectedOption - 1 + 3) % 3;
-                break;
-            case KEY_DOWN:
-                selectedOption = (selectedOption + 1) % 3;
-                break;
-            case '\n':
-                break;
-        }
-
-        // Atualiza as opções na tela
-        drawFloatMenu(floatWin, "Output Configuration", floatMenu2, 3);
-    }
-}
-
 void settingsConfig(SETTINGS settings){
     initscr();
     cbreak();
@@ -114,7 +64,7 @@ void settingsConfig(SETTINGS settings){
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
 
-    WINDOW* win = newwin(23,55,0,0);
+    WINDOW* win = newwin(20,55,0,0);
     refresh();
 
     MEVENT event;
@@ -125,9 +75,10 @@ void settingsConfig(SETTINGS settings){
         create_button("Select Dataset Path",2,3),
         create_button("TXT Format",2,7),
         create_button("One by one",2,9),
-        create_button("Per Page",2,11),
-        create_button("[Run]",2,13),
-        create_button("[Go Back]",55-strlen("[Go Back]")-2,13)
+        create_button("Number of pages",2,11),
+        create_button("Outputs per page",2,13),
+        create_button("[Run]",2,15),
+        create_button("[Go Back]",55-strlen("[Go Back]")-2,15)
     };
 
     BUTTONS config[2] ={
@@ -143,7 +94,9 @@ void settingsConfig(SETTINGS settings){
     }
     drawWindow(win, options, selectedOption, title, MAX_OPTIONS, color);
 
-    while ((ch = getch()) != 27){
+
+    while (1){
+        ch = getch();
         switch (ch){
             case KEY_MOUSE:
                 if (getmouse(&event) == OK) {
@@ -176,11 +129,12 @@ void settingsConfig(SETTINGS settings){
                 if (strcmp(option, "Select Dataset Path") == 0){
                     //Menu flutuante 1
                     WINDOW* floatWin = newwin(MAX_FLOAT_MENU_OPTIONS + 3, 55, 5, 4);
-                    BUTTONS floatMenu1[2] ={
+                    BUTTONS floatMenu1[3] ={
                         create_button("Insert Path: $/", 1,2),
+                        create_button("Default path: \".\"", 1,4),
                         create_button("[Save & Go Back]", 35,4)
                     };
-                    drawFloatMenu(floatWin, "Dataset Path", floatMenu1, 2);
+                    drawFloatMenu(floatWin, "Dataset Path", floatMenu1, 3);
 
                     char path[1025];
 
@@ -192,6 +146,8 @@ void settingsConfig(SETTINGS settings){
 
                     curs_set(0); // Esconde o cursor
                     noecho();    // Desabilita a exibição do texto digitado
+
+                    set_changedPath_S(settings,1);
 
                     destroyFloatMenu(floatWin);
                 }
@@ -206,19 +162,112 @@ void settingsConfig(SETTINGS settings){
                     color = 2;
                 }
 
-                if (strcmp(option, "Per Page") == 0){
+                if (strcmp(option, "Number of pages") == 0){
                     //Menu flutuante 2 e seleciona Per Page
                     set_output_S(settings,3);
-                    menuFloat2(settings);
                     color = 3;
+                    WINDOW* floatWin = newwin(MAX_FLOAT_MENU_OPTIONS + 3, 55, 5, 4);
+                    BUTTONS floatMenu1[2] ={
+                        create_button("Insert Number of pages: ", 1,2),
+                        create_button("[Save & Go Back]", 35,4)
+                    };
+                    drawFloatMenu(floatWin, "Number of pages", floatMenu1, 2);
+
+                    char number[1025] = "a";
+
+                    while (!isNumber(number) || ourAtoi(number) == 0){
+
+                        curs_set(1); // Mostra o cursor
+                        echo();      // Habilita a exibição do texto digitado
+
+                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 25, number, 1024);
+
+                        // Verifica se a string contém apenas números
+                        if (!isNumber(number) || ourAtoi(number) == 0) {
+                            // Exibe uma mensagem de erro e não permite salvar
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
+                            refresh();
+                        } else {
+                            set_nPages_S(settings, ourAtoi(number));
+                        }
+
+                        curs_set(0); // Esconde o cursor
+                        noecho();    // Desabilita a exibição do texto digitado
+
+                    }
+
+                    drawFloatMenu(floatWin, "Number of pages", floatMenu1, 2);
+
+                    destroyFloatMenu(floatWin);
+                }
+
+                if (strcmp(option, "Outputs per page") == 0){
+                    //Menu flutuante 2 e seleciona outputs Per Page
+                    set_output_S(settings,4);
+                    color = 4;
+
+                    WINDOW* floatWin = newwin(MAX_FLOAT_MENU_OPTIONS + 3, 55, 5, 4);
+                    BUTTONS floatMenu1[2] ={
+                        create_button("Insert number of outputs per pages: ", 1,2),
+                        create_button("[Save & Go Back]", 35,4)
+                    };
+                    drawFloatMenu(floatWin, "Number of Outputs", floatMenu1, 2);
+
+                    char number[1025] = "a";
+
+                    while (!isNumber(number) || ourAtoi(number) == 0){
+
+                        curs_set(1); // Mostra o cursor
+                        echo();      // Habilita a exibição do texto digitado
+
+                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 36, number, 1024);
+
+                        // Verifica se a string contém apenas números
+                        if (!isNumber(number) || ourAtoi(number) == 0) {
+                            // Exibe uma mensagem de erro e não permite salvar
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
+                            refresh();
+                        } else {
+                            set_nOutputs_S(settings, ourAtoi(number));
+                        }
+
+                        curs_set(0); // Esconde o cursor
+                        noecho();    // Desabilita a exibição do texto digitado
+
+                    }
+
+                    drawFloatMenu(floatWin, "Number of Outputs", floatMenu1, 2);
+
+                    destroyFloatMenu(floatWin);
                 }
 
                 if (strcmp(option, "[Run]") == 0){
-                    werase(win);
-                    wrefresh(win);
-                    endwin();
-                    home(settings);
-                    exit(0);
+                    int verify = verify_datasetPath(get_datasetPath_S(settings));
+                    if (!verify) {
+                        WINDOW* floatWin = newwin(MAX_FLOAT_MENU_OPTIONS + 3, 40, 5, 4);
+                        BUTTONS floatMenu1[2] ={
+                        create_button("Invalid dataset path! Try again :)", 1,2),
+                        create_button("[Go Back]", 29,4)
+                        };
+                        drawFloatMenu(floatWin, "Error", floatMenu1, 2);
+                        getch();
+                        destroyFloatMenu(floatWin);
+                    }
+                    else{
+                        if (get_changedPath_S(settings) == 1){
+                            free_manager_c(get_catalog_S(settings));
+                            set_catalog_S(settings);
+                            char* path = get_datasetPath_S(settings);
+                            set_catalogs(get_catalog_S(settings), path);
+                            set_changedPath_S(settings,0);
+                            free(path);
+                        }
+                        werase(win);
+                        wrefresh(win);
+                        endwin();
+                        home(settings);
+                        exit(0);
+                    }
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){

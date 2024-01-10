@@ -36,20 +36,6 @@
 #include "utils/utils.h"
 #include "IO/interpreter.h"
 
-
-/**
- * @brief Sets up the catalog using input files and parses data into catalogs.
- *
- * This function initializes the catalog and statistics, reads and parses data from CSV files,
- * and write the information to each catalog.
- * It also checks for errors during parsing and creates error files if needed.
- *
- * @param manager_catalog The catalog manager conataing a catalog for each entity type(users, flights, reservations and passengers).
- * @param path1 The path  to the folder containing input CSV files.
- * @return 0 on success, -1 on failure.
- */
-int set_catalogs(MANAGER manager_catalog, char* path1);
-
 /**
  * @brief Performs batch processing by setting up the catalog and executing queries.
  *

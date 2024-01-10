@@ -133,9 +133,11 @@ void instructions(SETTINGS setts){
                 if (ch == KEY_MOUSE && getmouse(&event) == OK) {
                     if (event.x == 2 && event.y == max_y - 2) {
                         current_text = (current_text + 1 + max_texts) % max_texts - 1;
+                        text_offset = 0;
                     }
                     else if (event.x == 4 && event.y == max_y - 2){
                         current_text = (current_text - 2 + max_texts) % max_texts + 1;
+                        text_offset = 0;
                     }
                     else {
                         wclear(win);
@@ -148,9 +150,11 @@ void instructions(SETTINGS setts){
                 else break;
             case KEY_LEFT:
                 current_text = (current_text - 2 + max_texts) % max_texts + 1;
+                text_offset = 0;
                 break;
             case KEY_RIGHT:
                 current_text = (current_text) % max_texts + 1;
+                text_offset = 0;
                 break;
             case KEY_UP:
                 if (text_offset > 0) {

@@ -22,15 +22,15 @@
 #ifndef MANAGER_C_H
 #define MANAGER_C_H
 
-#include "catalogs/flights_c.h"
-#include "catalogs/users_c.h"
-#include "catalogs/passengers_c.h"
-#include "catalogs/reservations_c.h"
-
 /**
  * @brief A manager catalog structure that contains various related catalogs.
  */
 typedef struct manager_catalog *MANAGER;
+
+#include "catalogs/flights_c.h"
+#include "catalogs/users_c.h"
+#include "catalogs/passengers_c.h"
+#include "catalogs/reservations_c.h"
 
 /**
  * @brief Create a new manager catalog.

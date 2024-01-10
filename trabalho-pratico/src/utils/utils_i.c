@@ -64,7 +64,7 @@ void drawWindow(WINDOW *win, BUTTONS* options, int selected, char* title, int n,
         mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",get_label_B(options[i]));
     }
 
-    if (color >= 1 && color <= 3){
+    if (color >= 1 && color <= 4){
         // Destaca a opção selecionada
         wattron(win, A_BOLD | COLOR_PAIR(1) | A_REVERSE); // Ativa a inversão de cores (para destacar)
         mvwprintw(win, get_y_B(options[color]), get_x_B(options[color]), "%s", get_label_B(options[color]));
@@ -78,4 +78,20 @@ void drawWindow(WINDOW *win, BUTTONS* options, int selected, char* title, int n,
 
     // Atualiza a tela
     wrefresh(win);
+}
+
+int verify_datasetPath(char* path){
+    char filePath[2048];
+    char* filenames[4] = {"flights.csv","passengers.csv","users.csv","reservations.csv"};
+
+    for(int i = 0; i < 4; i++){
+        snprintf(filePath, sizeof(filePath), "%s/%s", path, filenames[i]);
+        FILE *file = fopen(filePath, "r");
+        if (!file){
+            return 0; // Arquivo não encontrado
+        }
+        fclose(file);
+    }
+
+    return 1; // Arquivo encontrado
 }
