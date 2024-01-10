@@ -26,12 +26,6 @@
 #include <ncurses.h>
 #include <string.h>
 
-#include "interactive/settingsConfig.h"
-
-#include <stdio.h>
-#include <ncurses.h>
-#include <string.h>
-
 #define MAX_OPTIONS 7
 
 // Defina o número máximo de opções do menu flutuante

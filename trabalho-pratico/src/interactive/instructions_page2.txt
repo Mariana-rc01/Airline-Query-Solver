@@ -1,4 +1,6 @@
 
+---        ---        --- Page 2 ---        ---        --- 
+
 Our goal was to ensure that the service would be as easy to 
 navigate as possible. 
 As you've likely noticed, the home page consists of three 
@@ -21,12 +23,20 @@ to run the system.
 
 Now, let's delve into the Settings:
 
-IV) Dataset Path: It is essential to provide the path to the 
-folder containing the dataset files (ESPECIFICAR FILES?). 
+IV) Dataset Path: It is recommended to provide the path to 
+the folder containing the dataset with the files 
+Users, Flights, Passengers, Reservations. 
 After entering the path, you can save your selection and 
 modify it as needed. 
 Our service is ready to efficiently populate the catalogs 
 with the correct data.
+Note that if no dataset path is inserted, we provide a
+default alternative.
+
+Warning: If by any chance the user selected the option to
+insert the path and decided to use the default 
+alternative anyway, it may be required to insert the default 
+path manually if any special key was pressed.
 
 V) Output Format: Choose the desired output format.
 The selected option will be highlighted by a blue box. 
@@ -46,4 +56,6 @@ The selected option will be highlighted by a blue box.
     
 Once satisfied with the selected settings, 
 the user can proceed to run the Solver.
+
+
 

@@ -1,21 +1,28 @@
+
+---        ---        --- Page 3 ---        ---        --- 
+
 Query 1: List the summary of a user, flight, or reservation 
 based on the received identifier as an argument. It is 
 guaranteed that there are no repeated identifiers among 
 different entities. The query should return the following 
 information:
 
-        User
-        (name, sex, age, country_code, number_of_flights,
-        number_of_reservations, total_spent)
+        Input:
+         1 <ID>
 
-        Flight
-        (airline, plane_model, origin, destination, 
-        schedule_departure_date, schedule_arrival_date, 
-        passengers, delay)
+        Output:
+         User
+         (name, sex, age, country_code, number_of_flights,
+         number_of_reservations, total_spent)
 
-        Reservation
-        (hotel_id, hotel_name, hotel_stars, begin_date, 
-        end_date, includes_breakfast, nights, total_price)
+         Flight
+         (airline, plane_model, origin, destination, 
+         schedule_departure_date, schedule_arrival_date, 
+         passengers, delay)
+
+         Reservation
+         (hotel_id, hotel_name, hotel_stars, begin_date, 
+         end_date, includes_breakfast, nights, total_price)
 
 Query 2: List the flights or reservations of a user, 
 if the second argument is flights or reservations, 
@@ -28,13 +35,29 @@ the hours/minutes/seconds in the output), while for
 reservations, date = begin_date. In case of a tie, sort 
 by identifier (in ascending order).
 
+        Input:
+         2 <ID> [flights|reservations]
+
+        Output:
+         id;date[;type]
+
 Query 3: Present the average rating of a hotel 
 based on its identifier.
+
+        Input:
+         3 <ID>
+        Output:
+         rating
 
 Query 4: List the reservations of a hotel, sorted by 
 start date (from the most recent to the oldest). 
 If two reservations have the same date, use the 
 reservation identifier as a tiebreaker (in ascending order).
+
+        Input:
+         4 <ID>
+        Output:
+         id;begin_date;end_date;user_id;rating;total_price
 
 Query 5: List the flights departing from a given airport 
 between two dates, sorted by estimated departure date 
@@ -45,11 +68,22 @@ departure date is between <begin_date> and
 date, use the flight identifier as a tiebreaker 
 (ascending order).
 
+        Input:
+         5 <Name> <Begin_date> <End_date>
+        Output:
+         id;schedule_departure_date;destination;
+         airline;plane_model
+
 Query 6: List the top N airports with the most 
 passengers for a given year. Flights with estimated 
 departure dates in that year should be considered. If two 
 airports have the same value, use the airport name 
 as a tiebreaker (ascending order).
+
+        Input:
+         6 <Year> <N>
+        Output:
+         name;passengers
 
 Query 7: List the top N airports with the highest
 median delays. Delays at an airport are calculated
@@ -58,6 +92,11 @@ departure date for flights departing from that airport.
 The delay value should be presented in seconds. If two 
 airports have the same median, use the airport name 
 as a tiebreaker (ascending order).
+
+        Input:
+         7 <N>
+        Output:
+         name;median
 
 Query 8: Present the total revenue of a hotel between 
 two dates (inclusive) based on its identifier. The hotel's 
@@ -71,11 +110,21 @@ to 2023/10/10, and we want to know the revenue between
 2023/10/01 and 2023/10/02, it should return 
 100Eur (one night).
 
+        Input:
+         8 <Id> <Begin_date> <End_date>
+        Output:
+         revenue
+
 Query 9: List all users whose names start with the prefix 
 passed as an argument, sorted by name (in ascending order). 
 If two users have the same name, use their identifier 
 as a tiebreaker (ascending order). 
 Inactive users should not be considered in the search.
+
+        Input:
+         9 <Prefix>
+        Output:
+         id;name
 
 Query 10: Present various general metrics of the 
 application. The considered metrics are: the number 
@@ -94,6 +143,10 @@ data for that yearand month aggregated by day. The output
 should be sorted in ascending order according to 
 the year/month/day.
 
+        Input:
+         10 [year [month]]
+        Output:
+         (year|month|day);users;flights;passengers;
+         unique_passengers;reservations
 
 
-Será necessário especificar aqui o comando e o output correto também?
