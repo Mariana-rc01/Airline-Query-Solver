@@ -772,7 +772,7 @@ int calc_median(int* x, int N) {
 }
 //Listar o top N aeroportos com a maior mediana de atrasos.
 void* query7(MANAGER manager,char** args){
-    //guardar todas os atrasos num array para cada aeroporto e obter a mediana
+    /*//guardar todas os atrasos num array para cada aeroporto e obter a mediana
     printf("started");
     int N = ourAtoi(args[0]);
     FLIGHTS_C catalog = get_flights_c(manager); 
@@ -846,10 +846,10 @@ void* query7(MANAGER manager,char** args){
     free(array);
 
     return finalResult;
-    /*
+    */
     (void) manager;
     (void) args;
-    return args;*/
+    return args;
 }
 
 int compare_dates_timeless(char* itemA, char* itemB) {
