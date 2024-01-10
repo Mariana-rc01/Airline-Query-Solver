@@ -36,7 +36,7 @@ struct setting {
 SETTINGS create_settings(void){
     SETTINGS new = malloc(sizeof(struct setting));
     new->datasetPath = ".";
-    new->changedPath = 0;
+    new->changedPath = 2;
     new->output = 1;
     new->nPages = 0;
     new->nOutputs = 0;

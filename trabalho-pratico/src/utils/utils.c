@@ -264,3 +264,11 @@ char* double_to_string(double number){
     snprintf(result, 20, "%.3f", number);
     return result;
 }
+
+int has_spaces(char* str){
+    while (*str) {
+        if (*str == ' ') return 1;
+        str++;
+    }
+    return 0;
+}

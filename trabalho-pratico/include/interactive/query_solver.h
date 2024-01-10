@@ -1,6 +1,6 @@
 /**
- * @file settings.h
- * @brief
+ * @file query_solver.h
+ * @brief 
  */
 
 /*
@@ -19,15 +19,38 @@
  *   limitations under the License.
  */
 
-
-#ifndef SETTINGSCONFIG_H
-#define SETTINGSCONFIG_H
+#ifndef QUERY_SOLVER_H
+#define QUERY_SOLVER_H
 
 #include "menuNdata/interactive.h"
-#include "interactive/home.h"
 #include "utils/utils_i.h"
-#include "utils/utils.h"
+#include "interactive/settings_config.h"
+#include "interactive/instructions.h"
+#include "interactive/query_result.h"
+#include "menuNdata/queries.h"
 
-void settingsConfig(SETTINGS setts);
+typedef void (*query_window_func)(SETTINGS);
+
+void solver(SETTINGS settings);
+
+void query1W(SETTINGS setts);
+
+void query2W(SETTINGS setts);
+
+void query3W(SETTINGS setts);
+
+void query4W(SETTINGS setts);
+
+void query5W(SETTINGS setts);
+
+void query6W(SETTINGS setts);
+
+void query7W(SETTINGS setts);
+
+void query8W(SETTINGS setts);
+
+void query9W(SETTINGS setts);
+
+void query10W(SETTINGS setts);
 
 #endif

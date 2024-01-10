@@ -1,5 +1,5 @@
 /**
- * @file home.h
+ * @file query_result.h
  * @brief 
  */
 
@@ -19,14 +19,15 @@
  *   limitations under the License.
  */
 
-#ifndef HOME_H
-#define HOME_H
+#ifndef QUERY_RESULT_H
+#define QUERY_RESULT_H
 
 #include "menuNdata/interactive.h"
 #include "utils/utils_i.h"
 #include "interactive/settings_config.h"
 #include "interactive/instructions.h"
+#include "interactive/query_solver.h"
 
-void home(SETTINGS settings);
+void query_results(SETTINGS settings, int id, void* output);
 
 #endif

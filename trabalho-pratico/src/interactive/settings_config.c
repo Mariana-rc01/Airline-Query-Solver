@@ -19,7 +19,7 @@
  *   limitations under the License.
  */
 
-#include "interactive/settingsConfig.h"
+#include "interactive/settings_config.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -30,23 +30,6 @@
 
 // Defina o número máximo de opções do menu flutuante
 #define MAX_FLOAT_MENU_OPTIONS 3
-
-void drawFloatMenu(WINDOW* floatWin, char* title, BUTTONS* options, int n) {
-    box(floatWin, 0, 0);
-    mvwprintw(floatWin, 0, 1, "%s", title);
-
-    for (int i = 0; i < n; i++) {
-        mvwprintw(floatWin, get_y_B(options[i]), get_x_B(options[i]), "%s", get_label_B(options[i]));
-    }
-
-    wrefresh(floatWin);
-}
-
-void destroyFloatMenu(WINDOW* floatWin) {
-    werase(floatWin);
-    wrefresh(floatWin);
-    delwin(floatWin);
-}
 
 void settingsConfig(SETTINGS settings){
     initscr();
@@ -256,10 +239,17 @@ void settingsConfig(SETTINGS settings){
                             set_changedPath_S(settings,0);
                             free(path);
                         }
+                        if (get_changedPath_S(settings) == 2){
+                            set_catalog_S(settings);
+                            char* path = get_datasetPath_S(settings);
+                            set_catalogs(get_catalog_S(settings), path);
+                            set_changedPath_S(settings,0);
+                            free(path);
+                        }
                         werase(win);
                         wrefresh(win);
                         endwin();
-                        home(settings);
+                        solver(settings);
                         exit(0);
                     }
                 }

@@ -95,3 +95,20 @@ int verify_datasetPath(char* path){
 
     return 1; // Arquivo encontrado
 }
+
+void drawFloatMenu(WINDOW* floatWin, char* title, BUTTONS* options, int n) {
+    box(floatWin, 0, 0);
+    mvwprintw(floatWin, 0, 1, "%s", title);
+
+    for (int i = 0; i < n; i++) {
+        mvwprintw(floatWin, get_y_B(options[i]), get_x_B(options[i]), "%s", get_label_B(options[i]));
+    }
+
+    wrefresh(floatWin);
+}
+
+void destroyFloatMenu(WINDOW* floatWin) {
+    werase(floatWin);
+    wrefresh(floatWin);
+    delwin(floatWin);
+}

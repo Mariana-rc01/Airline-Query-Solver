@@ -38,4 +38,8 @@ void drawWindow(WINDOW *win, BUTTONS* options, int selected, char* title, int n,
 
 int verify_datasetPath(char* path);
 
+void drawFloatMenu(WINDOW* floatWin, char* title, BUTTONS* options, int n);
+
+void destroyFloatMenu(WINDOW* floatWin);
+
 #endif
