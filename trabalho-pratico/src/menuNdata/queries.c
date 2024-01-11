@@ -767,19 +767,19 @@ int compare_ints(gconstpointer a, gconstpointer b) {
 void* query7(MANAGER manager,char** args){
     //guardar todas os atrasos num array para cada aeroporto e obter a mediana
     int N = ourAtoi(args[0]);
-    FLIGHTS_C catalog = get_flights_c(manager); 
-    GHashTable* flights = get_hash_table_flight(catalog); 
+    FLIGHTS_C catalog = get_flights_c(manager);
+    GHashTable* flights = get_hash_table_flight(catalog);
     int i = 0;
-    int initialCapacity = 500; 
-    AirportInfo2* array = malloc(sizeof(AirportInfo2) * initialCapacity); 
+    int initialCapacity = 500;
+    AirportInfo2* array = malloc(sizeof(AirportInfo2) * initialCapacity);
     int delay;
     char** finalResult = malloc(sizeof(char*)*(N+1));
-    
+
     // Iterate over catalog reservations
-    GHashTableIter iter; 
-    gpointer key, value; 
+    GHashTableIter iter;
+    gpointer key, value;
     g_hash_table_iter_init(&iter, flights);
-    
+
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         FLIGHT flight = (FLIGHT) value;
 
@@ -789,12 +789,10 @@ void* query7(MANAGER manager,char** args){
 
         delay = calculate_flight_delay(scheduled_date, real_date);
         int airportPosition = findAirportPosition2(array, i, airport);
-        
-        if (airportPosition != -1){ 
+
+        if (airportPosition != -1){
             g_array_append_val(array[airportPosition].delays, delay);
             array[airportPosition].n_delays++;
-            
-        
             }
         else {
             if (i >= initialCapacity) {
@@ -806,19 +804,25 @@ void* query7(MANAGER manager,char** args){
             g_array_append_val(array[i].delays, delay);
             i++;
             }
-        
+
         free(airport);
         free(scheduled_date);
         free(real_date);
-    } 
-    
+    }
+
+
     for(int k = 0; k < i; k++) {
         g_array_sort(array[k].delays, compare_ints);
         guint length = array[k].delays->len;
-        array[k].median = g_array_index(array[k].delays, int , (length/2));
+        if (length % 2 != 0) array[k].median = g_array_index(array[k].delays, int , (length/2));
+        else {
+            int first = g_array_index(array[k].delays, int , (length/2) - 1);
+            int second = g_array_index(array[k].delays, int , (length/2));
+            array[k].median = (first + second) / 2;
+        }
     }
 
-    qsort(array, i, sizeof(AirportInfo2), sort_airports2); 
+    qsort(array, i, sizeof(AirportInfo2), sort_airports2);
 
 
     finalResult[0] = (i < N ? int_to_string(i) : int_to_string(N));
@@ -833,7 +837,7 @@ void* query7(MANAGER manager,char** args){
         snprintf(formatted_string, total_size, "%s;%d", array[j-1].name, array[j-1].median);
 
         finalResult[j] = formatted_string;
-    } 
+    }
 
     for(int j = 0; j < i; j++){
         free(array[j].name);
@@ -843,7 +847,7 @@ void* query7(MANAGER manager,char** args){
     free(array);
 
     return finalResult;
-    
+
 }
 
 int compare_dates_timeless(char* itemA, char* itemB) {
@@ -882,7 +886,7 @@ void* query8(MANAGER manager, char** args){
     int price, n_nights, result = 0;
     char* begin = strdup(args[1]);
     char* end = strdup(args[2]);
-    
+
     GPtrArray* hotel_array = get_hotel_reserv_array_by_id(catalog, hotel_id);
 
     if (hotel_array != NULL){
@@ -893,11 +897,11 @@ void* query8(MANAGER manager, char** args){
             char* begin_date = get_begin_date(reservation);
             char* end_date = get_end_date(reservation);
             price = get_price_per_night(reservation);
-            
+
             if(compare_dates_timeless(end_date,begin) <= 0 && compare_dates_timeless(begin_date,end) >= 0) {
                 n_nights = 0;
                 char* test_begin = strdup((compare_dates_timeless(begin, begin_date) > 0) ? begin_date : begin);
-                char* test_end = strdup((compare_dates_timeless(end, end_date) > 0) ? end : end_date);                
+                char* test_end = strdup((compare_dates_timeless(end, end_date) > 0) ? end : end_date);
                 if(strcmp(test_end, end)==0) {n_nights++;}
                 n_nights += dates_timespan(test_begin, test_end);
                 result+= (price * n_nights) ;
@@ -905,7 +909,7 @@ void* query8(MANAGER manager, char** args){
             free(begin_date);
             free(end_date);
         }
-        
+
     }
     free(begin);
     free(end);
@@ -922,17 +926,16 @@ typedef struct {
 } User_list;
 
 int sort_users(const void* a, const void* b) {
+    setlocale(LC_COLLATE, "en_US.UTF-8");
     User_list* f_a = (User_list*)a;
     User_list* f_b = (User_list*)b;
 
-    int result;
+    // Compara as strings convertidas para minúsculas
+    int result = strcoll(f_a->user, f_b->user);
 
-    result = strcmp(f_a->user, f_b->user);
-    if(result == 0) {result = strcmp(f_a->user_id, f_b->user_id);}
+    if(result == 0) result = strcoll(f_a->user_id, f_b->user_id);
     return result;
 }
-
-
 
 void* query9(MANAGER manager,char** args) {
     USERS_C catalog = get_users_c(manager);
@@ -940,17 +943,18 @@ void* query9(MANAGER manager,char** args) {
     GHashTableIter iter;
     gpointer key, value;
     char* prefix = args[0];
-    int i = 0; 
+    int i = 0;
     int initialCapacity = 500;
-    
+
     User_list* user_list = malloc(sizeof(User_list) * initialCapacity);
     g_hash_table_iter_init(&iter, users);
-    
+
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         USER entity = (USER) value;
         char* user = get_user_name(entity);
         char* user_status = get_user_account_status(entity);
-        if (strncmp(prefix, user, strlen(prefix)) == 0 && strcmp(user_status, "INACTIVE") != 0){
+        char *truncatedString = strndup(user, strlen(prefix));
+        if (strcoll(truncatedString, prefix) == 0 && strcmp(user_status, "INACTIVE") != 0){
             char* user_id = get_user_id(entity);
             if (i >= initialCapacity) {
                     initialCapacity *= 2;
@@ -959,14 +963,15 @@ void* query9(MANAGER manager,char** args) {
             user_list[i].user = strdup(user);
             user_list[i].user_id = strdup(user_id);
             i++;
-            free(user_id);            
+            free(user_id);
         }
         free(user);
         free(user_status);
+        free(truncatedString);
     }
     //free(prefix);
     qsort(user_list, i, sizeof(User_list), sort_users);
-    
+
     char** finalResult = malloc(sizeof(char*)*(i+1));
 
     finalResult[0] = int_to_string(i);
