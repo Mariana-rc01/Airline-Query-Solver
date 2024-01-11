@@ -902,7 +902,7 @@ void* query8(MANAGER manager, char** args){
                 n_nights = 0;
                 char* test_begin = strdup((compare_dates_timeless(begin, begin_date) > 0) ? begin_date : begin);
                 char* test_end = strdup((compare_dates_timeless(end, end_date) > 0) ? end : end_date);
-                if(strcmp(test_end, end)==0) {n_nights++;}
+                if(compare_dates_timeless(end, end_date) > 0) {n_nights++;}
                 n_nights += dates_timespan(test_begin, test_end);
                 result+= (price * n_nights) ;
             }
@@ -981,7 +981,7 @@ void* query9(MANAGER manager,char** args) {
         user_list[j-1].user) + 1;
 
         // Alocatte memory to a formatted string
-        char* formatted_string = malloc(sizeof(char*)*total_size*2);
+        char* formatted_string = malloc(sizeof(char*)*total_size);
 
         // Create fromatted string
         snprintf(formatted_string, total_size, "%s;%s", user_list[j-1].user_id, user_list[j-1].user);
