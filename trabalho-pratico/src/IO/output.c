@@ -302,7 +302,7 @@ void output_query6F(FILE* file, void* output){
 }
 
 void output_query7(FILE* file, void* output){
-    /*char** result_array = (char**)output;
+    char** result_array = (char**)output;
     int length = ourAtoi(result_array[0]);
     for (int i = 1; i < length + 1; i++) {
         if (i != length) fprintf(file, "%s\n", result_array[i]);
@@ -312,13 +312,13 @@ void output_query7(FILE* file, void* output){
             fprintf(file,"%s\n",truncatedString);
             free(truncatedString);
         }
-    }*/
-    (void) file;
-    (void) output;
+    }
+    /*(void) file;
+    (void) output;*/
 }
 
 void output_query7F(FILE* file, void* output){
-    /*char** result = (char**)output;
+    char** result = (char**)output;
     int length = ourAtoi(result[0]);
     for(int i = 1; i < length + 1; i++){
         char *token = strtok(result[i], ";");
@@ -335,9 +335,9 @@ void output_query7F(FILE* file, void* output){
             fprintf(file,"median: %s\n",truncatedString);
             free(truncatedString);
         }
-    }*/
-    (void) file;
-    (void) output;
+    }
+    /*(void) file;
+    (void) output;*/
 }
 
 void output_query8(FILE* file, void* output){

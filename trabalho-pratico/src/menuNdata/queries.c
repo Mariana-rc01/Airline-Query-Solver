@@ -727,7 +727,7 @@ void* query6(MANAGER manager,char** args){
 
 typedef struct {
     char* name;
-    int* delays;
+    GArray* delays;
     int n_delays;
     int median;
 } AirportInfo2;
@@ -736,7 +736,7 @@ int sort_airports2(const void* a, const void* b) {
     AirportInfo2* f_a = (AirportInfo2*)a;
     AirportInfo2* f_b = (AirportInfo2*)b;
 
-    // Compare number of passengers
+    // Compare delays
     int delay_compare = f_b->median - f_a->median;
     if (delay_compare != 0) {
         return delay_compare;
@@ -758,34 +758,28 @@ int findAirportPosition2(AirportInfo2* array, int size, const char* airport) {
     return -1;
 }
 
-int calc_median(int* x, int N) {
-    int aux, i;
-    //sort
-    for (i = 0; i < N; i++) {
-        if (x[i] > x[i+1]) {
-            aux = x[i+1];
-            x[i+1] = x[i];
-            x[i] = aux;
-        }
-    }
-    return (x[N/2]);
+
+int compare_ints(gconstpointer a, gconstpointer b) {
+    return *(const int*)a - *(const int*)b;
 }
+
 //Listar o top N aeroportos com a maior mediana de atrasos.
 void* query7(MANAGER manager,char** args){
-    /*//guardar todas os atrasos num array para cada aeroporto e obter a mediana
-    printf("started");
+    //guardar todas os atrasos num array para cada aeroporto e obter a mediana
     int N = ourAtoi(args[0]);
     FLIGHTS_C catalog = get_flights_c(manager); 
     GHashTable* flights = get_hash_table_flight(catalog); 
     int i = 0;
-    //int j;
     int initialCapacity = 500; 
     AirportInfo2* array = malloc(sizeof(AirportInfo2) * initialCapacity); 
     int delay;
+    char** finalResult = malloc(sizeof(char*)*(N+1));
+    
     // Iterate over catalog reservations
     GHashTableIter iter; 
     gpointer key, value; 
-    g_hash_table_iter_init(&iter, flights); printf("did a thing");
+    g_hash_table_iter_init(&iter, flights);
+    
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         FLIGHT flight = (FLIGHT) value;
 
@@ -793,38 +787,40 @@ void* query7(MANAGER manager,char** args){
         char* scheduled_date = get_flight_schedule_departure_date(flight);
         char* real_date = get_flight_real_departure_date(flight);
 
-        //char* id_flight = get_flight_id(flight);
-        //int pass = get_flight_nPassengers(flight);
         delay = calculate_flight_delay(scheduled_date, real_date);
         int airportPosition = findAirportPosition2(array, i, airport);
+        
         if (airportPosition != -1){ 
-            //addDelay(AirportInfo2 airport, int delay); 
-            //j = array[airportPosition].n_delays;
-            array[airportPosition].delays[array[airportPosition].n_delays] = delay;
+            g_array_append_val(array[airportPosition].delays, delay);
             array[airportPosition].n_delays++;
+            
+        
             }
         else {
             if (i >= initialCapacity) {
                 initialCapacity *= 2;
                 array = realloc(array, sizeof(AirportInfo2) * initialCapacity);
                 }
+            array[i].delays = g_array_new(FALSE, FALSE, sizeof(int));;
             array[i].name = strdup(airport);
-            array[i].delays[0] = delay;
-            array[i].n_delays = 1;
+            g_array_append_val(array[i].delays, delay);
             i++;
             }
+        
         free(airport);
         free(scheduled_date);
         free(real_date);
     } 
+    
+    for(int k = 0; k < i; k++) {
+        g_array_sort(array[k].delays, compare_ints);
+        guint length = array[k].delays->len;
+        array[k].median = g_array_index(array[k].delays, int , (length/2));
+    }
 
-    for(i=0; array[i].name != NULL; i++) {
-        array[i].median = calc_median(array[i].delays, array[i].n_delays);
-    } 
+    qsort(array, i, sizeof(AirportInfo2), sort_airports2); 
 
-    qsort(array, i, sizeof(AirportInfo), sort_airports2); 
 
-    char** finalResult = malloc(sizeof(char*)*(N+1));
     finalResult[0] = (i < N ? int_to_string(i) : int_to_string(N));
     for (int j = 1; j < i+1 && j<N+1; j++) {
         int total_size = snprintf(NULL, 0,"%s;%d", array[j-1].name,
@@ -841,15 +837,13 @@ void* query7(MANAGER manager,char** args){
 
     for(int j = 0; j < i; j++){
         free(array[j].name);
+        g_array_free(array[j].delays, TRUE);
     }
 
     free(array);
 
     return finalResult;
-    */
-    (void) manager;
-    (void) args;
-    return args;
+    
 }
 
 int compare_dates_timeless(char* itemA, char* itemB) {
@@ -1085,7 +1079,7 @@ void free_query6(void* result){
 }
 
 void free_query7(void* result){
-    /*    if (result == NULL) {
+        if (result == NULL) {
         return;
     }
     char** resultF = (char**) result;
@@ -1093,8 +1087,7 @@ void free_query7(void* result){
     for (int i = 0; i < n+1; i++) {
         free(resultF[i]);
     }
-    free(resultF);*/
-    (void) result;
+    free(resultF);
 }
 
 void free_query8(void* result){
