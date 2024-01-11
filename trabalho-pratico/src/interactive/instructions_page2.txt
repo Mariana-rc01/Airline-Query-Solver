@@ -47,12 +47,15 @@ The selected option will be highlighted by a blue box.
     - One by One: Displays all outputs sequentially on a 
     single window.
 
-    - Per page: Presents the output on a window with 
-    multiple pages featuring a navigation system for quick 
-    access to any entry. For this option, the user can 
-    either choose the total number of pages or specify the 
-    number of outputs per page, with the system calculating 
-    the suitable number of pages.
+    - Number of pages: Presents the output in a window with 
+    the specified number of pages featuring a navigation
+    system for quick access to any entry.
+
+    - Outputs per page: Presents the output in a window with
+    as many outputs per page as the specified amount and
+    the system will calculate the suitable number of pages
+    accordingly. Also comes with a navigation feature.
+    
     
 Once satisfied with the selected settings, 
 the user can proceed to run the Solver.

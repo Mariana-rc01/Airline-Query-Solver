@@ -74,12 +74,13 @@ void query_results(SETTINGS settings, int id, void* output){
     strcpy(f, "False");
 
     char** results = (char**) output;
+    (void) results;
 
-    for (int i = 0; i < 8; i++) {
+    /*for (int i = 0; i < 8; i++) {
         if(results[i] == NULL) mvwprintw(win, 10+i, 1, "%s",f);
         else if(strcmp(results[i],"T") == 0) mvwprintw(win, 10+i, 1, "%s",f);
         else mvwprintw(win, 10+i, 1, "%s",results[i]);
-    }
+    }*/
 
     drawWindow(win, options, selectedOption, title, 3, color);
 

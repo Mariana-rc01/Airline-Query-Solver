@@ -28,6 +28,7 @@
 #include "interactive/instructions.h"
 #include "interactive/query_result.h"
 #include "menuNdata/queries.h"
+#include "IO/input.h"
 
 typedef void (*query_window_func)(SETTINGS);
 
