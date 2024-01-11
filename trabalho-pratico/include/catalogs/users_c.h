@@ -76,4 +76,6 @@ void update_user_c(USERS_C catalog, char* id, double cost);
  */
 void free_user_c(USERS_C catalog);
 
+GHashTable* get_hash_table_users(USERS_C catalog);
+
 #endif

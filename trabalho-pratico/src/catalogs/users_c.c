@@ -56,3 +56,7 @@ void free_user_c(USERS_C catalog){
     g_hash_table_destroy(catalog->users);
     free(catalog);
 }
+
+GHashTable* get_hash_table_users(USERS_C catalog){
+    return catalog->users;
+}

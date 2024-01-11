@@ -164,6 +164,7 @@ int calculate_flight_delay(char* scheduleDate, char* actualDate);
  */
 int get_flight_delay(FLIGHT flight);
 
+int dates_timespan ( char* begin, char* end);
 /**
  * @brief Gets the number of nights for a reservation.
  *
