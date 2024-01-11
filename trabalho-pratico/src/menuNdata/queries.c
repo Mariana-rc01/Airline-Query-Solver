@@ -935,7 +935,7 @@ int sort_users(const void* a, const void* b) {
 
 
 void* query9(MANAGER manager,char** args) {
-    /*USERS_C catalog = get_users_c(manager);
+    USERS_C catalog = get_users_c(manager);
     GHashTable* users= get_hash_table_users(catalog);
     GHashTableIter iter;
     gpointer key, value;
@@ -945,6 +945,7 @@ void* query9(MANAGER manager,char** args) {
     
     User_list* user_list = malloc(sizeof(User_list) * initialCapacity);
     g_hash_table_iter_init(&iter, users);
+    
     while (g_hash_table_iter_next(&iter, &key, &value)) {
         USER entity = (USER) value;
         char* user = get_user_name(entity);
@@ -955,25 +956,27 @@ void* query9(MANAGER manager,char** args) {
                     initialCapacity *= 2;
                     user_list = realloc(user_list, sizeof(User_list) * initialCapacity);
                 }
-            user_list[i].user = user;
-            user_list[i].user_id = user_id;
+            user_list[i].user = strdup(user);
+            user_list[i].user_id = strdup(user_id);
             i++;
             free(user_id);            
         }
         free(user);
         free(user_status);
     }
-
+    //free(prefix);
     qsort(user_list, i, sizeof(User_list), sort_users);
-
+    
     char** finalResult = malloc(sizeof(char*)*(i+1));
+
     finalResult[0] = int_to_string(i);
+
     for (int j = 1; j < i+1 && j<i+1; j++) {
         int total_size = snprintf(NULL, 0,"%s;%s", user_list[j-1].user_id,
         user_list[j-1].user) + 1;
 
         // Alocatte memory to a formatted string
-        char* formatted_string = malloc(sizeof(char*)*total_size);
+        char* formatted_string = malloc(sizeof(char*)*total_size*2);
 
         // Create fromatted string
         snprintf(formatted_string, total_size, "%s;%s", user_list[j-1].user_id, user_list[j-1].user);
@@ -988,10 +991,7 @@ void* query9(MANAGER manager,char** args) {
 
     free(user_list);
 
-    return finalResult;*/
-    (void) manager;
-    (void) args;
-    return args;
+    return finalResult;
 }
 
 
@@ -1099,7 +1099,7 @@ void free_query8(void* result){
 }
 
 void free_query9(void* result) {
-    /*    if (result == NULL) {
+        if (result == NULL) {
         return;
     }
     char** resultF = (char**) result;
@@ -1107,8 +1107,7 @@ void free_query9(void* result) {
     for (int i = 0; i < n+1; i++) {
         free(resultF[i]);
     }
-    free(resultF);*/
-    (void) result;
+    free(resultF);
 }
 
 void free_query10(void* result){
