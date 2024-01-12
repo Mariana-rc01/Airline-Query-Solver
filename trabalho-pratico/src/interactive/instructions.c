@@ -119,9 +119,9 @@ void instructions(SETTINGS setts){
         mvwprintw(win, max_y - 2, 2, "%s", arrow_left);
         mvwprintw(win, max_y - 2, 4, "%s", arrow_right);
 
-        wattron(win, COLOR_PAIR(1));
+        wattron(win, COLOR_PAIR(1) | A_BOLD);
         mvwprintw(win, max_y - 2, max_x - strlen(option) - 2, "%s", option);
-        wattroff(win, COLOR_PAIR(1));
+        wattroff(win, COLOR_PAIR(1) | A_BOLD);
 
         wrefresh(win);
 

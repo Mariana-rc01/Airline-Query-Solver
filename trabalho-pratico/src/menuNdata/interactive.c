@@ -30,6 +30,7 @@ struct setting {
     int output; // 1 - txt format, 2 - oneByOne, 3 - number page per Page, 4 - outputs per page
     int nPages;
     int nOutputs;
+    int nQueries; // number of queries done at the moment
     MANAGER manager;
 };
 
@@ -40,6 +41,7 @@ SETTINGS create_settings(void){
     new->output = 1;
     new->nPages = 0;
     new->nOutputs = 0;
+    new->nQueries = 1;
     USERS_C users_catalog = create_user_c();
     FLIGHTS_C flights_catalog = create_flight_c();
     RESERV_C reservations_catalog = create_reservations_c();
@@ -79,6 +81,10 @@ void set_catalog_S(SETTINGS setts){
     setts->manager = manager_catalog;
 }
 
+void set_nQueries_S(SETTINGS setts, int n){
+    setts->nQueries = n;
+}
+
 char* get_datasetPath_S(SETTINGS setts){
      return strdup(setts->datasetPath);
 }
@@ -101,6 +107,10 @@ int get_nOutputs_S(SETTINGS setts){
 
 MANAGER get_catalog_S(SETTINGS setts){
     return setts->manager;
+}
+
+int get_nQueries_S(SETTINGS setts){
+    return setts->nQueries;
 }
 
 void interactive(void){

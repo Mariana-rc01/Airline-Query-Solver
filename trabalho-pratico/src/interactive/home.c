@@ -32,6 +32,7 @@ void home(SETTINGS setts) {
     cbreak();
     keypad(stdscr, TRUE);
     mousemask(ALL_MOUSE_EVENTS, NULL);
+    start_color();
 
     // Criar uma janela principal
     WINDOW* home_win = newwin(10, 30, 2, 5);

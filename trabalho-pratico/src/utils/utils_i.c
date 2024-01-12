@@ -25,6 +25,8 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
+#define PINK 5
+
 // Estrutura para representar um botão
 struct button {
     int x, y; // Posição do botão
@@ -54,21 +56,61 @@ char* get_label_B(BUTTONS button){
 
 // Função para desenhar as opções
 void drawWindow(WINDOW *win, BUTTONS* options, int selected, char* title, int n, int color){
-    box(win, 0, 0);
-    mvwprintw(win, 0, 1, "%s", title);
 
     init_pair(1, COLOR_BLUE, COLOR_WHITE);
+    init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    init_pair(3, COLOR_RED, COLOR_BLACK);
+    init_pair(4, COLOR_CYAN, COLOR_BLACK);
+    init_color(PINK,650,15,400);
+    init_pair(5,PINK,COLOR_BLACK);
+
+    wattron(win, A_BOLD | COLOR_PAIR(5));
+    box(win, 0, 0);
+    mvwprintw(win, 0, 1, "%s", title);
+    wattroff(win, A_BOLD | COLOR_PAIR(5));
+
 
     // Imprime as opções
-    for (int i = 0; i < n; i++) {
-        mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",get_label_B(options[i]));
+    if (strcmp(title,"Interactive Mode") == 0){
+
+        wattron(win, A_BOLD | COLOR_PAIR(2));
+        mvwprintw(win, get_y_B(options[0]), get_x_B(options[0]), "%s",get_label_B(options[0]));
+        wattroff(win, A_BOLD | COLOR_PAIR(2));
+
+        wattron(win, A_BOLD | COLOR_PAIR(4));
+        mvwprintw(win, get_y_B(options[1]), get_x_B(options[1]), "%s",get_label_B(options[1]));
+        wattroff(win, A_BOLD | COLOR_PAIR(4));
+
+        wattron(win, A_BOLD | COLOR_PAIR(3));
+        mvwprintw(win, get_y_B(options[2]), get_x_B(options[2]), "%s",get_label_B(options[2]));
+        wattroff(win, A_BOLD | COLOR_PAIR(3));
+    }
+    else{
+        for (int i = 0; i < n; i++) {
+            if (strcmp(get_label_B(options[i]),"[Run]") == 0 || strcmp(get_label_B(options[i]),"[Try Again]") == 0){
+                wattron(win, A_BOLD | COLOR_PAIR(2));
+                mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",get_label_B(options[i]));
+                wattroff(win, A_BOLD | COLOR_PAIR(2));
+            }
+            else if (strcmp(get_label_B(options[i]),"[Go Back]") == 0){
+                wattron(win, A_BOLD | COLOR_PAIR(3));
+                mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",get_label_B(options[i]));
+                wattroff(win, A_BOLD | COLOR_PAIR(3));
+            }
+            else if (strcmp(get_label_B(options[i]),"[Home]") == 0){
+                wattron(win, A_BOLD | COLOR_PAIR(4));
+                mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",get_label_B(options[i]));
+                wattroff(win, A_BOLD | COLOR_PAIR(4));
+            }
+            else mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",get_label_B(options[i]));
+        }
     }
 
     if (color >= 1 && color <= 4){
         // Destaca a opção selecionada
-        wattron(win, A_BOLD | COLOR_PAIR(1) | A_REVERSE); // Ativa a inversão de cores (para destacar)
+        wattron(win, A_BOLD | COLOR_PAIR(1) | A_REVERSE);
         mvwprintw(win, get_y_B(options[color]), get_x_B(options[color]), "%s", get_label_B(options[color]));
-        wattroff(win, A_BOLD | COLOR_PAIR(1) | A_REVERSE); // Desativa a inversão de cores
+        wattroff(win, A_BOLD | COLOR_PAIR(1) | A_REVERSE);
     }
 
     // Destaca a opção selecionada
@@ -97,8 +139,11 @@ int verify_datasetPath(char* path){
 }
 
 void drawFloatMenu(WINDOW* floatWin, char* title, BUTTONS* options, int n) {
+
+    wattron(floatWin, A_BOLD | COLOR_PAIR(5));
     box(floatWin, 0, 0);
     mvwprintw(floatWin, 0, 1, "%s", title);
+    wattroff(floatWin, A_BOLD | COLOR_PAIR(5));
 
     for (int i = 0; i < n; i++) {
         mvwprintw(floatWin, get_y_B(options[i]), get_x_B(options[i]), "%s", get_label_B(options[i]));

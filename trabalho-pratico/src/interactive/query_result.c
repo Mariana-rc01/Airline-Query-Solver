@@ -27,70 +27,930 @@
 #include <string.h>
 
 /*
-Ver primeiro o que o utilizador escolheu, caso tenha sido txt format, mostrar apenas uma mensagem
-- caso contrário, ver a opção e adaptar
+done - ver primeiro o que o utilizador escolheu, caso tenha sido txt format, mostrar apenas uma mensagem
 - acho que dá para fazer genérico para todas as queries
-- txt format
+done - txt format
 - one by one
-- per page by pages
-- per page by outputs
-- fazer botoes e meter tudo bonito
+done - per page by pages
+done - per page by outputs
+done - fazer botoes e meter tudo bonito
+done - a única que tem especificidade é a query 1 que é um array com as impressões
+done - as restantes queries é só preciso imprimir o array linha a linha
 */
 
-void query_results(SETTINGS settings, int id, void* output){
+void query_results(SETTINGS settings, int id, void* output, char** args){
+
+    int optionFormat = get_output_S(settings);
+
+    //1- Txt format, 2 - oneByOne, 3 - number page per Page, 4 - outputs per page
+
+    static format_func format_window[] = {txtFormat, oneByOne, numberPage, outputsPage};
+
+    format_window[optionFormat - 1](settings, id, output, args);
+}
+
+void txtFormat(SETTINGS settings, int id, void* output, char** args){
     initscr();
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
     mousemask(ALL_MOUSE_EVENTS, NULL);
 
-    start_color();
-    init_pair(1, COLOR_RED, COLOR_BLACK);
 
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
+    MEVENT event;
     int ch;
     char* title = "Query Results";
 
+    int MAX_OPTIONS = 3;
+
     BUTTONS options[3] = {
-        create_button("Query id",2,3),
-        create_button("[Run]",2,15),
+        create_button("[Try Again]",2,15),
+        create_button("[Home]",25,15),
         create_button("[Go Back]",55-strlen("[Go Back]")-2,15)
     };
 
-    BUTTONS config[1] ={
-        create_button("--------------- Results ---------------", 1,1),
-    };
-
     int selectedOption = 0;
-    int color = get_output_S(settings);
+    int color = 0;
 
-    for (int i = 0; i < 1; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+    if (id == 1 || id == 3 || id == 4 || id == 7 || id == 9){
+        mvwprintw(win, 1, 1, "Query ID: %d; arg: %s", id, args[0]);
     }
+    else if (id == 2 || id == 6 || id == 10){
+        if (args[1] == NULL) args[1] = "Both";
+        mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s", id, args[0], args[1]);
+    }
+    else // 5 e 8
+        mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s, arg3: %s", id, args[0], args[1], args[2]);
 
-    char* f = (char*)malloc(sizeof(char) * 10);
-    strcpy(f, "False");
+    //criar ficheiro txt
 
-    char** results = (char**) output;
-    (void) results;
+    int n = get_nQueries_S(settings);
 
-    /*for (int i = 0; i < 8; i++) {
-        if(results[i] == NULL) mvwprintw(win, 10+i, 1, "%s",f);
-        else if(strcmp(results[i],"T") == 0) mvwprintw(win, 10+i, 1, "%s",f);
-        else mvwprintw(win, 10+i, 1, "%s",results[i]);
-    }*/
+    FILE* output_file = create_output_file(n);
+
+    if (output != NULL){
+        output_query(output_file, output, id);
+        free_query(output,id);
+    }
+    fclose(output_file);
+
+    mvwprintw(win, 4, 1, "---------------------- Results --------------------");
+    mvwprintw(win, 5, 1, "Text file created successfully in Resultados:");
+    mvwprintw(win, 6, 1, "      command%d_output.txt.", n);
+
+    set_nQueries_S(settings,n+1);
 
     drawWindow(win, options, selectedOption, title, 3, color);
 
-    (void) id;
+    while (1){
+        ch = getch();
+        switch (ch){
+            case KEY_MOUSE:
+                if (getmouse(&event) == OK) {
+                    // Verifica se o clique do mouse ocorreu dentro de uma opção
+                    for (int i = 0; i < MAX_OPTIONS; i++) {
+                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
+                            (event.y == get_y_B(options[i]))) {
+                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                            break; // perceber melhor o comportamento do rato
+                        }
+                    }
+                }
+                break;
+            case KEY_UP:
+                selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                break;
+            case KEY_DOWN:
+                selectedOption = (selectedOption + 1) % MAX_OPTIONS;
+                break;
+            case KEY_LEFT:
+                selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                break;
+            case KEY_RIGHT:
+                selectedOption = (selectedOption + 1) % MAX_OPTIONS;
+                break;
+            case '\n':
+                selectedOption = selectedOption  % MAX_OPTIONS;
+                char* option = get_label_B(options[selectedOption]);
 
-    while ((ch = getch()) != 27) {
-        int i = 0;
-        i++;
+                if (strcmp(option, "[Try Again]") == 0){
+                    werase(win);
+                    wrefresh(win);
+                    endwin();
+                    solver(settings);
+                    exit(0);
+                }
+
+                if (strcmp(option, "[Home]") == 0){
+                    werase(win);
+                    wrefresh(win);
+                    endwin();
+                    home(settings);
+                    exit(0);
+                }
+
+                if (strcmp(option, "[Go Back]") == 0){
+                    werase(win);
+                    wrefresh(win);
+                    endwin();
+                    settingsConfig(settings);
+                    exit(0);
+                }
+                break;
+        }
+
+        // Atualiza as opções na tela
+        drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
     }
 
     delwin(win);
     endwin();
 }
+
+void oneByOne(SETTINGS settings, int id, void* output, char** args){
+    initscr();
+    cbreak();
+    start_color();
+    keypad(stdscr, TRUE);
+    mousemask(ALL_MOUSE_EVENTS, NULL);
+
+
+    WINDOW* win = newwin(23,70,0,0);
+    refresh();
+
+    MEVENT event;
+    int ch;
+    char* title = "Query Results";
+
+    int MAX_OPTIONS = 3;
+
+    BUTTONS options[3] = {
+        create_button("[Try Again]",2,21),
+        create_button("[Home]",35,21),
+        create_button("[Go Back]",70-strlen("[Go Back]")-2,21)
+    };
+
+    int selectedOption = 0;
+
+    int q = get_nQueries_S(settings);
+
+    set_nQueries_S(settings, q+1);
+
+    int currentPage = 1;
+    char** results = (char**)output;
+    int nArgs = 0;
+    if (output != NULL && (id != 3 && id != 8)){
+        nArgs = ourAtoi(results[0]);
+    }
+
+    int pageSize = 12;
+    int scrollStart = 1;
+    int scrollEnd = pageSize;
+    int resultsPerPage = 1;
+    int n = 1;
+
+    ch = 'c';
+
+    while (1) {
+        wclear(win);
+
+        if (id == 1 || id == 3 || id == 4 || id == 7 || id == 9){
+            mvwprintw(win, 1, 1, "Query ID: %d; arg: %s", id, args[0]);
+        }
+        else if (id == 2 || id == 6 || id == 10){
+            if (args[1] == NULL) args[1] = "Both";
+            mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s", id, args[0], args[1]);
+        }
+        else // 5 e 8
+            mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s, arg3: %s", id, args[0], args[1], args[2]);
+
+        mvwprintw(win, 4, 1, "------------------------------- Results ---------------------------");
+
+        if (output != NULL){
+            mvwprintw(win, 19, 22, "Press c to see the next result");
+            mvwprintw(win, 5, 1, "---   ---   ---   ---   ---  -- Page %d ---   ---   ---   ---   ---  --", currentPage);
+            if (id == 1){
+                if (currentPage == 1){
+                    for (int i = 0; i < 8; i++) {
+                        if (results[i] == NULL) {
+                            results[i] = "False";
+                        } else if (strcmp(results[i], "T") == 0) {
+                            results[i] = "True";
+                        }
+                        mvwprintw(win, 6+i, 1, "%s", results[i]);
+                    }
+                }
+                mvwprintw(win, 19, 22, "All outputs are displayed :)  ");
+            }
+            else if (id == 2){
+                if (ch == 'c' && n < nArgs + 1){
+                int startIdx = 2 + n * (currentPage - 1);
+                int endIdx = startIdx + n;
+
+                // Limites do array
+                if (endIdx > nArgs + 2) {
+                    endIdx = nArgs + 2;
+                }
+
+                // Descida na página
+                if (ch == 'u' && scrollStart > 1) {
+                    scrollStart--;
+                    scrollEnd--;
+                }
+
+                if (ch == 'd' && scrollEnd < endIdx) {
+                    scrollStart++;
+                    scrollEnd++;
+                }
+
+                // CNão ultrapassa os limites do array
+                if (scrollEnd > endIdx) {
+                    scrollEnd = endIdx;
+                }
+
+                mvwprintw(win, 19, 1, "Press 'u' to go up");
+                mvwprintw(win, 19, 47, "Press 'd' to go down");
+                for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx - 1)< nArgs; j++) {
+                    // Exibir apenas resultados que pertencem à página atual
+                    int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
+                    char* formatted_string = malloc(total_size);
+                    snprintf(formatted_string, total_size, "%s", results[j + startIdx - 1]);
+                    mvwprintw(win, 6 + (j - scrollStart) % resultsPerPage, 1, "%s", formatted_string);
+                    free(formatted_string);
+                }
+                n++;
+                }
+            }
+            else if (id == 3 || id == 8){
+                char* result = (char*)output;
+                if (currentPage == 1){
+                    int total_size = snprintf(NULL, 0, "%s", result) + 1;
+                    char* formatted_string = malloc(total_size);
+                    snprintf(formatted_string, total_size, "%s", result);
+                    mvwprintw(win, 6, 1, "%s", formatted_string);
+                    free(formatted_string);
+                }
+                mvwprintw(win, 19, 22, "All outputs are displayed :)  ");
+            }
+            else{
+
+            int startIdx = 1 + resultsPerPage * (currentPage - 1);
+            int endIdx = startIdx + resultsPerPage;
+
+            // Certificar-se de não ultrapassar os limites do array
+            if (endIdx > nArgs + 1) {
+                endIdx = nArgs + 1;
+            }
+
+            // Adicione esta parte para calcular a rolagem na página
+            if (ch == 'u' && scrollStart > 1) {
+                scrollStart--;
+                scrollEnd--;
+            }
+
+            if (ch == 'd' && scrollEnd < endIdx) {
+                scrollStart++;
+                scrollEnd++;
+            }
+
+            // Certifique-se de não ultrapassar os limites do array
+            if (scrollEnd > endIdx) {
+                scrollEnd = endIdx;
+            }
+
+            mvwprintw(win, 19, 1, "Press 'u' to go up");
+            mvwprintw(win, 19, 47, "Press 'd' to go down");
+            for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx -1)< nArgs; j++) {
+                // Exibir apenas resultados que pertencem à página atual
+                int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
+                char* formatted_string = malloc(total_size);
+                snprintf(formatted_string, total_size, "%s", results[j + startIdx - 1]);
+                mvwprintw(win, 6 + (j - scrollStart) % resultsPerPage, 1, "%s", formatted_string);
+                free(formatted_string);
+            }
+
+            }
+        }
+        else mvwprintw(win, 5 , 3, "Nothing to show");
+
+        drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
+
+        ch = getch();
+
+        switch (ch){
+            case KEY_MOUSE:
+                if (getmouse(&event) == OK) {
+                    // Verifica se o clique do mouse ocorreu dentro de uma opção
+                    for (int i = 0; i < MAX_OPTIONS; i++) {
+                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
+                            (event.y == get_y_B(options[i]))) {
+                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                            break; // perceber melhor o comportamento do rato
+                        }
+                    }
+                }
+                break;
+            case KEY_UP:
+                selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                break;
+            case KEY_DOWN:
+                selectedOption = (selectedOption + 1) % MAX_OPTIONS;
+                break;
+            case KEY_LEFT:
+                selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                break;
+            case KEY_RIGHT:
+                selectedOption = (selectedOption + 1) % MAX_OPTIONS;
+                break;
+            case '\n':
+                selectedOption = selectedOption  % MAX_OPTIONS;
+                char* option = get_label_B(options[selectedOption]);
+
+                if (strcmp(option, "[Try Again]") == 0){
+                    werase(win);
+                    wrefresh(win);
+                    endwin();
+                    solver(settings);
+                    exit(0);
+                }
+
+                if (strcmp(option, "[Home]") == 0){
+                    werase(win);
+                    wrefresh(win);
+                    endwin();
+                    home(settings);
+                    exit(0);
+                }
+
+                if (strcmp(option, "[Go Back]") == 0){
+                    werase(win);
+                    wrefresh(win);
+                    endwin();
+                    settingsConfig(settings);
+                    exit(0);
+                }
+                break;
+        }
+
+        // Atualiza as opções na tela
+        drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
+
+        if (ch == 'c' && n >= nArgs) {
+            mvwprintw(win, 19, 1, "All outputs are displayed");
+        }
+    }
+
+    delwin(win);
+    endwin();
+
+}
+
+void numberPage(SETTINGS settings, int id, void* output, char** args){
+    initscr();
+    cbreak();
+    start_color();
+    keypad(stdscr, TRUE);
+    mousemask(ALL_MOUSE_EVENTS, NULL);
+
+
+    WINDOW* win = newwin(23,70,0,0);
+    refresh();
+
+    MEVENT event;
+    int ch;
+    char* title = "Query Results";
+
+    int MAX_OPTIONS = 5;
+
+    BUTTONS options[5] = {
+        create_button(" < ",35,19),
+        create_button(" > ",38,19),
+        create_button("[Try Again]",2,21),
+        create_button("[Home]",35,21),
+        create_button("[Go Back]",70-strlen("[Go Back]")-2,21)
+    };
+
+    int selectedOption = 0;
+
+    int n = get_nQueries_S(settings);
+
+    set_nQueries_S(settings, n+1);
+
+    int currentPage = 1; // Adição: variável para controlar a página atual
+    char** results = (char**)output;
+    int nPages = get_nPages_S(settings);
+    int nArgs = 0;
+    int resultsPerPage = 0;
+    if (output != NULL && (id != 3 && id != 8)){
+        nArgs = ourAtoi(results[0]);
+        resultsPerPage = (nArgs / nPages) + ((nArgs % nPages) > 0); // Número de resultados por página
+    }
+
+    int pageSize = 12;
+    int scrollStart = 1;
+    int scrollEnd = pageSize;
+
+    ch = 'u';
+
+    while (1) {
+        wclear(win);
+
+        if (id == 1 || id == 3 || id == 4 || id == 7 || id == 9){
+            mvwprintw(win, 1, 1, "Query ID: %d; arg: %s", id, args[0]);
+        }
+        else if (id == 2 || id == 6 || id == 10){
+            if (args[1] == NULL) args[1] = "Both";
+            mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s", id, args[0], args[1]);
+        }
+        else // 5 e 8
+            mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s, arg3: %s", id, args[0], args[1], args[2]);
+
+        mvwprintw(win, 4, 1, "------------------------------- Results ---------------------------");
+
+        if (output != NULL){
+            mvwprintw(win, 5, 1, "---   ---   ---   ---   ---  -- Page %d ---   ---   ---   ---   ---  --", currentPage);
+
+            if (id == 1){
+                if (currentPage == 1){
+                    for (int i = 0; i < 8; i++) {
+                        if (results[i] == NULL) {
+                            results[i] = "False";
+                        } else if (strcmp(results[i], "T") == 0) {
+                            results[i] = "True";
+                        }
+                        mvwprintw(win, 6+i, 1, "%s", results[i]);
+                    }
+                }
+            }
+            else if (id == 2){
+                int startIdx = 2 + resultsPerPage * (currentPage - 1);
+                int endIdx = startIdx + resultsPerPage;
+
+                // Limites do array
+                if (endIdx > nArgs + 2) {
+                    endIdx = nArgs + 2;
+                }
+
+                // Descida na página
+                if (ch == 'u' && scrollStart > 1) {
+                    scrollStart--;
+                    scrollEnd--;
+                }
+
+                if (ch == 'd' && scrollEnd < endIdx) {
+                    scrollStart++;
+                    scrollEnd++;
+                }
+
+                // CNão ultrapassa os limites do array
+                if (scrollEnd > endIdx) {
+                    scrollEnd = endIdx;
+                }
+
+                if (resultsPerPage <= 12){
+                    for (int j = startIdx; j <= endIdx; j++) {
+                        // Exibir apenas resultados que pertencem à página atual
+                        int total_size = snprintf(NULL, 0, "%s", results[j - 1]) + 1;
+                        char* formatted_string = malloc(total_size);
+                        snprintf(formatted_string, total_size, "%s", results[j - 1]);
+                        mvwprintw(win, 6 + (j - 1) % resultsPerPage, 1, "%s", formatted_string);
+                        free(formatted_string);
+                    }
+                }
+                else {
+                    mvwprintw(win, 19, 1, "press 'u' to go up");
+                    mvwprintw(win, 19, 47, "press 'd' to go down");
+                    for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx - 1)< nArgs; j++) {
+                        // Exibir apenas resultados que pertencem à página atual
+                        int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
+                        char* formatted_string = malloc(total_size);
+                        snprintf(formatted_string, total_size, "%s", results[j + startIdx - 1]);
+                        mvwprintw(win, 6 + (j - scrollStart) % resultsPerPage, 1, "%s", formatted_string);
+                        free(formatted_string);
+                    }
+                }
+
+            }
+            else if (id == 3 || id == 8){
+                char* result = (char*)output;
+                if (currentPage == 1){
+                    int total_size = snprintf(NULL, 0, "%s", result) + 1;
+                    char* formatted_string = malloc(total_size);
+                    snprintf(formatted_string, total_size, "%s", result);
+                    mvwprintw(win, 6, 1, "%s", formatted_string);
+                    free(formatted_string);
+                }
+            }
+            else{
+
+            int startIdx = 1 + resultsPerPage * (currentPage - 1);
+            int endIdx = startIdx + resultsPerPage;
+
+            // Certificar-se de não ultrapassar os limites do array
+            if (endIdx > nArgs + 1) {
+                endIdx = nArgs + 1;
+            }
+
+            // Adicione esta parte para calcular a rolagem na página
+            if (ch == 'u' && scrollStart > 1) {
+                scrollStart--;
+                scrollEnd--;
+            }
+
+            if (ch == 'd' && scrollEnd < endIdx) {
+                scrollStart++;
+                scrollEnd++;
+            }
+
+            // Certifique-se de não ultrapassar os limites do array
+            if (scrollEnd > endIdx) {
+                scrollEnd = endIdx;
+            }
+
+            if (resultsPerPage <= 12){
+                    for (int j = startIdx; j <= endIdx; j++) {
+                        // Exibir apenas resultados que pertencem à página atual
+                        int total_size = snprintf(NULL, 0, "%s", results[j - 1]) + 1;
+                        char* formatted_string = malloc(total_size);
+                        snprintf(formatted_string, total_size, "%s", results[j - 1]);
+                        mvwprintw(win, 6 + (j - 1) % resultsPerPage, 1, "%s", formatted_string);
+                        free(formatted_string);
+                    }
+                }
+            else {
+                mvwprintw(win, 19, 1, "press 'u' to go up");
+                mvwprintw(win, 19, 47, "press 'd' to go down");
+                for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx -1)< nArgs; j++) {
+                    // Exibir apenas resultados que pertencem à página atual
+                    int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
+                    char* formatted_string = malloc(total_size);
+                    snprintf(formatted_string, total_size, "%s", results[j + startIdx - 1]);
+                    mvwprintw(win, 6 + (j - scrollStart) % resultsPerPage, 1, "%s", formatted_string);
+                    free(formatted_string);
+                }
+            }
+            }
+        }
+        else mvwprintw(win, 5 , 3, "Nothing to show");
+
+        drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
+
+        ch = getch();
+
+        switch (ch){
+            case KEY_MOUSE:
+                if (getmouse(&event) == OK) {
+                    // Verifica se o clique do mouse ocorreu dentro de uma opção
+                    for (int i = 0; i < MAX_OPTIONS; i++) {
+                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
+                            (event.y == get_y_B(options[i]))) {
+                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                            break; // perceber melhor o comportamento do rato
+                        }
+                    }
+                }
+                break;
+            case KEY_UP:
+                selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                break;
+            case KEY_DOWN:
+                selectedOption = (selectedOption + 1) % MAX_OPTIONS;
+                break;
+            case KEY_LEFT:
+                selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                break;
+            case KEY_RIGHT:
+                selectedOption = (selectedOption + 1) % MAX_OPTIONS;
+                break;
+            case '\n':
+                selectedOption = selectedOption  % MAX_OPTIONS;
+                char* option = get_label_B(options[selectedOption]);
+
+                if (strcmp(option, " < ") == 0) {
+                    if (output != NULL){
+                        currentPage = (currentPage - 2 + nPages) % nPages + 1;
+                        pageSize = 12;
+                        scrollStart = 1;
+                        scrollEnd = pageSize;
+                    }
+                }
+
+                if (strcmp(option, " > ") == 0){
+                    if (output != NULL){
+                        currentPage = (currentPage) % nPages + 1;
+                        pageSize = 12;
+                        scrollStart = 1;
+                        scrollEnd = pageSize;
+                    }
+                }
+
+                if (strcmp(option, "[Try Again]") == 0){
+                    werase(win);
+                    wrefresh(win);
+                    endwin();
+                    solver(settings);
+                    exit(0);
+                }
+
+                if (strcmp(option, "[Home]") == 0){
+                    werase(win);
+                    wrefresh(win);
+                    endwin();
+                    home(settings);
+                    exit(0);
+                }
+
+                if (strcmp(option, "[Go Back]") == 0){
+                    werase(win);
+                    wrefresh(win);
+                    endwin();
+                    settingsConfig(settings);
+                    exit(0);
+                }
+                break;
+        }
+
+        // Atualiza as opções na tela
+        drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
+    }
+
+    delwin(win);
+    endwin();
+}
+
+void outputsPage(SETTINGS settings, int id, void* output, char** args){
+    initscr();
+    cbreak();
+    start_color();
+    keypad(stdscr, TRUE);
+    mousemask(ALL_MOUSE_EVENTS, NULL);
+
+
+    WINDOW* win = newwin(23,70,0,0);
+    refresh();
+
+    MEVENT event;
+    int ch;
+    char* title = "Query Results";
+
+    int MAX_OPTIONS = 5;
+
+    BUTTONS options[5] = {
+        create_button(" < ",35,19),
+        create_button(" > ",38,19),
+        create_button("[Try Again]",2,21),
+        create_button("[Home]",35,21),
+        create_button("[Go Back]",70-strlen("[Go Back]")-2,21)
+    };
+
+    int selectedOption = 0;
+
+    int n = get_nQueries_S(settings);
+
+    set_nQueries_S(settings, n+1);
+
+    int currentPage = 1; // Adição: variável para controlar a página atual
+    char** results = (char**)output;
+    int nPages = 0;
+    int nArgs = 0;
+    int resultsPerPage = get_nOutputs_S(settings);
+    if (output != NULL && (id != 3 && id != 8)){
+        nArgs = ourAtoi(results[0]);
+        nPages = (nArgs / resultsPerPage) + ((nArgs % resultsPerPage) > 0); // Número de resultados por página
+    }
+
+    int pageSize = 12;
+    int scrollStart = 1;
+    int scrollEnd = pageSize;
+
+    ch = 'u';
+
+    while (1) {
+        wclear(win);
+
+        if (id == 1 || id == 3 || id == 4 || id == 7 || id == 9){
+            mvwprintw(win, 1, 1, "Query ID: %d; arg: %s", id, args[0]);
+        }
+        else if (id == 2 || id == 6 || id == 10){
+            if (args[1] == NULL) args[1] = "Both";
+            mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s", id, args[0], args[1]);
+        }
+        else // 5 e 8
+            mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s, arg3: %s", id, args[0], args[1], args[2]);
+
+        mvwprintw(win, 4, 1, "------------------------------- Results ---------------------------");
+
+        if (output != NULL){
+            mvwprintw(win, 5, 1, "---   ---   ---   ---   ---  -- Page %d ---   ---   ---   ---   ---  --", currentPage);
+
+            if (id == 1){
+                if (currentPage == 1){
+                    for (int i = 0; i < 8; i++) {
+                        if (results[i] == NULL) {
+                            results[i] = "False";
+                        } else if (strcmp(results[i], "T") == 0) {
+                            results[i] = "True";
+                        }
+                        mvwprintw(win, 6+i, 1, "%s", results[i]);
+                    }
+                }
+            }
+            else if (id == 2){
+                int startIdx = 2 + resultsPerPage * (currentPage - 1);
+                int endIdx = startIdx + resultsPerPage;
+
+                // Limites do array
+                if (endIdx > nArgs + 2) {
+                    endIdx = nArgs + 2;
+                }
+
+                // Descida na página
+                if (ch == 'u' && scrollStart > 1) {
+                    scrollStart--;
+                    scrollEnd--;
+                }
+
+                if (ch == 'd' && scrollEnd < endIdx) {
+                    scrollStart++;
+                    scrollEnd++;
+                }
+
+                // CNão ultrapassa os limites do array
+                if (scrollEnd > endIdx) {
+                    scrollEnd = endIdx;
+                }
+
+                if (resultsPerPage <= 12){
+                    for (int j = startIdx; j <= endIdx; j++) {
+                        // Exibir apenas resultados que pertencem à página atual
+                        int total_size = snprintf(NULL, 0, "%s", results[j - 1]) + 1;
+                        char* formatted_string = malloc(total_size);
+                        snprintf(formatted_string, total_size, "%s", results[j - 1]);
+                        mvwprintw(win, 6 + (j - 1) % resultsPerPage, 1, "%s", formatted_string);
+                        free(formatted_string);
+                    }
+                }
+                else {
+                    mvwprintw(win, 19, 1, "press 'u' to go up");
+                    mvwprintw(win, 19, 47, "press 'd' to go down");
+                    for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx - 1)< nArgs; j++) {
+                        // Exibir apenas resultados que pertencem à página atual
+                        int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
+                        char* formatted_string = malloc(total_size);
+                        snprintf(formatted_string, total_size, "%s", results[j + startIdx - 1]);
+                        mvwprintw(win, 6 + (j - scrollStart) % resultsPerPage, 1, "%s", formatted_string);
+                        free(formatted_string);
+                    }
+                }
+
+            }
+            else if (id == 3 || id == 8){
+                char* result = (char*)output;
+                if (currentPage == 1){
+                    int total_size = snprintf(NULL, 0, "%s", result) + 1;
+                    char* formatted_string = malloc(total_size);
+                    snprintf(formatted_string, total_size, "%s", result);
+                    mvwprintw(win, 6, 1, "%s", formatted_string);
+                    free(formatted_string);
+                }
+            }
+            else{
+
+            int startIdx = 1 + resultsPerPage * (currentPage - 1);
+            int endIdx = startIdx + resultsPerPage;
+
+            // Certificar-se de não ultrapassar os limites do array
+            if (endIdx > nArgs + 1) {
+                endIdx = nArgs + 1;
+            }
+
+            // Adicione esta parte para calcular a rolagem na página
+            if (ch == 'u' && scrollStart > 1) {
+                scrollStart--;
+                scrollEnd--;
+            }
+
+            if (ch == 'd' && scrollEnd < endIdx) {
+                scrollStart++;
+                scrollEnd++;
+            }
+
+            // Certifique-se de não ultrapassar os limites do array
+            if (scrollEnd > endIdx) {
+                scrollEnd = endIdx;
+            }
+
+            if (resultsPerPage <= 12){
+                    for (int j = startIdx; j <= endIdx; j++) {
+                        // Exibir apenas resultados que pertencem à página atual
+                        int total_size = snprintf(NULL, 0, "%s", results[j - 1]) + 1;
+                        char* formatted_string = malloc(total_size);
+                        snprintf(formatted_string, total_size, "%s", results[j - 1]);
+                        mvwprintw(win, 6 + (j - 1) % resultsPerPage, 1, "%s", formatted_string);
+                        free(formatted_string);
+                    }
+                }
+            else {
+                mvwprintw(win, 19, 1, "press 'u' to go up");
+                mvwprintw(win, 19, 47, "press 'd' to go down");
+                for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx -1)< nArgs; j++) {
+                    // Exibir apenas resultados que pertencem à página atual
+                    int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
+                    char* formatted_string = malloc(total_size);
+                    snprintf(formatted_string, total_size, "%s", results[j + startIdx - 1]);
+                    mvwprintw(win, 6 + (j - scrollStart) % resultsPerPage, 1, "%s", formatted_string);
+                    free(formatted_string);
+                }
+            }
+            }
+        }
+        else mvwprintw(win, 5 , 3, "Nothing to show");
+
+        drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
+
+        ch = getch();
+
+        switch (ch){
+            case KEY_MOUSE:
+                if (getmouse(&event) == OK) {
+                    // Verifica se o clique do mouse ocorreu dentro de uma opção
+                    for (int i = 0; i < MAX_OPTIONS; i++) {
+                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
+                            (event.y == get_y_B(options[i]))) {
+                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                            break; // perceber melhor o comportamento do rato
+                        }
+                    }
+                }
+                break;
+            case KEY_UP:
+                selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                break;
+            case KEY_DOWN:
+                selectedOption = (selectedOption + 1) % MAX_OPTIONS;
+                break;
+            case KEY_LEFT:
+                selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
+                break;
+            case KEY_RIGHT:
+                selectedOption = (selectedOption + 1) % MAX_OPTIONS;
+                break;
+            case '\n':
+                selectedOption = selectedOption  % MAX_OPTIONS;
+                char* option = get_label_B(options[selectedOption]);
+
+                if (strcmp(option, " < ") == 0) {
+                    if (output != NULL){
+                        currentPage = (currentPage - 2 + nPages) % nPages + 1;
+                        pageSize = 12;
+                        scrollStart = 1;
+                        scrollEnd = pageSize;
+                    }
+                }
+
+                if (strcmp(option, " > ") == 0){
+                    if (output != NULL){
+                        currentPage = (currentPage) % nPages + 1;
+                        pageSize = 12;
+                        scrollStart = 1;
+                        scrollEnd = pageSize;
+                    }
+                }
+
+                if (strcmp(option, "[Try Again]") == 0){
+                    werase(win);
+                    wrefresh(win);
+                    endwin();
+                    solver(settings);
+                    exit(0);
+                }
+
+                if (strcmp(option, "[Home]") == 0){
+                    werase(win);
+                    wrefresh(win);
+                    endwin();
+                    home(settings);
+                    exit(0);
+                }
+
+                if (strcmp(option, "[Go Back]") == 0){
+                    werase(win);
+                    wrefresh(win);
+                    endwin();
+                    settingsConfig(settings);
+                    exit(0);
+                }
+                break;
+        }
+
+        // Atualiza as opções na tela
+        drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
+    }
+
+    delwin(win);
+    endwin();
+}
+

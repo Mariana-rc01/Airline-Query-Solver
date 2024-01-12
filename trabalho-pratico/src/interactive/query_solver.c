@@ -120,8 +120,9 @@ void solver(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -268,8 +269,9 @@ void query1W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
                         curs_set(0); // Esconde o cursor
                         noecho();    // Desabilita a exibição do texto digitado
@@ -304,8 +306,9 @@ void query1W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (has_spaces(id)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a ID without spaces");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "ID", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a ID without spaces");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -326,7 +329,7 @@ void query1W(SETTINGS settings){
                         werase(win);
                         wrefresh(win);
                         endwin();
-                        query_results(settings,1,result);
+                        query_results(settings,1,result, args);
                         exit(0);
                     }
                     else{
@@ -410,7 +413,7 @@ void query2W(SETTINGS settings){
     query1W, query2W, query3W, query4W, query5W,
     query6W, query7W, query8W, query9W, query10W};
 
-    char** args = malloc(2 * sizeof(char*));
+    char** args = malloc(3 * sizeof(char*));
     args[0] = NULL;
     args[1] = NULL;
 
@@ -467,8 +470,9 @@ void query2W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
                         curs_set(0); // Esconde o cursor
                         noecho();    // Desabilita a exibição do texto digitado
@@ -503,8 +507,9 @@ void query2W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (has_spaces(id)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a ID without spaces");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "User ID", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a ID without spaces");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -535,11 +540,14 @@ void query2W(SETTINGS settings){
                         //realiza a query
                         args[1] = get_label_B(options[color]);
                         if (strcmp(args[1], "Both") == 0) args[1] = NULL;
+                        else if (strcmp(args[1], "Flights") == 0) args[1] = "flights";
+                        else args[1] = "reservations";
+
                         void* result = query2(get_catalog_S(settings),args);
                         werase(win);
                         wrefresh(win);
                         endwin();
-                        query_results(settings,2,result);
+                        query_results(settings,2,result,args);
                         exit(0);
                     }
                     else{
@@ -676,8 +684,10 @@ void query3W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
+
                         }
                         curs_set(0); // Esconde o cursor
                         noecho();    // Desabilita a exibição do texto digitado
@@ -712,8 +722,9 @@ void query3W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (has_spaces(id)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a ID without spaces");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Hotel ID", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a ID without spaces");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -734,7 +745,7 @@ void query3W(SETTINGS settings){
                         werase(win);
                         wrefresh(win);
                         endwin();
-                        query_results(settings,1,result);
+                        query_results(settings,3,result,args);
                         exit(0);
                     }
                     else{
@@ -871,8 +882,9 @@ void query4W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
                         curs_set(0); // Esconde o cursor
                         noecho();    // Desabilita a exibição do texto digitado
@@ -907,8 +919,9 @@ void query4W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (has_spaces(id)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a ID without spaces");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Hotel ID", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a ID without spaces");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -929,7 +942,7 @@ void query4W(SETTINGS settings){
                         werase(win);
                         wrefresh(win);
                         endwin();
-                        query_results(settings,1,result);
+                        query_results(settings,4,result,args);
                         exit(0);
                     }
                     else{
@@ -1071,8 +1084,9 @@ void query5W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
                         curs_set(0); // Esconde o cursor
                         noecho();    // Desabilita a exibição do texto digitado
@@ -1107,8 +1121,9 @@ void query5W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!validate_airports(id)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid airport :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Airport name", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid airport :)");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -1133,7 +1148,7 @@ void query5W(SETTINGS settings){
 
                     char id[200] = " ";
 
-                    while (!validate_date_timeless(id)){
+                    while (!validate_date_time(id)){
 
                         curs_set(1); // Mostra o cursor
                         echo();      // Habilita a exibição do texto digitado
@@ -1141,10 +1156,11 @@ void query5W(SETTINGS settings){
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, id, 1024);
 
                         // Verifica se a string contém apenas números
-                        if (!validate_date_timeless(id)) {
+                        if (!validate_date_time(id)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Date Format: YYYY/MM/DD");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Begin date", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "YYYY/MM/DD HH:MM:SS");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -1169,7 +1185,7 @@ void query5W(SETTINGS settings){
 
                     char id[200] = " ";
 
-                    while (!validate_date_timeless(id)){
+                    while (!validate_date_time(id)){
 
                         curs_set(1); // Mostra o cursor
                         echo();      // Habilita a exibição do texto digitado
@@ -1177,10 +1193,11 @@ void query5W(SETTINGS settings){
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, id, 1024);
 
                         // Verifica se a string contém apenas números
-                        if (!validate_date_timeless(id)) {
+                        if (!validate_date_time(id)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Date Format: YYYY/MM/DD");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "End date", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "YYYY/MM/DD HH:MM:SS");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -1223,7 +1240,7 @@ void query5W(SETTINGS settings){
                         werase(win);
                         wrefresh(win);
                         endwin();
-                        query_results(settings,5,result);
+                        query_results(settings,5,result,args);
                         exit(0);
                     }
                 }
@@ -1351,8 +1368,9 @@ void query6W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
                         curs_set(0); // Esconde o cursor
                         noecho();    // Desabilita a exibição do texto digitado
@@ -1387,8 +1405,9 @@ void query6W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(id) || strlen(id) != 4) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Year Format: YYYY :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Year", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Year Format: YYYY :)");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -1423,8 +1442,9 @@ void query6W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(id)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Top N", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a number :)");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -1467,7 +1487,7 @@ void query6W(SETTINGS settings){
                         werase(win);
                         wrefresh(win);
                         endwin();
-                        query_results(settings,6,result);
+                        query_results(settings,6,result,args);
                         exit(0);
                     }
                 }
@@ -1508,7 +1528,7 @@ void query7W(SETTINGS settings){
 
     MEVENT event;
     int ch;
-    char* title = "Query Solver 6";
+    char* title = "Query Solver 7";
 
     int MAX_OPTIONS = 4;
 
@@ -1594,8 +1614,9 @@ void query7W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
                         curs_set(0); // Esconde o cursor
                         noecho();    // Desabilita a exibição do texto digitado
@@ -1630,8 +1651,9 @@ void query7W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(id)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Top N", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a number :)");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -1663,7 +1685,7 @@ void query7W(SETTINGS settings){
                         werase(win);
                         wrefresh(win);
                         endwin();
-                        query_results(settings,7,result);
+                        query_results(settings,7,result,args);
                         exit(0);
                     }
                 }
@@ -1793,15 +1815,16 @@ void query8W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
                         curs_set(0); // Esconde o cursor
                         noecho();    // Desabilita a exibição do texto digitado
 
                     }
 
-                    drawFloatMenu(floatWin, "Query ID", floatMenu1, 2);
+                    drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
 
                     destroyFloatMenu(floatWin);
                     //vai para a função de cada query
@@ -1829,8 +1852,9 @@ void query8W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (has_spaces(id)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a ID without spaces");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Hotel ID", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a ID without spaces");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -1865,8 +1889,9 @@ void query8W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!validate_date_timeless(id)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Date Format: YYYY/MM/DD");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Begin date", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Date Format: YYYY/MM/DD");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -1881,7 +1906,7 @@ void query8W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "End date") == 0){
-                                        //Menu flutuante 1
+                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert end date: ", 1,2),
@@ -1901,8 +1926,9 @@ void query8W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!validate_date_timeless(id)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Date Format: YYYY/MM/DD");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "End date", floatMenu1, 2);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Date Format: YYYY/MM/DD");
                         }
 
                         curs_set(0); // Esconde o cursor
@@ -1945,7 +1971,7 @@ void query8W(SETTINGS settings){
                         werase(win);
                         wrefresh(win);
                         endwin();
-                        query_results(settings,8,result);
+                        query_results(settings,8,result,args);
                         exit(0);
                     }
                 }
@@ -2070,15 +2096,16 @@ void query9W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
                         curs_set(0); // Esconde o cursor
                         noecho();    // Desabilita a exibição do texto digitado
 
                     }
 
-                    drawFloatMenu(floatWin, "Query ID", floatMenu1, 2);
+                    drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
 
                     destroyFloatMenu(floatWin);
                     //vai para a função de cada query
@@ -2113,11 +2140,11 @@ void query9W(SETTINGS settings){
                 if (strcmp(option, "[Run]") == 0){
                     if (args[0] != NULL){
                         //realiza a query
-                        void* result = query1(get_catalog_S(settings),args);
+                        void* result = query9(get_catalog_S(settings),args);
                         werase(win);
                         wrefresh(win);
                         endwin();
-                        query_results(settings,1,result);
+                        query_results(settings,9,result,args);
                         exit(0);
                     }
                     else{
@@ -2169,7 +2196,7 @@ void query10W(SETTINGS settings){
 
     MEVENT event;
     int ch;
-    char* title = "Query Solver 5";
+    char* title = "Query Solver 10";
     int color = 0;
 
     int MAX_OPTIONS = 5;
@@ -2257,15 +2284,16 @@ void query10W(SETTINGS settings){
                         // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
                             // Exibe uma mensagem de erro e não permite salvar
-                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
-                            refresh();
+                            wclear(floatWin);
+                            drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
+                            mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
                         curs_set(0); // Esconde o cursor
                         noecho();    // Desabilita a exibição do texto digitado
 
                     }
 
-                    drawFloatMenu(floatWin, "Query ID", floatMenu1, 2);
+                    drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
 
                     destroyFloatMenu(floatWin);
                     //vai para a função de cada query
@@ -2292,7 +2320,8 @@ void query10W(SETTINGS settings){
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 15, id, 1024);
 
-                        refresh();
+                        wclear(floatWin);
+                        drawFloatMenu(floatWin, "Year", floatMenu1, 3);
 
                         curs_set(0); // Esconde o cursor
                         noecho();    // Desabilita a exibição do texto digitado
@@ -2324,7 +2353,8 @@ void query10W(SETTINGS settings){
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, id, 1024);
 
-                        refresh();
+                        wclear(floatWin);
+                        drawFloatMenu(floatWin, "Month", floatMenu1, 3);
 
                         curs_set(0); // Esconde o cursor
                         noecho();    // Desabilita a exibição do texto digitado
@@ -2355,7 +2385,7 @@ void query10W(SETTINGS settings){
                         werase(win);
                         wrefresh(win);
                         endwin();
-                        query_results(settings,10,result);
+                        query_results(settings,10,result,args);
                         exit(0);
                     }
                 }

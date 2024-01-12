@@ -43,6 +43,8 @@ void set_nOutputs_S(SETTINGS setts, int n);
 
 void set_catalog_S(SETTINGS setts);
 
+void set_nQueries_S(SETTINGS setts, int n);
+
 char* get_datasetPath_S(SETTINGS setts);
 
 int get_changedPath_S(SETTINGS setts);
@@ -54,6 +56,8 @@ int get_nPages_S(SETTINGS setts);
 int get_nOutputs_S(SETTINGS setts);
 
 MANAGER get_catalog_S(SETTINGS setts);
+
+int get_nQueries_S(SETTINGS setts);
 
 void interactive(void);
 

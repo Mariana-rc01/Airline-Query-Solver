@@ -23,11 +23,23 @@
 #define QUERY_RESULT_H
 
 #include "menuNdata/interactive.h"
+#include "IO/output.h"
 #include "utils/utils_i.h"
+#include "utils/utils.h"
 #include "interactive/settings_config.h"
 #include "interactive/instructions.h"
 #include "interactive/query_solver.h"
 
-void query_results(SETTINGS settings, int id, void* output);
+typedef void (*format_func)(SETTINGS, int, void*, char**);
+
+void query_results(SETTINGS settings, int id, void* output, char** args);
+
+void txtFormat(SETTINGS settings, int id, void* output, char** args);
+
+void oneByOne(SETTINGS settings, int id, void* output, char** args);
+
+void numberPage(SETTINGS settings, int id, void* output, char** args);
+
+void outputsPage(SETTINGS settings, int id, void* output, char** args);
 
 #endif
