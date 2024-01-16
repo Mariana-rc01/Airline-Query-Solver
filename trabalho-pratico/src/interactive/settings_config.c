@@ -63,6 +63,12 @@ void settingsConfig(SETTINGS settings){
         create_button("--------------- Output Configuration ----------------", 1,5)
     };
 
+    wattron(win, COLOR_PAIR(4));
+    mvwprintw(win, 3, 4+strlen("Select Dataset Path"), "%s",get_datasetPath_S(settings));
+    mvwprintw(win, 11, 5+strlen("Number of pages"), "%d",get_nPages_S(settings));
+    mvwprintw(win, 13, 5+strlen("Ouputs per page"), "%d",get_nOutputs_S(settings));
+    wattroff(win, COLOR_PAIR(4));
+
     int selectedOption = 0;
     int color = get_output_S(settings);
 
@@ -127,6 +133,9 @@ void settingsConfig(SETTINGS settings){
                     set_changedPath_S(settings,1);
 
                     destroyFloatMenu(floatWin);
+                    wattron(win, COLOR_PAIR(4));
+                    mvwprintw(win, 3, 4+strlen("Select Dataset Path"), "%s",get_datasetPath_S(settings));
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "TXT Format") == 0){
@@ -176,6 +185,9 @@ void settingsConfig(SETTINGS settings){
                     drawFloatMenu(floatWin, "Number of pages", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
+                    wattron(win, COLOR_PAIR(4));
+                    mvwprintw(win, 11, 5+strlen("Number of pages"), "%d",get_nPages_S(settings));
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "Outputs per page") == 0){
@@ -216,6 +228,9 @@ void settingsConfig(SETTINGS settings){
                     drawFloatMenu(floatWin, "Number of Outputs", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
+                    wattron(win, COLOR_PAIR(4));
+                    mvwprintw(win, 13, 5+strlen("Ouputs per page"), "%d",get_nOutputs_S(settings));
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "[Run]") == 0){
@@ -269,6 +284,11 @@ void settingsConfig(SETTINGS settings){
         for (int i = 0; i < 2; i++) {
             mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
         }
+        wattron(win, COLOR_PAIR(4));
+        mvwprintw(win, 3, 4+strlen("Select Dataset Path"), "%s",get_datasetPath_S(settings));
+        mvwprintw(win, 11, 5+strlen("Number of pages"), "%d",get_nPages_S(settings));
+        mvwprintw(win, 13, 5+strlen("Ouputs per page"), "%d",get_nOutputs_S(settings));
+        wattroff(win, COLOR_PAIR(4));
     }
 
     delwin(win);

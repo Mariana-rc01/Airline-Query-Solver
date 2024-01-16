@@ -26,18 +26,6 @@
 #include <ncurses.h>
 #include <string.h>
 
-/*
-done - ver primeiro o que o utilizador escolheu, caso tenha sido txt format, mostrar apenas uma mensagem
-- acho que dá para fazer genérico para todas as queries
-done - txt format
-- one by one
-done - per page by pages
-done - per page by outputs
-done - fazer botoes e meter tudo bonito
-done - a única que tem especificidade é a query 1 que é um array com as impressões
-done - as restantes queries é só preciso imprimir o array linha a linha
-*/
-
 void query_results(SETTINGS settings, int id, void* output, char** args){
 
     int optionFormat = get_output_S(settings);
@@ -57,7 +45,7 @@ void txtFormat(SETTINGS settings, int id, void* output, char** args){
     mousemask(ALL_MOUSE_EVENTS, NULL);
 
 
-    WINDOW* win = newwin(20,55,0,0);
+    WINDOW* win = newwin(20,78,0,0);
     refresh();
 
     MEVENT event;
@@ -68,22 +56,39 @@ void txtFormat(SETTINGS settings, int id, void* output, char** args){
 
     BUTTONS options[3] = {
         create_button("[Try Again]",2,15),
-        create_button("[Home]",25,15),
-        create_button("[Go Back]",55-strlen("[Go Back]")-2,15)
+        create_button("[Home]",38,15),
+        create_button("[Go Back]",78-strlen("[Go Back]")-2,15)
     };
 
     int selectedOption = 0;
     int color = 0;
 
+    char* info[10] = {
+        "1",
+        "id;date[;type]",
+        "rating",
+        "id;begin_date;end_date;user_id;rating;total_price",
+        "id;schedule_departure_date;destination;airline;plane_model",
+        "name;passengers",
+        "name;median",
+        "revenue",
+        "id;name",
+        "(year|month|day);users;flights;passengers;unique_passengers;reservations"
+    };
+
     if (id == 1 || id == 3 || id == 4 || id == 7 || id == 9){
         mvwprintw(win, 1, 1, "Query ID: %d; arg: %s", id, args[0]);
+        mvwprintw(win, 2, 1, "Output info: %s", info[id-1]);
     }
     else if (id == 2 || id == 6 || id == 10){
         if (args[1] == NULL) args[1] = "Both";
         mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s", id, args[0], args[1]);
+        mvwprintw(win, 3, 1, "Output info: %s", info[id-1]);
     }
-    else // 5 e 8
+    else{ // 5 e 8
         mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s, arg3: %s", id, args[0], args[1], args[2]);
+        mvwprintw(win, 3, 1, "Output info: %s", info[id-1]);
+    }
 
     //criar ficheiro txt
 
@@ -97,7 +102,7 @@ void txtFormat(SETTINGS settings, int id, void* output, char** args){
     }
     fclose(output_file);
 
-    mvwprintw(win, 4, 1, "---------------------- Results --------------------");
+    mvwprintw(win, 4, 1, "------------------------------------ Results --------------------------------");
     mvwprintw(win, 5, 1, "Text file created successfully in Resultados:");
     mvwprintw(win, 6, 1, "      command%d_output.txt.", n);
 
@@ -178,22 +183,27 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
     mousemask(ALL_MOUSE_EVENTS, NULL);
 
 
-    WINDOW* win = newwin(23,70,0,0);
+    WINDOW* win = newwin(23,78,0,0);
     refresh();
 
     MEVENT event;
     int ch;
     char* title = "Query Results";
 
-    int MAX_OPTIONS = 3;
+    int MAX_OPTIONS = 5;
 
-    BUTTONS options[3] = {
+    BUTTONS options[5] = {
+        create_button(" < ",38,19),
+        create_button(" > ",41,19),
         create_button("[Try Again]",2,21),
-        create_button("[Home]",35,21),
-        create_button("[Go Back]",70-strlen("[Go Back]")-2,21)
+        create_button("[Home]",38,21),
+        create_button("[Go Back]",78-strlen("[Go Back]")-2,21)
     };
 
     int selectedOption = 0;
+
+    drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
+
 
     int q = get_nQueries_S(settings);
 
@@ -206,32 +216,45 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
         nArgs = ourAtoi(results[0]);
     }
 
-    int pageSize = 12;
-    int scrollStart = 1;
-    int scrollEnd = pageSize;
-    int resultsPerPage = 1;
+    int resultsPerPage = 12;
+    int nPages = 1;
     int n = 1;
+    int verify = 0;
 
-    ch = 'c';
+    char* info[10] = {
+        "1",
+        "id;date[;type]",
+        "rating",
+        "id;begin_date;end_date;user_id;rating;total_price",
+        "id;schedule_departure_date;destination;airline;plane_model",
+        "name;passengers",
+        "name;median",
+        "revenue",
+        "id;name",
+        "(year|month|day);users;flights;passengers;unique_passengers;reservations"
+    };
 
     while (1) {
         wclear(win);
 
         if (id == 1 || id == 3 || id == 4 || id == 7 || id == 9){
             mvwprintw(win, 1, 1, "Query ID: %d; arg: %s", id, args[0]);
+            mvwprintw(win, 2, 1, "Output info: %s", info[id-1]);
         }
         else if (id == 2 || id == 6 || id == 10){
             if (args[1] == NULL) args[1] = "Both";
             mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s", id, args[0], args[1]);
+            mvwprintw(win, 3, 1, "Output info: %s", info[id-1]);
         }
-        else // 5 e 8
+        else{ // 5 e 8
             mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s, arg3: %s", id, args[0], args[1], args[2]);
+            mvwprintw(win, 3, 1, "Output info: %s", info[id-1]);
+        }
 
-        mvwprintw(win, 4, 1, "------------------------------- Results ---------------------------");
+        mvwprintw(win, 4, 1, "------------------------------------ Results --------------------------------");
 
         if (output != NULL){
-            mvwprintw(win, 19, 22, "Press c to see the next result");
-            mvwprintw(win, 5, 1, "---   ---   ---   ---   ---  -- Page %d ---   ---   ---   ---   ---  --", currentPage);
+            mvwprintw(win, 5, 1, "--  ---   ---   ---   ---   ---  --- Page %d ---   ---   ---   ---   ---  ---", currentPage);
             if (id == 1){
                 if (currentPage == 1){
                     for (int i = 0; i < 8; i++) {
@@ -245,45 +268,6 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                 }
                 mvwprintw(win, 19, 22, "All outputs are displayed :)  ");
             }
-            else if (id == 2){
-                if (ch == 'c' && n < nArgs + 1){
-                int startIdx = 2 + n * (currentPage - 1);
-                int endIdx = startIdx + n;
-
-                // Limites do array
-                if (endIdx > nArgs + 2) {
-                    endIdx = nArgs + 2;
-                }
-
-                // Descida na página
-                if (ch == 'u' && scrollStart > 1) {
-                    scrollStart--;
-                    scrollEnd--;
-                }
-
-                if (ch == 'd' && scrollEnd < endIdx) {
-                    scrollStart++;
-                    scrollEnd++;
-                }
-
-                // CNão ultrapassa os limites do array
-                if (scrollEnd > endIdx) {
-                    scrollEnd = endIdx;
-                }
-
-                mvwprintw(win, 19, 1, "Press 'u' to go up");
-                mvwprintw(win, 19, 47, "Press 'd' to go down");
-                for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx - 1)< nArgs; j++) {
-                    // Exibir apenas resultados que pertencem à página atual
-                    int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
-                    char* formatted_string = malloc(total_size);
-                    snprintf(formatted_string, total_size, "%s", results[j + startIdx - 1]);
-                    mvwprintw(win, 6 + (j - scrollStart) % resultsPerPage, 1, "%s", formatted_string);
-                    free(formatted_string);
-                }
-                n++;
-                }
-            }
             else if (id == 3 || id == 8){
                 char* result = (char*)output;
                 if (currentPage == 1){
@@ -295,46 +279,58 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                 }
                 mvwprintw(win, 19, 22, "All outputs are displayed :)  ");
             }
-            else{
+            else if (id == 2) {
+                int startIdx = (currentPage == 1) ? 2 : 2 + 12*(currentPage - 1);
+                int endIdx = (currentPage == 1) ? 2 + startIdx + n : startIdx + n;
 
-            int startIdx = 1 + resultsPerPage * (currentPage - 1);
-            int endIdx = startIdx + resultsPerPage;
+                if (verify == 1){
+                    endIdx = startIdx + 12;
+                }
 
-            // Certificar-se de não ultrapassar os limites do array
-            if (endIdx > nArgs + 1) {
-                endIdx = nArgs + 1;
+                // Limites do array
+                if (endIdx > nArgs + 2) {
+                    endIdx = nArgs + 2;
+                    verify = 1;
+                }
+
+                for (int j = startIdx; j < endIdx ; j++) {
+                    // Exibir apenas resultados que pertencem à página atual
+                    int total_size = snprintf(NULL, 0, "%s", results[j]) + 1;
+                    char* formatted_string = malloc(total_size);
+                    snprintf(formatted_string, total_size, "%s", results[j]);
+                    mvwprintw(win, 6 + (j-2) % resultsPerPage, 1, "%s", formatted_string);
+                    free(formatted_string);
+                }
             }
+            else {
 
-            // Adicione esta parte para calcular a rolagem na página
-            if (ch == 'u' && scrollStart > 1) {
-                scrollStart--;
-                scrollEnd--;
-            }
+                int startIdx = (currentPage == 1) ? 1 : 1 + 12*(currentPage - 1);
+                int endIdx = (currentPage == 1) ? 1 + startIdx + n : startIdx + n;
 
-            if (ch == 'd' && scrollEnd < endIdx) {
-                scrollStart++;
-                scrollEnd++;
-            }
+                if (verify == 1){
+                    endIdx = startIdx + 12;
+                }
 
-            // Certifique-se de não ultrapassar os limites do array
-            if (scrollEnd > endIdx) {
-                scrollEnd = endIdx;
-            }
+                // Certificar-se de não ultrapassar os limites do array
+                if (endIdx > nArgs + 1) {
+                    endIdx = nArgs + 1;
+                    verify = 1;
+                }
 
-            mvwprintw(win, 19, 1, "Press 'u' to go up");
-            mvwprintw(win, 19, 47, "Press 'd' to go down");
-            for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx -1)< nArgs; j++) {
-                // Exibir apenas resultados que pertencem à página atual
-                int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
-                char* formatted_string = malloc(total_size);
-                snprintf(formatted_string, total_size, "%s", results[j + startIdx - 1]);
-                mvwprintw(win, 6 + (j - scrollStart) % resultsPerPage, 1, "%s", formatted_string);
-                free(formatted_string);
+                for (int j = startIdx; j < endIdx ; j++) {
+                    // Exibir apenas resultados que pertencem à página atual
+                    int total_size = snprintf(NULL, 0, "%s", results[j]) + 1;
+                    char* formatted_string = malloc(total_size);
+                    snprintf(formatted_string, total_size, "%s", results[j]);
+                    mvwprintw(win, 6 + (j-1) % resultsPerPage, 1, "%s", formatted_string);
+                    free(formatted_string);
+                }
             }
-
-            }
+            if ((id != 1 && id != 3 && id != 8) && verify == 1)
+                mvwprintw(win, 19, 1, "All outputs are displayed");
+            else mvwprintw(win, 19, 1, "Press c to see the next");
         }
-        else mvwprintw(win, 5 , 3, "Nothing to show");
+        else mvwprintw(win, 5, 3, "Nothing to show");
 
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
 
@@ -369,6 +365,18 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                 selectedOption = selectedOption  % MAX_OPTIONS;
                 char* option = get_label_B(options[selectedOption]);
 
+                if (strcmp(option, " < ") == 0) {
+                    if (output != NULL){
+                        currentPage = (currentPage - 2 + nPages) % nPages + 1;
+                    }
+                }
+
+                if (strcmp(option, " > ") == 0){
+                    if (output != NULL){
+                        currentPage = (currentPage) % nPages + 1;
+                    }
+                }
+
                 if (strcmp(option, "[Try Again]") == 0){
                     werase(win);
                     wrefresh(win);
@@ -393,19 +401,25 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                     exit(0);
                 }
                 break;
+
+            case 'c':
+                if (n < nArgs && output != NULL) {
+                    n++;
+                    if (n == resultsPerPage) {
+                        currentPage++;
+                        nPages++;
+                        n = 0;
+                    }
+                }
+                break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
-
-        if (ch == 'c' && n >= nArgs) {
-            mvwprintw(win, 19, 1, "All outputs are displayed");
-        }
     }
 
     delwin(win);
     endwin();
-
 }
 
 void numberPage(SETTINGS settings, int id, void* output, char** args){
@@ -416,7 +430,7 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
     mousemask(ALL_MOUSE_EVENTS, NULL);
 
 
-    WINDOW* win = newwin(23,70,0,0);
+    WINDOW* win = newwin(23,78,0,0);
     refresh();
 
     MEVENT event;
@@ -426,11 +440,11 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
     int MAX_OPTIONS = 5;
 
     BUTTONS options[5] = {
-        create_button(" < ",35,19),
-        create_button(" > ",38,19),
+        create_button(" < ",38,19),
+        create_button(" > ",41,19),
         create_button("[Try Again]",2,21),
-        create_button("[Home]",35,21),
-        create_button("[Go Back]",70-strlen("[Go Back]")-2,21)
+        create_button("[Home]",38,21),
+        create_button("[Go Back]",78-strlen("[Go Back]")-2,21)
     };
 
     int selectedOption = 0;
@@ -455,23 +469,40 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
 
     ch = 'u';
 
+    char* info[10] = {
+        "1",
+        "id;date[;type]",
+        "rating",
+        "id;begin_date;end_date;user_id;rating;total_price",
+        "id;schedule_departure_date;destination;airline;plane_model",
+        "name;passengers",
+        "name;median",
+        "revenue",
+        "id;name",
+        "(year|month|day);users;flights;passengers;unique_passengers;reservations"
+    };
+
     while (1) {
         wclear(win);
 
         if (id == 1 || id == 3 || id == 4 || id == 7 || id == 9){
             mvwprintw(win, 1, 1, "Query ID: %d; arg: %s", id, args[0]);
+            mvwprintw(win, 2, 1, "Output info: %s", info[id-1]);
         }
         else if (id == 2 || id == 6 || id == 10){
             if (args[1] == NULL) args[1] = "Both";
             mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s", id, args[0], args[1]);
+            mvwprintw(win, 3, 1, "Output info: %s", info[id-1]);
         }
-        else // 5 e 8
+        else{ // 5 e 8
             mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s, arg3: %s", id, args[0], args[1], args[2]);
+            mvwprintw(win, 3, 1, "Output info: %s", info[id-1]);
+        }
 
-        mvwprintw(win, 4, 1, "------------------------------- Results ---------------------------");
+        mvwprintw(win, 4, 1, "------------------------------------ Results --------------------------------");
 
         if (output != NULL){
-            mvwprintw(win, 5, 1, "---   ---   ---   ---   ---  -- Page %d ---   ---   ---   ---   ---  --", currentPage);
+            mvwprintw(win, 5, 1, "--  ---   ---   ---   ---   ---  --- Page %d ---   ---   ---   ---   ---  ---", currentPage);
 
             if (id == 1){
                 if (currentPage == 1){
@@ -522,7 +553,7 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
                 }
                 else {
                     mvwprintw(win, 19, 1, "press 'u' to go up");
-                    mvwprintw(win, 19, 47, "press 'd' to go down");
+                    mvwprintw(win, 19, 55, "press 'd' to go down");
                     for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx - 1)< nArgs; j++) {
                         // Exibir apenas resultados que pertencem à página atual
                         int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
@@ -582,7 +613,7 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
                 }
             else {
                 mvwprintw(win, 19, 1, "press 'u' to go up");
-                mvwprintw(win, 19, 47, "press 'd' to go down");
+                mvwprintw(win, 19, 55, "press 'd' to go down");
                 for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx -1)< nArgs; j++) {
                     // Exibir apenas resultados que pertencem à página atual
                     int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
@@ -688,8 +719,7 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
     keypad(stdscr, TRUE);
     mousemask(ALL_MOUSE_EVENTS, NULL);
 
-
-    WINDOW* win = newwin(23,70,0,0);
+    WINDOW* win = newwin(23,78,0,0);
     refresh();
 
     MEVENT event;
@@ -699,11 +729,11 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
     int MAX_OPTIONS = 5;
 
     BUTTONS options[5] = {
-        create_button(" < ",35,19),
-        create_button(" > ",38,19),
+        create_button(" < ",38,19),
+        create_button(" > ",41,19),
         create_button("[Try Again]",2,21),
-        create_button("[Home]",35,21),
-        create_button("[Go Back]",70-strlen("[Go Back]")-2,21)
+        create_button("[Home]",38,21),
+        create_button("[Go Back]",78-strlen("[Go Back]")-2,21)
     };
 
     int selectedOption = 0;
@@ -728,23 +758,40 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
 
     ch = 'u';
 
+    char* info[10] = {
+        "1",
+        "id;date[;type]",
+        "rating",
+        "id;begin_date;end_date;user_id;rating;total_price",
+        "id;schedule_departure_date;destination;airline;plane_model",
+        "name;passengers",
+        "name;median",
+        "revenue",
+        "id;name",
+        "(year|month|day);users;flights;passengers;unique_passengers;reservations"
+    };
+
     while (1) {
         wclear(win);
 
         if (id == 1 || id == 3 || id == 4 || id == 7 || id == 9){
             mvwprintw(win, 1, 1, "Query ID: %d; arg: %s", id, args[0]);
+            mvwprintw(win, 2, 1, "Output info: %s", info[id-1]);
         }
         else if (id == 2 || id == 6 || id == 10){
             if (args[1] == NULL) args[1] = "Both";
             mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s", id, args[0], args[1]);
+            mvwprintw(win, 3, 1, "Output info: %s", info[id-1]);
         }
-        else // 5 e 8
+        else{ // 5 e 8
             mvwprintw(win, 1, 1, "Query ID: %d; arg1: %s, arg2: %s, arg3: %s", id, args[0], args[1], args[2]);
+            mvwprintw(win, 3, 1, "Output info: %s", info[id-1]);
+        }
 
-        mvwprintw(win, 4, 1, "------------------------------- Results ---------------------------");
+        mvwprintw(win, 4, 1, "------------------------------------ Results --------------------------------");
 
         if (output != NULL){
-            mvwprintw(win, 5, 1, "---   ---   ---   ---   ---  -- Page %d ---   ---   ---   ---   ---  --", currentPage);
+            mvwprintw(win, 5, 1, "--  ---   ---   ---   ---   ---  --- Page %d ---   ---   ---   ---   ---  ---", currentPage);
 
             if (id == 1){
                 if (currentPage == 1){
@@ -795,7 +842,7 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
                 }
                 else {
                     mvwprintw(win, 19, 1, "press 'u' to go up");
-                    mvwprintw(win, 19, 47, "press 'd' to go down");
+                    mvwprintw(win, 19, 55, "press 'd' to go down");
                     for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx - 1)< nArgs; j++) {
                         // Exibir apenas resultados que pertencem à página atual
                         int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
@@ -855,7 +902,7 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
                 }
             else {
                 mvwprintw(win, 19, 1, "press 'u' to go up");
-                mvwprintw(win, 19, 47, "press 'd' to go down");
+                mvwprintw(win, 19, 55, "press 'd' to go down");
                 for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx -1)< nArgs; j++) {
                     // Exibir apenas resultados que pertencem à página atual
                     int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;

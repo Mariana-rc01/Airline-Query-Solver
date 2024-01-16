@@ -216,6 +216,10 @@ void query1W(SETTINGS settings){
     char** args = malloc(2 * sizeof(char*));
     args[0] = NULL;
 
+    wattron(win, COLOR_PAIR(4));
+    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("ID"), "%s",args[0]);
+    wattroff(win, COLOR_PAIR(4));
+
     while (1){
         ch = getch();
         switch (ch){
@@ -320,6 +324,10 @@ void query1W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[0] = strdup(id);
+
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("ID"), "%s",args[0]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "[Run]") == 0){
@@ -360,6 +368,9 @@ void query1W(SETTINGS settings){
         for (int i = 0; i < 3; i++) {
             mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
         }
+        wattron(win, COLOR_PAIR(4));
+        if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("ID"), "%s",args[0]);
+        wattroff(win, COLOR_PAIR(4));
     }
 
     delwin(win);
@@ -416,6 +427,10 @@ void query2W(SETTINGS settings){
     char** args = malloc(3 * sizeof(char*));
     args[0] = NULL;
     args[1] = NULL;
+
+    wattron(win, COLOR_PAIR(4));
+    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("User ID"), "%s",args[0]);
+    wattroff(win, COLOR_PAIR(4));
 
     while (1){
         ch = getch();
@@ -521,6 +536,10 @@ void query2W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[0] = strdup(id);
+
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("User ID"), "%s",args[0]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "Flights") == 0){
@@ -578,6 +597,9 @@ void query2W(SETTINGS settings){
         for (int i = 0; i < 3; i++) {
             mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
         }
+        wattron(win, COLOR_PAIR(4));
+        if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("User ID"), "%s",args[0]);
+        wattroff(win, COLOR_PAIR(4));
     }
 
     delwin(win);
@@ -631,6 +653,10 @@ void query3W(SETTINGS settings){
     args[0] = NULL;
     args[1] = NULL;
 
+    wattron(win, COLOR_PAIR(4));
+    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
+    wattroff(win, COLOR_PAIR(4));
+
     while (1){
         ch = getch();
         switch (ch){
@@ -736,6 +762,9 @@ void query3W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[0] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "[Run]") == 0){
@@ -776,6 +805,9 @@ void query3W(SETTINGS settings){
         for (int i = 0; i < 3; i++) {
             mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
         }
+        wattron(win, COLOR_PAIR(4));
+        if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
+        wattroff(win, COLOR_PAIR(4));
     }
 
     delwin(win);
@@ -828,6 +860,9 @@ void query4W(SETTINGS settings){
     char** args = malloc(2 * sizeof(char*));
     args[0] = NULL;
     args[1] = NULL;
+    wattron(win, COLOR_PAIR(4));
+    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
+    wattroff(win, COLOR_PAIR(4));
 
     while (1){
         ch = getch();
@@ -933,6 +968,9 @@ void query4W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[0] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "[Run]") == 0){
@@ -973,6 +1011,9 @@ void query4W(SETTINGS settings){
         for (int i = 0; i < 3; i++) {
             mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
         }
+        wattron(win, COLOR_PAIR(4));
+        if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
+        wattroff(win, COLOR_PAIR(4));
     }
 
     delwin(win);
@@ -1030,6 +1071,12 @@ void query5W(SETTINGS settings){
     args[0] = NULL;
     args[1] = NULL;
     args[2] = NULL;
+
+    wattron(win, COLOR_PAIR(4));
+    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Airport name"), "%s",args[0]);
+    if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Begin date"), "%s",args[1]);
+    if (args[2] != NULL) mvwprintw(win, 13, 3+strlen("End date"), "%s",args[2]);
+    wattroff(win, COLOR_PAIR(4));
 
     while (1){
         ch = getch();
@@ -1135,6 +1182,9 @@ void query5W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[0] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Airport name"), "%s",args[0]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "Begin date") == 0){
@@ -1172,6 +1222,9 @@ void query5W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[1] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Begin date"), "%s",args[1]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "End date") == 0){
@@ -1209,6 +1262,9 @@ void query5W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[2] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[2] != NULL) mvwprintw(win, 13, 3+strlen("End date"), "%s",args[2]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "[Run]") == 0){
@@ -1260,6 +1316,11 @@ void query5W(SETTINGS settings){
         for (int i = 0; i < 4; i++) {
             mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
         }
+        wattron(win, COLOR_PAIR(4));
+        if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Airport name"), "%s",args[0]);
+        if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Begin date"), "%s",args[1]);
+        if (args[2] != NULL) mvwprintw(win, 13, 3+strlen("End date"), "%s",args[2]);
+        wattroff(win, COLOR_PAIR(4));
     }
 
     delwin(win);
@@ -1314,6 +1375,10 @@ void query6W(SETTINGS settings){
     char** args = malloc(2 * sizeof(char*));
     args[0] = NULL;
     args[1] = NULL;
+    wattron(win, COLOR_PAIR(4));
+    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Year"), "%s",args[0]);
+    if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("N"), "%s",args[1]);
+    wattroff(win, COLOR_PAIR(4));
 
     while (1){
         ch = getch();
@@ -1419,6 +1484,9 @@ void query6W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[0] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Year"), "%s",args[0]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "N") == 0){
@@ -1456,6 +1524,9 @@ void query6W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[1] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("N"), "%s",args[1]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "[Run]") == 0){
@@ -1507,6 +1578,10 @@ void query6W(SETTINGS settings){
         for (int i = 0; i < 4; i++) {
             mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
         }
+        wattron(win, COLOR_PAIR(4));
+        if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Year"), "%s",args[0]);
+        if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("N"), "%s",args[1]);
+        wattroff(win, COLOR_PAIR(4));
     }
 
     delwin(win);
@@ -1560,6 +1635,9 @@ void query7W(SETTINGS settings){
     char** args = malloc(2 * sizeof(char*));
     args[0] = NULL;
     args[1] = NULL;
+    wattron(win, COLOR_PAIR(4));
+    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("N"), "%s",args[0]);
+    wattroff(win, COLOR_PAIR(4));
 
     while (1){
         ch = getch();
@@ -1665,6 +1743,9 @@ void query7W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[0] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("N"), "%s",args[0]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "[Run]") == 0){
@@ -1705,6 +1786,9 @@ void query7W(SETTINGS settings){
         for (int i = 0; i < 4; i++) {
             mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
         }
+        wattron(win, COLOR_PAIR(4));
+        if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("N"), "%s",args[0]);
+        wattroff(win, COLOR_PAIR(4));
     }
 
     delwin(win);
@@ -1761,6 +1845,12 @@ void query8W(SETTINGS settings){
     args[0] = NULL;
     args[1] = NULL;
     args[2] = NULL;
+
+    wattron(win, COLOR_PAIR(4));
+    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
+    if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Begin date"), "%s",args[1]);
+    if (args[2] != NULL) mvwprintw(win, 13, 3+strlen("End date"), "%s",args[2]);
+    wattroff(win, COLOR_PAIR(4));
 
     while (1){
         ch = getch();
@@ -1866,6 +1956,9 @@ void query8W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[0] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "Begin date") == 0){
@@ -1903,6 +1996,9 @@ void query8W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[1] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Begin date"), "%s",args[1]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "End date") == 0){
@@ -1940,6 +2036,9 @@ void query8W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[2] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[2] != NULL) mvwprintw(win, 13, 3+strlen("End date"), "%s",args[2]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "[Run]") == 0){
@@ -1991,6 +2090,11 @@ void query8W(SETTINGS settings){
         for (int i = 0; i < 4; i++) {
             mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
         }
+        wattron(win, COLOR_PAIR(4));
+        if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
+        if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Begin date"), "%s",args[1]);
+        if (args[2] != NULL) mvwprintw(win, 13, 3+strlen("End date"), "%s",args[2]);
+        wattroff(win, COLOR_PAIR(4));
     }
 
     delwin(win);
@@ -2042,6 +2146,10 @@ void query9W(SETTINGS settings){
 
     char** args = malloc(2 * sizeof(char*));
     args[0] = NULL;
+
+    wattron(win, COLOR_PAIR(4));
+    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Prefix"), "%s",args[0]);
+    wattroff(win, COLOR_PAIR(4));
 
     while (1){
         ch = getch();
@@ -2135,6 +2243,9 @@ void query9W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[0] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Prefix"), "%s",args[0]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "[Run]") == 0){
@@ -2175,6 +2286,9 @@ void query9W(SETTINGS settings){
         for (int i = 0; i < 3; i++) {
             mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
         }
+        wattron(win, COLOR_PAIR(4));
+        if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Prefix"), "%s",args[0]);
+        wattroff(win, COLOR_PAIR(4));
     }
 
     delwin(win);
@@ -2230,6 +2344,11 @@ void query10W(SETTINGS settings){
     char** args = malloc(2 * sizeof(char*));
     args[0] = NULL;
     args[1] = NULL;
+
+    wattron(win, COLOR_PAIR(4));
+    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Year"), "%s",args[0]);
+    if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Month"), "%s",args[1]);
+    wattroff(win, COLOR_PAIR(4));
 
     while (1){
         ch = getch();
@@ -2332,6 +2451,9 @@ void query10W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[0] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Year"), "%s",args[0]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "Month") == 0){
@@ -2365,6 +2487,9 @@ void query10W(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     args[1] = strdup(id);
+                    wattron(win, COLOR_PAIR(4));
+                    if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Month"), "%s",args[1]);
+                    wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "[Run]") == 0){
@@ -2405,6 +2530,10 @@ void query10W(SETTINGS settings){
         for (int i = 0; i < 4; i++) {
             mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
         }
+        wattron(win, COLOR_PAIR(4));
+        if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Year"), "%s",args[0]);
+        if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Month"), "%s",args[1]);
+        wattroff(win, COLOR_PAIR(4));
     }
 
     delwin(win);
