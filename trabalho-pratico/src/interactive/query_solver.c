@@ -2450,7 +2450,7 @@ void query10W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Year", floatMenu1, 3);
 
                     destroyFloatMenu(floatWin);
-                    args[0] = strdup(id);
+                    if (strcmp(id, "0") != 0) args[0] = strdup(id);
                     wattron(win, COLOR_PAIR(4));
                     if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Year"), "%s",args[0]);
                     wattroff(win, COLOR_PAIR(4));
@@ -2462,13 +2462,13 @@ void query10W(SETTINGS settings){
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert month: ", 1,2),
                         create_button("[Save & Go Back]", 35,4),
-                        create_button("Month Format: MM or 0 for none",1,get_y_B(floatMenu1[0]) + 2)
+                        create_button("Month Format: MM or 00 for none",1,get_y_B(floatMenu1[0]) + 2)
                     };
                     drawFloatMenu(floatWin, "Month", floatMenu1, 3);
 
                     char id[200] = "a";
 
-                    while (!isNumber(id) || (ourAtoi(id) < 0 || ourAtoi(id) > 12)){
+                    while (!isNumber(id) || (ourAtoi(id) < 0 || ourAtoi(id) > 12) || strlen(id) != 2){
 
                         curs_set(1); // Mostra o cursor
                         echo();      // Habilita a exibição do texto digitado
@@ -2486,7 +2486,7 @@ void query10W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Month", floatMenu1, 3);
 
                     destroyFloatMenu(floatWin);
-                    args[1] = strdup(id);
+                    if (strcmp(id, "00") != 0) args[1] = strdup(id);
                     wattron(win, COLOR_PAIR(4));
                     if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Month"), "%s",args[1]);
                     wattroff(win, COLOR_PAIR(4));

@@ -29,6 +29,7 @@ struct reservations_catalog {
     GHashTable* reserv; /**< Hash table to store reservation records. */
     GHashTable* user; /**< Hash table to store all user's reservations*/
     GHashTable* hotel; /**< Hash table to store all hotel's reservations.*/
+    GHashTable* reservNumber;
 };
 
 RESERV_C create_reservations_c(void){
@@ -37,6 +38,7 @@ RESERV_C create_reservations_c(void){
     new->reserv = g_hash_table_new_full(g_str_hash, g_str_equal, free, (GDestroyNotify)free_reservations);
     new->user = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, NULL);
     new->hotel = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, NULL);
+    new->reservNumber = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
 
     return new;
 }
@@ -67,6 +69,24 @@ void insert_hotelsReservations_c(char* reserv_id, RESERV_C catalog, char* key){
         g_ptr_array_add(reservations, reserv_id);
         g_hash_table_insert(catalog->hotel, key, reservations);
     }
+}
+
+void insert_reservNumber_c(RESERV_C catalog, char* key, char* day){
+    int dayN = ourAtoi(day);
+    if (g_hash_table_contains(catalog->reservNumber, key)){
+        int* days = g_hash_table_lookup(catalog->reservNumber, key);
+        days[dayN - 1]++;
+        free(key);
+    } else{
+        int* days = g_new(int, 31);
+        memset(days, 0, sizeof(int) * 31);
+        days[dayN - 1]++;
+        g_hash_table_insert(catalog->reservNumber, key, days);
+    }
+}
+
+int* get_reservNumber_c(RESERV_C catalog, char* key){
+    return g_hash_table_lookup(catalog->reservNumber, key);
 }
 
 RESERV get_reservations_by_id(RESERV_C catalog, char* id){
@@ -121,6 +141,17 @@ void free_reservations_c(RESERV_C catalog){
     }
 
     g_hash_table_destroy(catalog->hotel);
+
+    // Free user hash table
+    GHashTableIter iter2;
+    gpointer reserv_id, reservations;
+    g_hash_table_iter_init(&iter2, catalog->reservNumber);
+    while (g_hash_table_iter_next(&iter2, &reserv_id, &reservations)) {
+        // Free the GPtrArray associated with each user
+        int* reservations_array = reservations;
+        g_free(reservations_array);
+    }
+    g_hash_table_destroy(catalog->reservNumber);
 
     free(catalog);
 }

@@ -23,6 +23,7 @@
 #define USERS_C_H
 
 #include "entities/users.h"
+#include "utils/utils.h"
 
 #include <glib.h>
 
@@ -48,6 +49,10 @@ USERS_C create_user_c(void);
  * @param catalog The user catalog.
  */
 void insert_user_c(USER user, USERS_C catalog, char* key);
+
+void insert_userNumber_c(USERS_C catalog, char* key, char* day);
+
+int* get_userNumber_c(USERS_C catalog, char* key);
 
 /**
  * @brief Retrieves a user by user ID from the users catalog.

@@ -57,6 +57,10 @@ void insert_usersReservations_c(char* reserv_id, RESERV_C catalog, char* key);
 
 void insert_hotelsReservations_c(char* reserv_id, RESERV_C catalog, char* key);
 
+void insert_reservNumber_c(RESERV_C catalog, char* key, char* day);
+
+int* get_reservNumber_c(RESERV_C catalog, char* key);
+
 /**
  * @brief Gets a reservation record by its ID.
  *

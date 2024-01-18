@@ -207,6 +207,15 @@ int build_flight(char** flight_fields, void* catalog){
 
     insert_flight_c(flight,flightsC,flight->id);
 
+    char year[6];
+    char month[3];
+    char day[3];
+    sscanf(flight_fields[6], "%4[^/]/%2[^/]/%2[^/]", year, month, day);
+
+    char* concatenated = concat(year, month);
+
+    insert_flightNumber_c(flightsC, concatenated, day);
+
     return 1;
 }
 

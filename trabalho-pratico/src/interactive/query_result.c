@@ -279,7 +279,7 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                 }
                 mvwprintw(win, 19, 22, "All outputs are displayed :)  ");
             }
-            else if (id == 2) {
+            else if (id == 2 || id == 10) {
                 int startIdx = (currentPage == 1) ? 2 : 2 + 12*(currentPage - 1);
                 int endIdx = (currentPage == 1) ? 2 + startIdx + n : startIdx + n;
 
@@ -516,7 +516,7 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
                     }
                 }
             }
-            else if (id == 2){
+            else if (id == 2 || id == 10){
                 int startIdx = 2 + resultsPerPage * (currentPage - 1);
                 int endIdx = startIdx + resultsPerPage;
 
@@ -805,7 +805,7 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
                     }
                 }
             }
-            else if (id == 2){
+            else if (id == 2 || id == 10){
                 int startIdx = 2 + resultsPerPage * (currentPage - 1);
                 int endIdx = startIdx + resultsPerPage;
 

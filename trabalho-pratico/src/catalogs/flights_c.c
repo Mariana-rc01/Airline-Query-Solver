@@ -30,18 +30,38 @@
  */
 struct flights_catalog {
     GHashTable* flights; /**< Hash table that maps flight IDs to flight objects.*/
+    GHashTable* flightsNumber;
 };
 
 FLIGHTS_C create_flight_c(void){
     FLIGHTS_C new_catalog = malloc(sizeof(struct flights_catalog));
 
     new_catalog->flights = g_hash_table_new_full(g_str_hash, g_str_equal, free, (GDestroyNotify) free_flight);
+    new_catalog->flightsNumber = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
 
     return new_catalog;
 }
 
 void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog, char* key){
     g_hash_table_insert(catalog->flights, key, flight);
+}
+
+void insert_flightNumber_c(FLIGHTS_C catalog, char* key, char* day){
+    int dayN = ourAtoi(day);
+    if (g_hash_table_contains(catalog->flightsNumber, key)){
+        int *days = g_hash_table_lookup(catalog->flightsNumber, key);
+        days[dayN - 1]++;
+        free(key);
+    } else{
+        int* days = g_new(int, 31);
+        memset(days, 0, sizeof(int) * 31);
+        days[dayN - 1]++;
+        g_hash_table_insert(catalog->flightsNumber, key, days);
+    }
+}
+
+int* get_flightNumber_c(FLIGHTS_C catalog, char* key){
+    return g_hash_table_lookup(catalog->flightsNumber, key);
 }
 
 FLIGHT get_flight_by_id(FLIGHTS_C catalog, char* id){
@@ -66,5 +86,16 @@ void remove_flight_from_hash_table(FLIGHTS_C flights, char* flight_id) {
 
 void free_flight_c(FLIGHTS_C catalog){
     g_hash_table_destroy(catalog->flights);
+
+    // Free user hash table
+    GHashTableIter iter2;
+    gpointer reserv_id, reservations;
+    g_hash_table_iter_init(&iter2, catalog->flightsNumber);
+    while (g_hash_table_iter_next(&iter2, &reserv_id, &reservations)) {
+        // Free the GPtrArray associated with each user
+        int* reservations_array = reservations;
+        g_free(reservations_array);
+    }
+    g_hash_table_destroy(catalog->flightsNumber);
     free(catalog);
 }

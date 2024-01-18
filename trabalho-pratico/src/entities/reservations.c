@@ -232,6 +232,15 @@ int build_reservations(char** reservations_fields, void* catalog){
 
     update_user_c(usersC,reservations_fields[1],cost);
 
+    char year[6];
+    char month[3];
+    char day[3];
+    sscanf(reservations_fields[7], "%4[^/]/%2[^/]/%2[^/]", year, month, day);
+
+    char* concatenated = concat(year, month);
+
+    insert_reservNumber_c(reservsC, concatenated, day);
+
     return 1;
 }
 

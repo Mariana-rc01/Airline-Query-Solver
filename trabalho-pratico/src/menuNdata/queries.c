@@ -939,7 +939,7 @@ int sort_users(const void* a, const void* b) {
 
 void* query9(MANAGER manager,char** args) {
     USERS_C catalog = get_users_c(manager);
-    GHashTable* users= get_hash_table_users(catalog);
+    GHashTable* users = get_hash_table_users(catalog);
     GHashTableIter iter;
     gpointer key, value;
     char* prefix = args[0];
@@ -1000,9 +1000,255 @@ void* query9(MANAGER manager,char** args) {
 }
 
 
-void* query10(MANAGER catalog,char** args){
-    (void) catalog;
-    return args;
+typedef struct {
+    int date;
+    int users;
+    int flights;
+    int passengers;
+    int unique_passengers;
+    int reservations;
+} Result10;
+
+int compareResults(const void* a, const void* b) {
+    return ((Result10*)a)->date > ((Result10*)b)->date;
+}
+
+void addArrayToHashTable(GPtrArray *array, GHashTable *hashTable) {
+    for (guint i = 0; i < array->len; i++) {
+        gchar *username = g_ptr_array_index(array, i);
+        g_hash_table_replace(hashTable, username, NULL);
+    }
+}
+
+void* query10(MANAGER manager,char** args){
+    USERS_C catalogU = get_users_c(manager);
+    RESERV_C catalogR = get_reserv_c(manager);
+    FLIGHTS_C catalogF = get_flights_c(manager);
+    PASS_C catalogP = get_pass_c(manager);
+    char* year = args[0];
+    char* month = args[1];
+
+    Result10* result = malloc(sizeof(Result10) * 31);
+    for (int i = 0; i < 31; i++) {
+        result[i].date = 0;
+        result[i].users = 0;
+        result[i].flights = 0;
+        result[i].passengers = 0;
+        result[i].unique_passengers = 0;
+        result[i].reservations = 0;
+    }
+    int count = 0;
+
+    if (year == NULL){
+        //1ª opção (Não indicam nada)
+        for (int k = 2010; k < 2024; k++) {
+            char year[6];
+            sprintf(year, "%d", k);
+
+            // Inicializa as contagens para cada ano
+            int total_user = 0, total_flight = 0, total_reserv = 0, total_pass = 0, total_passU = 0;
+            GHashTable* uniqueUsers = g_hash_table_new(g_str_hash, g_str_equal);
+
+            for (int j = 0; j < 12; j++) {
+                char month[4];
+                if ((j + 1) < 10)
+                    sprintf(month, "0%d", (j + 1));
+                else
+                    sprintf(month, "%d", (j + 1));
+
+                char* date = concat(year, month);
+
+                int* users = get_userNumber_c(catalogU, date);
+                int* reservations = get_reservNumber_c(catalogR, date);
+                int* flights = get_flightNumber_c(catalogF, date);
+
+
+                int user = 0, flight = 0, reserv = 0, pass = 0, passU = 0;
+
+                for (int i = 1; i <= 31; i++) {
+                    char day[4];
+                    if (i < 10)
+                        sprintf(day, "0%d", i);
+                    else
+                        sprintf(day, "%d", i);
+
+                    char* data = concat(date, day);
+                    GPtrArray* passengers = get_passengers_c(catalogP, data);
+
+                    if (users != NULL) user += users[i - 1];
+                    if (flights != NULL) flight += flights[i - 1];
+                    if (reservations != NULL) reserv += reservations[i - 1];
+
+                    if (passengers != NULL) {
+                        pass += passengers->len;
+                        addArrayToHashTable(passengers, uniqueUsers);
+                    }
+
+                    free(data);
+                }
+
+                if (uniqueUsers != NULL) {
+                    passU = g_hash_table_size(uniqueUsers);
+                }
+
+                // Acumula os totais de cada ano
+                total_user += user;
+                total_flight += flight;
+                total_reserv += reserv;
+                total_pass += pass;
+                total_passU = passU;
+
+                free(date);
+            }
+
+            g_hash_table_destroy(uniqueUsers);
+
+            if (total_user != 0 || total_flight != 0 || total_reserv != 0 || total_pass != 0 || total_passU != 0) {
+                result[count].date = k;
+                result[count].users = total_user;
+                result[count].flights = total_flight;
+                result[count].passengers = total_pass;
+                result[count].unique_passengers = total_passU;
+                result[count].reservations = total_reserv;
+                count++;
+            }
+        }
+
+    }
+    else if (month == NULL){
+        //2ª opção (Indicam ano)
+        if(ourAtoi(year) > 2023 || ourAtoi(year) < 2010) return NULL;
+
+        for (int j = 0; j < 12; j++){
+            char month[4];
+            if ((j+1) < 10) sprintf(month, "0%d", (j+1));
+            else sprintf(month,"%d",(j+1));
+            char* date = concat(year,month);
+
+            int* users = get_userNumber_c(catalogU, date);
+            int* reservations = get_reservNumber_c(catalogR, date);
+            int* flights = get_flightNumber_c(catalogF, date);
+
+            GHashTable *uniqueUsers;
+            uniqueUsers = g_hash_table_new(g_str_hash, g_str_equal);
+
+            int user = 0, flight = 0, reserv = 0, pass = 0, passU = 0;
+
+            int i = 1;
+            while (i <= 31){
+                char day[4];
+                if (i < 10) sprintf(day, "0%d", i);
+                else sprintf(day,"%d", i);
+                char* data = concat(date,day);
+                GPtrArray* passengers = get_passengers_c(catalogP, data);
+                if (users != NULL) user += users[i-1];
+                if (flights != NULL) flight += flights[i-1];
+                if (reservations != NULL) reserv += reservations[i-1];
+
+                if (passengers != NULL) {
+                    pass += passengers->len;
+                    addArrayToHashTable(passengers, uniqueUsers);
+                }
+                free(data);
+                i++;
+            }
+            if (uniqueUsers != NULL) passU = g_hash_table_size(uniqueUsers);
+            g_hash_table_destroy(uniqueUsers);
+
+            if (user != 0 || flight != 0 || reserv != 0 || pass != 0 || passU != 0){
+
+                result[count].date = j+1;
+                result[count].users = user;
+                result[count].flights = flight;
+                result[count].passengers = pass;
+                result[count].unique_passengers = passU;
+                result[count].reservations = reserv;
+
+                count++;
+            }
+            free(date);
+        }
+
+    }
+    else {
+        //3ª opção (Indicam ano e mês)
+        if(ourAtoi(year) > 2023 || ourAtoi(year) < 2010 ||
+           ourAtoi(month) < 1 || ourAtoi(month) > 12) return NULL;
+
+        char* date = concat(year,month);
+
+        int* users = get_userNumber_c(catalogU, date);
+        int* reservations = get_reservNumber_c(catalogR, date);
+        int* flights = get_flightNumber_c(catalogF, date);
+
+        for (int i = 0; i < 31; i++){
+            char day[4];
+            if ((i+1) < 10) sprintf(day, "0%d", (i+1));
+            else sprintf(day,"%d", (i+1));
+
+            char* data = concat(date,day);
+            GPtrArray* passengers = get_passengers_c(catalogP, data);
+            int user = 0, flight = 0, reserv = 0, pass = 0, passU = 0;
+            if (users != NULL) user = users[i];
+            if (flights != NULL) flight = flights[i];
+            if (reservations != NULL) reserv = reservations[i];
+            if (passengers != NULL) {
+                pass = passengers->len;
+                GHashTable *uniqueUsers;
+                uniqueUsers = g_hash_table_new(g_str_hash, g_str_equal);
+                addArrayToHashTable(passengers, uniqueUsers);
+                if (uniqueUsers != NULL) passU = g_hash_table_size(uniqueUsers);
+                g_hash_table_destroy(uniqueUsers);
+            }
+            free(data);
+
+            if (user != 0 || flight != 0 || reserv != 0 || pass != 0 || passU != 0){
+                result[count].date = i+1;
+                result[count].users = user;
+                result[count].flights = flight;
+                result[count].passengers = pass;
+                result[count].unique_passengers = passU;
+                result[count].reservations = reserv;
+                count++;
+            }
+        }
+        free(date);
+    }
+
+    char** finalResult = malloc(sizeof(char*)*256);
+
+    finalResult[0] = int_to_string(count);
+    if (year == NULL) finalResult[1] = "year";
+    else if (month == NULL) finalResult[1] = "month";
+    else finalResult[1] = "day";
+
+    for (int j = 2; j < count+2; j++) {
+        int date = result[j-2].date;
+        int users = result[j-2].users;
+        int flights = result[j-2].flights;
+        int passengers = result[j-2].passengers;
+        int unique_passengers = result[j-2].unique_passengers;
+        int reservations = result[j-2].reservations;
+
+        int total_size = snprintf(NULL, 0,"%d;%d;%d;%d;%d;%d", date, users,
+        flights, passengers, unique_passengers, reservations) + 1;
+
+        // Alocatte memory to a formatted string
+        char* formatted_string = malloc(sizeof(char*)*total_size);
+
+        // Create fromatted string
+        snprintf(formatted_string, total_size,"%d;%d;%d;%d;%d;%d", date, users,
+        flights, passengers, unique_passengers, reservations);
+
+        finalResult[j] = formatted_string;
+    }
+
+    free(result);
+
+    return finalResult;
+    /*(void) manager;
+    (void) args;
+    return NULL;*/
 }
 
 void free_query(void* result, int query_id){
@@ -1104,7 +1350,7 @@ void free_query8(void* result){
 }
 
 void free_query9(void* result) {
-        if (result == NULL) {
+    if (result == NULL) {
         return;
     }
     char** resultF = (char**) result;
@@ -1116,5 +1362,14 @@ void free_query9(void* result) {
 }
 
 void free_query10(void* result){
-    (void) result;
+    if (result == NULL) {
+        return;
+    }
+    char** resultF = (char**) result;
+    int n = ourAtoi(resultF[0]);
+    free(resultF[0]);
+    for (int i = 2; i < n+2; i++) {
+        free(resultF[i]);
+    }
+    free(resultF);
 }

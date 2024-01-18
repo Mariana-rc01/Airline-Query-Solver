@@ -48,6 +48,10 @@ PASS_C create_passengers_c(void);
  */
 void insert_pass_user_c(char* flight_id, PASS_C catalog, char* key);
 
+void insert_passengers_c(PASS_C catalog, char* key, char* user);
+
+GPtrArray* get_passengers_c(PASS_C catalog, char* key);
+
 /**
  * @brief Retrieves the array of user IDs associated with a flight by flight ID.
  *

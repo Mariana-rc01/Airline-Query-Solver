@@ -168,5 +168,14 @@ int build_user(char  **user_fields, void *catalog){
 
     insert_user_c(user,usersC,user->id);
 
+    char year[6];
+    char month[3];
+    char day[3];
+    sscanf(user_fields[9], "%4[^/]/%2[^/]/%2[^/]", year, month, day);
+
+    char* concatenated = concat(year, month);
+
+    insert_userNumber_c(usersC, concatenated, day);
+
     return 1;
 }

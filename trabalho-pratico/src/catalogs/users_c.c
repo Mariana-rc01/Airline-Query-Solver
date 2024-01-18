@@ -27,17 +27,38 @@
  */
 struct users_catalog {
     GHashTable* users; /**< Hash table that maps user IDs to user objects. */
+    GHashTable* usersNumber; /**< Hash table that maps number of users for each year and month. */
 };
 
 USERS_C create_user_c(void){
     USERS_C new = malloc(sizeof(struct users_catalog));
 
     new->users = g_hash_table_new_full(g_str_hash, g_str_equal, free, (GDestroyNotify)free_user);
+    new->usersNumber = g_hash_table_new_full(g_str_hash, g_str_equal, free, NULL);
+
     return new;
 }
 
 void insert_user_c(USER user, USERS_C catalog, char* key){
     g_hash_table_insert(catalog->users, key, user);
+}
+
+void insert_userNumber_c(USERS_C catalog, char* key, char* day){
+    int dayN = ourAtoi(day);
+    if (g_hash_table_contains(catalog->usersNumber, key)){
+        int *days = g_hash_table_lookup(catalog->usersNumber, key);
+        days[dayN - 1]++;
+        free(key);
+    } else{
+        int* days = g_new(int, 31);
+        memset(days, 0, sizeof(int) * 31);
+        days[dayN - 1]++;
+        g_hash_table_insert(catalog->usersNumber, key, days);
+    }
+}
+
+int* get_userNumber_c(USERS_C catalog, char* key){
+    return g_hash_table_lookup(catalog->usersNumber, key);
 }
 
 USER get_user_by_id(USERS_C catalog, char* id){
@@ -54,6 +75,17 @@ void update_user_c(USERS_C catalog, char* id, double cost){
 
 void free_user_c(USERS_C catalog){
     g_hash_table_destroy(catalog->users);
+
+    // Free user hash table
+    GHashTableIter iter2;
+    gpointer reserv_id, reservations;
+    g_hash_table_iter_init(&iter2, catalog->usersNumber);
+    while (g_hash_table_iter_next(&iter2, &reserv_id, &reservations)) {
+        // Free the GPtrArray associated with each user
+        int* reservations_array = reservations;
+        g_free(reservations_array);
+    }
+    g_hash_table_destroy(catalog->usersNumber);
     free(catalog);
 }
 

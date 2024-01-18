@@ -380,16 +380,47 @@ void output_query9F(FILE* file, void* output){
             free(truncatedString);
         }
     }
-
 }
 
 void output_query10(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result_array = (char**)output;
+    int length = ourAtoi(result_array[0]);
+    for (int i = 2; i < length + 2; i++) {
+        if (i != (length+1)) fprintf(file, "%s\n", result_array[i]);
+        else {
+            result_array[i][strlen(result_array[i])] ='\0';
+            char *truncatedString = strndup(result_array[i], strlen(result_array[i]));
+            fprintf(file,"%s\n",truncatedString);
+            free(truncatedString);
+        }
+    }
 }
 
 void output_query10F(FILE* file, void* output){
-    (void) file;
-    (void) output;
+    char** result = (char**)output;
+    int length = ourAtoi(result[0]);
+    for(int i = 2; i < length + 2; i++){
+        char *token = strtok(result[i], ";");
+
+        fprintf(file, "--- %d ---\n", i-1);
+        if(token != NULL) {
+            fprintf(file, "%s: %s\n", result[1], token);
+        }
+        token = strtok(NULL, ";");
+        if(token != NULL) fprintf(file, "users: %s\n", token);
+        token = strtok(NULL,";");
+        if(token != NULL) fprintf(file, "flights: %s\n", token);
+        token = strtok(NULL,";");
+        if(token != NULL) fprintf(file, "passengers: %s\n", token);
+        token = strtok(NULL,";");
+        if(token != NULL) fprintf(file, "unique_passengers: %s\n", token);
+        token = strtok(NULL,";");
+        if (i != (length+1)){
+                fprintf(file,"reservations: %s\n",token);
+                fprintf(file,"\n");
+        } else {
+            fprintf(file,"reservations: %s\n",token);
+        }
+    }
 }
 

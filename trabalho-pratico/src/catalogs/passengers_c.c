@@ -27,12 +27,14 @@
  */
 struct passengers_catalog {
     GHashTable* users; /**< Hash table to store flights of users records. */
+    GHashTable* passengers;
 };
 
 PASS_C create_passengers_c(void){
     PASS_C new = malloc(sizeof(struct passengers_catalog));
 
     new->users = g_hash_table_new_full(g_str_hash, g_str_equal, free, free_ptr_array);
+    new->passengers = g_hash_table_new_full(g_str_hash, g_str_equal, free, free_ptr_array);
 
     return new;
 }
@@ -50,6 +52,22 @@ void insert_pass_user_c(char* flight_id, PASS_C catalog, char* key){
     }
 }
 
+void insert_passengers_c(PASS_C catalog, char* key, char* user){
+    if (g_hash_table_contains(catalog->passengers, key)){
+        GPtrArray* userArray = g_hash_table_lookup(catalog->passengers,key);
+        g_ptr_array_add(userArray, user);
+        free(key);
+    } else{
+        GPtrArray* userArray = g_ptr_array_new();
+        g_ptr_array_add(userArray, user);
+        g_hash_table_insert(catalog->passengers, key, userArray);
+    }
+}
+
+GPtrArray* get_passengers_c(PASS_C catalog, char* key){
+    return g_hash_table_lookup(catalog->passengers, key);
+}
+
 GPtrArray* get_user_array_by_id(PASS_C catalog, char* id){
     return g_hash_table_lookup(catalog->users, id);
 }
@@ -62,6 +80,7 @@ int get_user_array_number_id(PASS_C catalog, char* id){
 
 void free_passengers_c(PASS_C catalog){
     g_hash_table_destroy(catalog->users);
+    g_hash_table_destroy(catalog->passengers);
 
     free(catalog);
 }

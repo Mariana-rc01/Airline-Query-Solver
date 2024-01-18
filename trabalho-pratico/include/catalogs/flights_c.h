@@ -49,6 +49,9 @@ FLIGHTS_C create_flight_c(void);
  */
 void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog, char* key);
 
+void insert_flightNumber_c(FLIGHTS_C catalog, char* key, char* day);
+
+int* get_flightNumber_c(FLIGHTS_C catalog, char* key);
 /**
  * @brief Get a flight by its ID.
  *

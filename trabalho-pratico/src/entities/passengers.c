@@ -47,6 +47,7 @@ int build_passengers(char** passengers_fields, void* catalog){
 
     char* copy_flight = strdup(passengers_fields[0]);
     char* copy_user = strdup(passengers_fields[1]);
+    char* copy_user1 = strdup(passengers_fields[1]);
 
     FLIGHT flight = get_flight_by_id(flightsC, copy_flight);
 
@@ -77,6 +78,19 @@ int build_passengers(char** passengers_fields, void* catalog){
 
     insert_pass_user_c(copy_flight,passengersC, copy_user);
     update_flight_c(flightsC,copy_flight);
+
+    char* flightD = get_flight_schedule_departure_date(flight);
+    char year[6];
+    char month[3];
+    char day[3];
+    sscanf(flightD, "%4[^/]/%2[^/]/%2[^/]", year, month, day);
+    free(flightD);
+
+    char* concatenated = concat(year, month);
+    char* key = concat(concatenated,day);
+    insert_passengers_c(passengersC, key, copy_user1);
+    free(concatenated);
+    //free(key);
 
     return 1;
 }
