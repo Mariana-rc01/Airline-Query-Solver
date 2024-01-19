@@ -69,10 +69,14 @@ $(OBJDIR)/%.o: src/%.c $(HEADERS) $(OBJDIRS)
 	@mkdir -p $(shell dirname $@)
 	${CC} -c -o $@ $< ${CFLAGS} -Iinclude
 
+$(OBJDIR)/%.o: src/%.c $(HEADERS) $(OBJDIRS)
+	@mkdir -p $(shell dirname $@)
+	${CC} -c -o $@ $< ${CFLAGS} -Iinclude
+
 $(EXE_NAME): $(OBJECTS)
 	$(CC) -o $@ $^ ${LIBS}
 
-$(TEST_EXE_NAME): $(OBJECTS) test/*.c
+$(TEST_EXE_NAME): $(OBJECTS)
 	$(CC) -o $@ $^ ${LIBS}
 
 $(DOCSDIR): $(SOURCES) $(HEADERS) README.md

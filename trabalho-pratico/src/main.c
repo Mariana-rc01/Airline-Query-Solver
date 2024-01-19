@@ -28,12 +28,12 @@
 #include "IO/input.h"
 #include "menuNdata/batch.h"
 #include "menuNdata/interactive.h"
-
+#include "menuNdata/interactive.h"
+#include "test/test.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 
 /**
  * @brief Function main that receives the arguments from the command line
@@ -45,17 +45,19 @@
  */
 
 int main(int argc, char** argsv){
-    if(argc == 3) {
-        batch(argsv[1], argsv[2]);
 
+    if(argc == 3 && strcmp("./programa-principal",argsv[0]) == 0) {
+        batch(argsv[1], argsv[2]);
         return 0;
     }
-    if(argc == 1) {
+    else if(argc == 1 && strcmp("./programa-principal",argsv[0]) == 0) {
         interactive();
         return 0;
     }
-    else{
-        printf("Invalid number of arguments, must be either 1 or 3\n");
+    else if (argc == 4 && strcmp("./programa-testes",argsv[0]) == 0)
+        test(argsv[1], argsv[2], argsv[3]);
+    else {
+        printf("Invalid number of arguments, must be either 1, 3 or 4\n");
         return 0;
     }
 }

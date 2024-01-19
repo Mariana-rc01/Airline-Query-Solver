@@ -1246,9 +1246,6 @@ void* query10(MANAGER manager,char** args){
     free(result);
 
     return finalResult;
-    /*(void) manager;
-    (void) args;
-    return NULL;*/
 }
 
 void free_query(void* result, int query_id){
