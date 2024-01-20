@@ -27,7 +27,7 @@ void query9_test(MANAGER manager){
     FILE* analysisTest = fopen("Resultados/analysisTest.txt", "a");
 
     char** args = malloc(sizeof(char*));
-    args[0] = "Julia";
+    args[0] = "Mateus Sim";
 
     struct timespec start, end;
     double elapsed;
@@ -35,9 +35,24 @@ void query9_test(MANAGER manager){
     void* result = query9(manager, args);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 9\n");
+    fprintf(analysisTest, "Query 9 - Small user list\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
     free_query9(result);
+    free(args);
+// ----------------------------------------------------------------------------
+
+    char** args2 = malloc(sizeof(char*));
+    args2[0] = "Alexand";
+
+    clock_gettime(CLOCK_REALTIME, &start);
+    void* result2 = query9(manager, args2);
+    clock_gettime(CLOCK_REALTIME, &end);
+    elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    fprintf(analysisTest, "Query 9 - Big user list\n");
+    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
+    free_query9(result2);
+    free(args2);
 
     fclose(analysisTest);
+
 }

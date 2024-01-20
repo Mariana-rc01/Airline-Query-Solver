@@ -26,17 +26,44 @@
 void query7_test(MANAGER manager){
     FILE* analysisTest = fopen("Resultados/analysisTest.txt", "a");
 
-    char** args = malloc(sizeof(char*));
-    args[0] = "64";
+    char** argsSmall = malloc(sizeof(char*));
+    argsSmall[0] = "10";
 
     struct timespec start, end;
     double elapsed;
     clock_gettime(CLOCK_REALTIME, &start);
-    void* result = query7(manager, args);
+    void* resultSmall = query7(manager, argsSmall);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 7\n");
+    fprintf(analysisTest, "Query 7 - N = 10\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
-    free_query7(result);
+    free_query7(resultSmall);
+    free(argsSmall);
+// ----------------------------------------------------------------------------
+
+    char** argsMedium = malloc(sizeof(char*));
+    argsMedium[0] = "100";
+
+    clock_gettime(CLOCK_REALTIME, &start);
+    void* resultMedium = query7(manager, argsMedium);
+    clock_gettime(CLOCK_REALTIME, &end);
+    elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    fprintf(analysisTest, "Query 7 - N = 100\n");
+    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
+    free_query7(resultMedium);
+    free(argsMedium);
+// ----------------------------------------------------------------------------
+
+    char** argsBig = malloc(sizeof(char*));
+    argsBig[0] = "300";
+
+    clock_gettime(CLOCK_REALTIME, &start);
+    void* resultBig = query7(manager, argsBig);
+    clock_gettime(CLOCK_REALTIME, &end);
+    elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    fprintf(analysisTest, "Query 7 - N = 250\n");
+    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
+    free_query7(resultBig);
+    free(argsBig);
     fclose(analysisTest);
 }

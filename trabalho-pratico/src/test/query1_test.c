@@ -38,18 +38,20 @@ void query1_test(MANAGER manager){
     fprintf(analysisTest, "Query 1 - valid user\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
     free_query1(resultValidUser);
+    free(argsValidUser);
 
 // ----------------------------------------------------------------------------
-    char** argsInValidUser = malloc(sizeof(char*));
-    argsInValidUser[0] = "DGarcia429";
+    char** argsInvalidUser = malloc(sizeof(char*));
+    argsInvalidUser[0] = "DGarcia429";
 
     clock_gettime(CLOCK_REALTIME, &start);
-    void* resultInValidUser = query1(manager, argsInValidUser);
+    void* resultInValidUser = query1(manager, argsInvalidUser);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
     fprintf(analysisTest, "Query 1 - invalid user\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
     free_query1(resultInValidUser);
+    free(argsInvalidUser);
 
 // ----------------------------------------------------------------------------
     char** argsValidFlight = malloc(sizeof(char*));
@@ -62,6 +64,7 @@ void query1_test(MANAGER manager){
     fprintf(analysisTest, "Query 1 - valid flight\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
     free_query1(resultValidFlight);
+    free(argsValidFlight);
 
 // ----------------------------------------------------------------------------
     char** argsInvalidFlight = malloc(sizeof(char*));
@@ -74,6 +77,7 @@ void query1_test(MANAGER manager){
     fprintf(analysisTest, "Query 1 - invalid flight\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
     free_query1(resultInvalidFlight);
+    free(argsInvalidFlight);
 
 // ----------------------------------------------------------------------------
     char** argsValidReservation = malloc(sizeof(char*));
@@ -86,6 +90,7 @@ void query1_test(MANAGER manager){
     fprintf(analysisTest, "Query 1 - valid reservation\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
     free_query1(resultValidReservation);
+    free(argsValidReservation);
 
 // ----------------------------------------------------------------------------
     char** argsInvalidReservation = malloc(sizeof(char*));
@@ -98,6 +103,7 @@ void query1_test(MANAGER manager){
     fprintf(analysisTest, "Query 1 - invalid reservation\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
     free_query1(resultInvalidReservation);
+    free(argsInvalidReservation);
 
     fclose(analysisTest);
 
