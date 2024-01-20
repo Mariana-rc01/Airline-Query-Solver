@@ -38,7 +38,7 @@ void batch (char* path1, char* path2){
         return;
     }
 
-    if (execute_queries(manager_catalog,path2) == -1){
+    if (execute_queries(manager_catalog,path2,0) == -1){
         return;
     }
 

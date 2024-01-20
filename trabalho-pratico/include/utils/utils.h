@@ -191,4 +191,6 @@ char* double_to_string(double number);
 
 int has_spaces(char* str);
 
+void replace_lines_at_start(const char* file_name, const char* new_line1, const char* new_line2);
+
 #endif

@@ -22,8 +22,14 @@
 #include "test/test.h"
 
 #include <stdio.h>
+#include <time.h>
+#include <sys/resource.h>
 
 void test(char* pathD, char* pathI, char* pathO){
+    struct timespec start, end;
+    double elapsed;
+    clock_gettime(CLOCK_REALTIME, &start);
+
     USERS_C users_catalog = create_user_c();
     FLIGHTS_C flights_catalog = create_flight_c();
     RESERV_C reservations_catalog = create_reservations_c();
@@ -34,8 +40,45 @@ void test(char* pathD, char* pathI, char* pathO){
         printf("The provided dataset is not valid.\n");
         return;
     }
-    (void) pathI;
-    (void) pathO;
+
+    int n = execute_queries(manager_catalog,pathI, 1);
+
+    if (n == -1){
+        return;
+    }
+
+    compare_files(pathO, n);
+
+    clock_gettime(CLOCK_REALTIME, &end);
+    elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    struct rusage r_usage;
+    getrusage(RUSAGE_SELF, &r_usage);
+
+    char time[512];
+    sprintf(time, "Elapsed time: %.6f seconds", elapsed);
+    char memory[512];
+    sprintf(memory, "Memory usage: %ld KB\n", r_usage.ru_maxrss);
+
+    replace_lines_at_start("Resultados/analysis.txt", time, memory);
+
+    //Testes para cada query
+    clock_gettime(CLOCK_REALTIME, &start);
+
+    query1_test(manager_catalog);
+    //-> Restantes queries aqui <-
+
+    clock_gettime(CLOCK_REALTIME, &end);
+    elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    getrusage(RUSAGE_SELF, &r_usage);
+
+    char timeT[512];
+    sprintf(timeT, "Elapsed time: %.6f seconds", elapsed);
+    char memoryT[512];
+    sprintf(memoryT, "Memory usage: %ld KB\n", r_usage.ru_maxrss);
+
+    replace_lines_at_start("Resultados/analysisTest.txt", timeT, memoryT);
 
     free_manager_c(manager_catalog);
 }
+
+

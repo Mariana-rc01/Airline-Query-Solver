@@ -247,7 +247,7 @@ int dates_timespan ( char* begin, char* end) {
 
     free(begin);
     free(end);
-    
+
     result =  (dayE-dayB);
     return (result);
 }
@@ -262,7 +262,7 @@ int get_number_of_nights(RESERV reserv){
 
     free(begin);
     free(end);
-    
+
     return(dayE-dayB);
 
 }
@@ -285,4 +285,52 @@ int has_spaces(char* str){
         str++;
     }
     return 0;
+}
+
+void replace_lines_at_start(const char* file_name, const char* new_line1, const char* new_line2) {
+
+    FILE* original_file = fopen(file_name, "r");
+
+    if (original_file == NULL) {
+        perror("Error opening file for reading");
+        return;
+    }
+
+    FILE* new_stream = NULL;
+    char* buffer = NULL;
+    size_t size = 0;
+
+    new_stream = open_memstream(&buffer, &size);
+
+    if (new_stream == NULL) {
+        perror("Error creating memory stream");
+        fclose(original_file);
+        return;
+    }
+
+    fprintf(new_stream, "%s\n%s\n", new_line1, new_line2);
+
+    char line[256];
+    while (fgets(line, sizeof(line), original_file) != NULL) {
+        fprintf(new_stream, "%s", line);
+    }
+
+    // Close the files
+    fclose(original_file);
+    fclose(new_stream);
+
+    // Open the original file for writing
+    FILE* original_file_write = fopen(file_name, "w");
+
+    if (original_file_write == NULL) {
+        perror("Error opening file for writing");
+        free(buffer);
+        return;
+    }
+
+    fwrite(buffer, 1, size, original_file_write);
+
+    fclose(original_file_write);
+
+    free(buffer);
 }

@@ -21,6 +21,7 @@
 
 #include "IO/interpreter.h"
 
+#include <time.h>
 #include <stdio.h>
 
 void* parser_query(MANAGER catalog,char* line){
@@ -74,7 +75,7 @@ void* parser_query(MANAGER catalog,char* line){
     return result;
 }
 
-int execute_queries(MANAGER manager_catalog, char* path2){
+int execute_queries(MANAGER manager_catalog, char* path2, int flag){
 
     char *line = NULL;
     size_t lsize = 0;
@@ -83,11 +84,23 @@ int execute_queries(MANAGER manager_catalog, char* path2){
 
     FILE* queries_file = fopen(path2, "r");
     FILE* output_file;
+    struct timespec start, end;
+    double elapsed;
+    FILE* analysis_file = fopen("Resultados/analysis.txt", "w");
 
     while(getline(&line,&lsize, queries_file) != -1){
         int query_id;
         line[strlen(line)-1] = '\0';
+        if (flag == 1){
+            clock_gettime(CLOCK_REALTIME, &start);
+        }
         result = parser_query(manager_catalog, line);
+        if (flag == 1){
+            clock_gettime(CLOCK_REALTIME, &end);
+            elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+            fprintf(analysis_file, "Query: %s\n",line);
+            fprintf(analysis_file,"Elapsed time: %.6f seconds\n\n", elapsed);
+        }
         output_file = create_output_file(cmd_n);
         if (output_file == NULL) return -1;
 
@@ -108,5 +121,6 @@ int execute_queries(MANAGER manager_catalog, char* path2){
     }
     free(line);
     fclose(queries_file);
-    return 0;
+    fclose(analysis_file);
+    return cmd_n;
 }

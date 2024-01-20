@@ -64,6 +64,6 @@ void* parser_query(MANAGER catalog,  char* line);
  * @param path2 The path to the file containing queries to be executed.
  * @return 0 on success, -1 on failure.
  */
-int execute_queries(MANAGER manager_catalog, char* path2);
+int execute_queries(MANAGER manager_catalog, char* path2, int flag);
 
 #endif

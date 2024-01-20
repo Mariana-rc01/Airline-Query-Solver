@@ -1,5 +1,5 @@
 /**
- * @file test.h
+ * @file file_compare.h
  * @brief
  */
 
@@ -19,25 +19,11 @@
  *   limitations under the License.
  */
 
-#ifndef TEST_H
-#define TEST_H
+#ifndef FILE_COMPARE_H
+#define FILE_COMPARE_H
 
-#include "catalogs/manager_c.h"
-#include "entities/flights.h"
-#include "entities/passengers.h"
-#include "entities/reservations.h"
-#include "entities/users.h"
-#include "menuNdata/queries.h"
-#include "IO/parser.h"
-#include "IO/input.h"
-#include "IO/output.h"
 #include "utils/utils.h"
-#include "IO/interpreter.h"
-#include "menuNdata/batch.h"
 
-#include "test/file_compare.h"
-#include "test/query1_test.h"
-
-void test(char* pathD, char* pathI, char* pathO);
+void compare_files(char* pathO, int n);
 
 #endif

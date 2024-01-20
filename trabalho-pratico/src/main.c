@@ -30,10 +30,13 @@
 #include "menuNdata/interactive.h"
 #include "menuNdata/interactive.h"
 #include "test/test.h"
+#include "utils/utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <sys/resource.h>
 
 /**
  * @brief Function main that receives the arguments from the command line
@@ -46,19 +49,38 @@
 
 int main(int argc, char** argsv){
 
+    struct timespec start, end;
+    double elapsed;
+    clock_gettime(CLOCK_REALTIME, &start);
+
     if(argc == 3 && strcmp("./programa-principal",argsv[0]) == 0) {
         batch(argsv[1], argsv[2]);
-        return 0;
     }
     else if(argc == 1 && strcmp("./programa-principal",argsv[0]) == 0) {
         interactive();
+    }
+    else if (argc == 4 && strcmp("./programa-testes",argsv[0]) == 0){
+        test(argsv[1], argsv[2], argsv[3]);
         return 0;
     }
-    else if (argc == 4 && strcmp("./programa-testes",argsv[0]) == 0)
-        test(argsv[1], argsv[2], argsv[3]);
     else {
         printf("Invalid number of arguments, must be either 1, 3 or 4\n");
         return 0;
     }
+
+    clock_gettime(CLOCK_REALTIME, &end);
+    // Elapsed time
+    elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    struct rusage r_usage;
+    getrusage(RUSAGE_SELF, &r_usage);
+
+    char time[512];
+    sprintf(time, "Elapsed time: %.6f seconds", elapsed);
+    char memory[512];
+    sprintf(memory, "Memory usage: %ld KB\n", r_usage.ru_maxrss);
+
+    replace_lines_at_start("Resultados/analysis.txt", time, memory);
+
+    return 0;
 }
 

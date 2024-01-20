@@ -27,7 +27,6 @@
 #include <string.h>
 #include <locale.h>
 
-
 void* query1(MANAGER manager,char** args){
     char* entity = args[0];
     char** result = malloc(sizeof(char*) * 9);
