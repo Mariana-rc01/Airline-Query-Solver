@@ -1,5 +1,5 @@
 /**
- * @file test.h
+ * @file query8_test.c
  * @brief
  */
 
@@ -19,28 +19,13 @@
  *   limitations under the License.
  */
 
-#ifndef TEST_H
-#define TEST_H
+#ifndef QUERY8_TEST_H
+#define QUERY8_TEST_H
 
-#include "catalogs/manager_c.h"
-#include "entities/flights.h"
-#include "entities/passengers.h"
-#include "entities/reservations.h"
-#include "entities/users.h"
-#include "menuNdata/queries.h"
-#include "IO/parser.h"
-#include "IO/input.h"
-#include "IO/output.h"
 #include "utils/utils.h"
-#include "IO/interpreter.h"
-#include "menuNdata/batch.h"
+#include "catalogs/manager_c.h"
+#include "menuNdata/queries.h"
 
-#include "test/file_compare.h"
-#include "test/query1_test.h"
-#include "test/query7_test.h"
-#include "test/query8_test.h"
-#include "test/query9_test.h"
-
-void test(char* pathD, char* pathI, char* pathO);
+void query8_test(MANAGER manager);
 
 #endif

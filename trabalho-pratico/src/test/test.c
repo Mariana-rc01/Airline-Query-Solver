@@ -65,6 +65,14 @@ void test(char* pathD, char* pathI, char* pathO){
     clock_gettime(CLOCK_REALTIME, &start);
 
     query1_test(manager_catalog);
+    
+    
+    
+    
+    
+    query7_test(manager_catalog);
+    query8_test(manager_catalog);
+    query9_test(manager_catalog);
     //-> Restantes queries aqui <-
 
     clock_gettime(CLOCK_REALTIME, &end);

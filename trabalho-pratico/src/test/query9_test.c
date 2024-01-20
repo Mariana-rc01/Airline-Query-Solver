@@ -1,5 +1,5 @@
 /**
- * @file test.h
+ * @file query9_test.c
  * @brief
  */
 
@@ -19,28 +19,25 @@
  *   limitations under the License.
  */
 
-#ifndef TEST_H
-#define TEST_H
-
-#include "catalogs/manager_c.h"
-#include "entities/flights.h"
-#include "entities/passengers.h"
-#include "entities/reservations.h"
-#include "entities/users.h"
-#include "menuNdata/queries.h"
-#include "IO/parser.h"
-#include "IO/input.h"
-#include "IO/output.h"
-#include "utils/utils.h"
-#include "IO/interpreter.h"
-#include "menuNdata/batch.h"
-
-#include "test/file_compare.h"
-#include "test/query1_test.h"
-#include "test/query7_test.h"
-#include "test/query8_test.h"
 #include "test/query9_test.h"
 
-void test(char* pathD, char* pathI, char* pathO);
+#include <time.h>
 
-#endif
+void query9_test(MANAGER manager){
+    FILE* analysisTest = fopen("Resultados/analysisTest.txt", "a");
+
+    char** args = malloc(sizeof(char*));
+    args[0] = "Julia";
+
+    struct timespec start, end;
+    double elapsed;
+    clock_gettime(CLOCK_REALTIME, &start);
+    void* result = query9(manager, args);
+    clock_gettime(CLOCK_REALTIME, &end);
+    elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    fprintf(analysisTest, "Query 9\n");
+    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
+    free_query9(result);
+
+    fclose(analysisTest);
+}
