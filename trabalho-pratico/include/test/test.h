@@ -37,6 +37,9 @@
 
 #include "test/file_compare.h"
 #include "test/query1_test.h"
+#include "test/query2_test.h"
+#include "test/query3_test.h"
+#include "test/query4_test.h"
 #include "test/query5_test.h"
 #include "test/query6_test.h"
 #include "test/query7_test.h"

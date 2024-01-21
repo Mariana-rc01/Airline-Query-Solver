@@ -1,5 +1,5 @@
 /**
- * @file query10_test.c
+ * @file query2_test.c
  * @brief
  */
 
@@ -19,84 +19,68 @@
  *   limitations under the License.
  */
 
-#include "test/query10_test.h"
+#include "test/query2_test.h"
 
 #include <time.h>
 
-void query10_test(MANAGER manager){
+void query2_test(MANAGER manager){
     FILE* analysisTest = fopen("Resultados/analysisTest.txt", "a");
     struct timespec start, end;
     double elapsed;
 
-    char** argsAll = malloc(sizeof(char*)*2);
-    argsAll[0] = NULL;
-    argsAll[1] = NULL;
+    char** argsInvalidID = malloc(sizeof(char*)*2);
+    argsInvalidID[0] = "DGarcia429";
+    argsInvalidID[1] = NULL;
 
     clock_gettime(CLOCK_REALTIME, &start);
-    void* resultAll = query10(manager, argsAll);
+    void* resultInvalidID = query2(manager, argsInvalidID);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 10 - years\n");
+    fprintf(analysisTest, "Query 2 - Invalid ID\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
-    free_query10(resultAll);
-    free(argsAll);
-
+    free_query2(resultInvalidID);
+    free(argsInvalidID);
 // ----------------------------------------------------------------------------
-    char** args2023 = malloc(sizeof(char*)*2);
-    args2023[0] = "2023";
-    args2023[1] = NULL;
+
+    char** argsValidID = malloc(sizeof(char*)*2);
+    argsValidID[0] = "Jéssica Tavares";
+    argsValidID[1] = NULL;
 
     clock_gettime(CLOCK_REALTIME, &start);
-    void* resultMonth = query10(manager, args2023);
+    void* resultValidID = query2(manager, argsValidID);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 10 - months of 2023\n");
+    fprintf(analysisTest, "Query 2 - Flights and Reservations\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
-    free_query10(resultMonth);
-    free(args2023);
-
+    free_query2(resultValidID);
+    free(argsValidID);
 // ----------------------------------------------------------------------------
-    char** args2306 = malloc(sizeof(char*)*2);
-    args2306[0] = "2023";
-    args2306[1] = "06";
+
+    char** argsValidFlight = malloc(sizeof(char*)*2);
+    argsValidFlight[0] = "Jéssica Tavares";
+    argsValidFlight[1] = "flights";
 
     clock_gettime(CLOCK_REALTIME, &start);
-    void* resultDays = query10(manager, args2306);
+    void* resultValidFlight = query2(manager, argsValidFlight);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 10 - days of 06/2023\n");
+    fprintf(analysisTest, "Query 2 - Flights\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
-    free_query10(resultDays);
-    free(args2306);
-
+    free_query2(resultValidFlight);
+    free(argsValidFlight);
 // ----------------------------------------------------------------------------
-    char** argsInvalidYear = malloc(sizeof(char*)*2);
-    argsInvalidYear[0] = "2024";
-    argsInvalidYear[1] = "03";
+
+    char** argsValidReservations = malloc(sizeof(char*)*2);
+    argsValidReservations[0] = "Jéssica Tavares";
+    argsValidReservations[1] = "reservations";
 
     clock_gettime(CLOCK_REALTIME, &start);
-    void* resultInvalidYear = query10(manager, argsInvalidYear);
+    void* resultValidReservations = query2(manager, argsValidReservations);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 10 - invalid year (2024)\n");
-    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
-    free_query10(resultInvalidYear);
-    free(argsInvalidYear);
-
-// ----------------------------------------------------------------------------
-    char** argsInvalidMonth = malloc(sizeof(char*)*2);
-    argsInvalidMonth[0] = "2024";
-    argsInvalidMonth[1] = "13";
-
-    clock_gettime(CLOCK_REALTIME, &start);
-    void* resultInvalidMonth = query10(manager, argsInvalidMonth);
-    clock_gettime(CLOCK_REALTIME, &end);
-    elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 10 - invalid month (13/2024)\n");
+    fprintf(analysisTest, "Query 2 - Reservations\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n\n", elapsed);
-    free_query10(resultInvalidMonth);
-    free(argsInvalidMonth);
+    free_query2(resultValidReservations);
+    free(argsValidReservations);
 
-    fclose(analysisTest);
 }
-

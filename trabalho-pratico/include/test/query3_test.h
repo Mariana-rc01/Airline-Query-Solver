@@ -1,5 +1,5 @@
 /**
- * @file query7_test.h
+ * @file query3_test.h
  * @brief
  */
 
@@ -19,13 +19,13 @@
  *   limitations under the License.
  */
 
-#ifndef QUERY7_TEST_H
-#define QUERY7_TEST_H
+#ifndef QUERY3_TEST_H
+#define QUERY3_TEST_H
 
 #include "utils/utils.h"
 #include "catalogs/manager_c.h"
 #include "menuNdata/queries.h"
 
-void query7_test(MANAGER manager);
+void query3_test(MANAGER manager);
 
 #endif
