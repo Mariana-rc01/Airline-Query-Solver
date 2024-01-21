@@ -53,4 +53,6 @@ void query3_test(MANAGER manager){
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n\n", elapsed);
     free_query3(resultValidID);
     free(argsValidID);
+
+    fclose(analysisTest);
 }

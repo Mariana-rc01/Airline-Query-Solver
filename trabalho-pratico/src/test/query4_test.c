@@ -53,4 +53,6 @@ void query4_test(MANAGER manager){
     free_query4(resultValidID);
     free(argsValidID);
 
+    fclose(analysisTest);
+
 }

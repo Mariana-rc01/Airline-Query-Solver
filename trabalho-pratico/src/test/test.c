@@ -57,23 +57,22 @@ void test(char* pathD, char* pathI, char* pathO){
     char time[512];
     sprintf(time, "Elapsed time: %.6f seconds", elapsed);
     char memory[512];
-    sprintf(memory, "Memory usage: %ld KB\n", r_usage.ru_maxrss);
+    sprintf(memory, "Memory usage: %ld KB | %ld MB\n", r_usage.ru_maxrss, r_usage.ru_maxrss/1000);
 
     replace_lines_at_start("Resultados/analysis.txt", time, memory);
 
     //Testes para cada query
     clock_gettime(CLOCK_REALTIME, &start);
 
-    query1_test(manager_catalog);
-    query2_test(manager_catalog);
-    query3_test(manager_catalog);
-    query4_test(manager_catalog);
-    query5_test(manager_catalog);
-    query6_test(manager_catalog);
-    query7_test(manager_catalog);
-    query8_test(manager_catalog);
-    query9_test(manager_catalog);
-    query10_test(manager_catalog);
+    static queries_test queries[] = {query1_test, query2_test, query3_test,
+                                    query4_test, query5_test, query6_test,
+                                    query7_test, query8_test, query9_test, query10_test};
+
+    int i = 0;
+    while (i != 10){
+        queries[i](manager_catalog);
+        i++;
+    }
 
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;

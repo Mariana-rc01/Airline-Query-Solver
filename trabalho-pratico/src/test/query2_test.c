@@ -83,4 +83,5 @@ void query2_test(MANAGER manager){
     free_query2(resultValidReservations);
     free(argsValidReservations);
 
+    fclose(analysisTest);
 }

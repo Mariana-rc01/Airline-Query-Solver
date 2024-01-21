@@ -76,8 +76,8 @@ int main(int argc, char** argsv){
 
     char time[512];
     sprintf(time, "Elapsed time: %.6f seconds", elapsed);
-    char memory[512];
-    sprintf(memory, "Memory usage: %ld KB\n", r_usage.ru_maxrss);
+    char memory[2048];
+    sprintf(memory, "Memory usage: %ld\n", r_usage.ru_maxrss);
 
     replace_lines_at_start("Resultados/analysis.txt", time, memory);
 

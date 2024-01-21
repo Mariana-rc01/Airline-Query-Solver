@@ -47,6 +47,8 @@
 #include "test/query9_test.h"
 #include "test/query10_test.h"
 
+typedef void (*queries_test)(MANAGER catalog);
+
 void test(char* pathD, char* pathI, char* pathO);
 
 #endif
