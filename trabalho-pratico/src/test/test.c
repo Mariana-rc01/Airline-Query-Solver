@@ -68,12 +68,12 @@ void test(char* pathD, char* pathI, char* pathO){
     
     
     
-    
-    
+    query5_test(manager_catalog);
+    query6_test(manager_catalog);
     query7_test(manager_catalog);
     query8_test(manager_catalog);
     query9_test(manager_catalog);
-    //-> Restantes queries aqui <-
+    query10_test(manager_catalog);
 
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;

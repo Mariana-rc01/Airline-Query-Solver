@@ -53,7 +53,7 @@ void query8_test(MANAGER manager){
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
     fprintf(analysisTest, "Query 8 - Case 2\n");
-    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
+    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n\n", elapsed);
     free_query8(result2);
     free(args2);
     fclose(analysisTest);

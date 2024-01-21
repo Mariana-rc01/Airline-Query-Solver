@@ -495,9 +495,14 @@ void* query5(MANAGER manager,char** args){
     char* origin = args[0];
     char* begin_date = args[1];
     char* end_date = args[2];
+    if (validate_airports(origin) == 0 ||
+        validate_date_time(begin_date) == 0 ||
+        validate_date_time(end_date) == 0){
+        return NULL;
+    }
     FLIGHTS_C catalog = get_flights_c(manager);
 
-    // Create an array to store pointers to reservations
+    // Create an array to store pointers to flights
     int initialCapacity = 500;
     ResultEntry* flight_array = malloc(sizeof(ResultEntry) * initialCapacity);
 
@@ -514,7 +519,7 @@ void* query5(MANAGER manager,char** args){
         char* date = get_flight_schedule_departure_date(flight);
         char* originC = get_flight_origin(flight);
 
-        // Verify if a reservation belongs to the desire hotel
+        // Verify if a reservation belongs to the desire airport
         if (strcmp(originC, origin) == 0 &&
         (compare_datesF(begin_date,date) >= 0 && compare_datesF(date,end_date) >= 0)) {
             if (i >= initialCapacity) {
@@ -633,6 +638,8 @@ int findAirportPosition(AirportInfo* array, int size, const char* airport) {
 void* query6(MANAGER manager,char** args){
     char* Year = args[0];
     int N = ourAtoi(args[1]);
+    int year = ourAtoi(args[0]);
+    if (N <= 0 || year < 2010 || year > 2023) return NULL;
     FLIGHTS_C catalog = get_flights_c(manager);
 
     int initialCapacity = 500;
@@ -766,6 +773,7 @@ int compare_ints(gconstpointer a, gconstpointer b) {
 void* query7(MANAGER manager,char** args){
     //guardar todas os atrasos num array para cada aeroporto e obter a mediana
     int N = ourAtoi(args[0]);
+    if (N < 0) return NULL;
     FLIGHTS_C catalog = get_flights_c(manager);
     GHashTable* flights = get_hash_table_flight(catalog);
     int i = 0;
@@ -1171,8 +1179,12 @@ void* query10(MANAGER manager,char** args){
     }
     else {
         //3ª opção (Indicam ano e mês)
-        if(ourAtoi(year) > 2023 || ourAtoi(year) < 2010 ||
-           ourAtoi(month) < 1 || ourAtoi(month) > 12) return NULL;
+        int Y = ourAtoi(year);
+        int M = ourAtoi(month);
+        if(Y > 2023 || Y < 2010 || M < 1 || M > 12) {
+            free(result);
+            return NULL;
+        }
 
         char* date = concat(year,month);
 

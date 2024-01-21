@@ -49,7 +49,7 @@ void query9_test(MANAGER manager){
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
     fprintf(analysisTest, "Query 9 - Big user list\n");
-    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
+    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n\n", elapsed);
     free_query9(result2);
     free(args2);
 

@@ -25,12 +25,25 @@
 
 void query7_test(MANAGER manager){
     FILE* analysisTest = fopen("Resultados/analysisTest.txt", "a");
+    struct timespec start, end;
+    double elapsed;
+
+    char** argsInvalid = malloc(sizeof(char*));
+    argsInvalid[0] = "-1";
+
+    clock_gettime(CLOCK_REALTIME, &start);
+    void* resultInvalid = query7(manager, argsInvalid);
+    clock_gettime(CLOCK_REALTIME, &end);
+    elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    fprintf(analysisTest, "Query 7 - Invalid N (-1)\n");
+    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
+    free_query7(resultInvalid);
+    free(argsInvalid);
+// ----------------------------------------------------------------------------
 
     char** argsSmall = malloc(sizeof(char*));
     argsSmall[0] = "10";
 
-    struct timespec start, end;
-    double elapsed;
     clock_gettime(CLOCK_REALTIME, &start);
     void* resultSmall = query7(manager, argsSmall);
     clock_gettime(CLOCK_REALTIME, &end);
@@ -62,7 +75,7 @@ void query7_test(MANAGER manager){
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
     fprintf(analysisTest, "Query 7 - N = 250\n");
-    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
+    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n\n", elapsed);
     free_query7(resultBig);
     free(argsBig);
     fclose(analysisTest);

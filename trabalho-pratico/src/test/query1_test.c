@@ -35,7 +35,7 @@ void query1_test(MANAGER manager){
     void* resultValidUser = query1(manager, argsValidUser);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 1 - valid user\n");
+    fprintf(analysisTest, "Query 1 - Valid user\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
     free_query1(resultValidUser);
     free(argsValidUser);
@@ -48,7 +48,7 @@ void query1_test(MANAGER manager){
     void* resultInValidUser = query1(manager, argsInvalidUser);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 1 - invalid user\n");
+    fprintf(analysisTest, "Query 1 - Invalid user\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
     free_query1(resultInValidUser);
     free(argsInvalidUser);
@@ -61,7 +61,7 @@ void query1_test(MANAGER manager){
     void* resultValidFlight = query1(manager, argsValidFlight);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 1 - valid flight\n");
+    fprintf(analysisTest, "Query 1 - Valid flight\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
     free_query1(resultValidFlight);
     free(argsValidFlight);
@@ -74,7 +74,7 @@ void query1_test(MANAGER manager){
     void* resultInvalidFlight = query1(manager, argsInvalidFlight);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 1 - invalid flight\n");
+    fprintf(analysisTest, "Query 1 - Invalid flight\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
     free_query1(resultInvalidFlight);
     free(argsInvalidFlight);
@@ -87,7 +87,7 @@ void query1_test(MANAGER manager){
     void* resultValidReservation = query1(manager, argsValidReservation);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 1 - valid reservation\n");
+    fprintf(analysisTest, "Query 1 - Valid reservation\n");
     fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
     free_query1(resultValidReservation);
     free(argsValidReservation);
@@ -100,8 +100,8 @@ void query1_test(MANAGER manager){
     void* resultInvalidReservation = query1(manager, argsInvalidReservation);
     clock_gettime(CLOCK_REALTIME, &end);
     elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-    fprintf(analysisTest, "Query 1 - invalid reservation\n");
-    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n", elapsed);
+    fprintf(analysisTest, "Query 1 - Invalid reservation\n");
+    fprintf(analysisTest, "Elapsed time: %.6f seconds\n\n\n", elapsed);
     free_query1(resultInvalidReservation);
     free(argsInvalidReservation);
 

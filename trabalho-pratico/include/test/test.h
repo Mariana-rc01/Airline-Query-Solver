@@ -37,9 +37,12 @@
 
 #include "test/file_compare.h"
 #include "test/query1_test.h"
+#include "test/query5_test.h"
+#include "test/query6_test.h"
 #include "test/query7_test.h"
 #include "test/query8_test.h"
 #include "test/query9_test.h"
+#include "test/query10_test.h"
 
 void test(char* pathD, char* pathI, char* pathO);
 
