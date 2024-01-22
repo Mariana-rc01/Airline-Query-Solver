@@ -26,7 +26,7 @@
 
 struct setting {
     char* datasetPath;
-    int changedPath;
+    int changedPath; // 2 - é o pré-definido, 1 - mudado, 0 - catálogos já preenchidos
     int output; // 1 - txt format, 2 - oneByOne, 3 - number page per Page, 4 - outputs per page
     int nPages;
     int nOutputs;
@@ -86,7 +86,7 @@ void set_nQueries_S(SETTINGS setts, int n){
 }
 
 char* get_datasetPath_S(SETTINGS setts){
-     return strdup(setts->datasetPath);
+    return strdup(setts->datasetPath);
 }
 
 int get_changedPath_S(SETTINGS setts){
@@ -113,12 +113,16 @@ int get_nQueries_S(SETTINGS setts){
     return setts->nQueries;
 }
 
+void free_settings(SETTINGS setts){
+    free_manager_c(setts->manager);
+    if (setts->changedPath != 2) free(setts->datasetPath);
+    free(setts);
+}
+
 void interactive(void){
 
     SETTINGS settings = create_settings();
 
     home(settings);
-
-    //free_manager_c(settings->manager_catalog);
 
 }

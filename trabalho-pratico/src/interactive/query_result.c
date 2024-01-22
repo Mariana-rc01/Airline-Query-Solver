@@ -266,7 +266,7 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                         mvwprintw(win, 6+i, 1, "%s", results[i]);
                     }
                 }
-                mvwprintw(win, 19, 22, "All outputs are displayed :)  ");
+                mvwprintw(win, 19, 1, "All outputs are displayed :)  ");
             }
             else if (id == 3 || id == 8){
                 char* result = (char*)output;
@@ -277,7 +277,7 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                     mvwprintw(win, 6, 1, "%s", formatted_string);
                     free(formatted_string);
                 }
-                mvwprintw(win, 19, 22, "All outputs are displayed :)  ");
+                mvwprintw(win, 19, 1, "All outputs are displayed :)  ");
             }
             else if (id == 2 || id == 10) {
                 int startIdx = (currentPage == 1) ? 2 : 2 + 12*(currentPage - 1);
@@ -328,7 +328,7 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
             }
             if ((id != 1 && id != 3 && id != 8) && verify == 1)
                 mvwprintw(win, 19, 1, "All outputs are displayed");
-            else mvwprintw(win, 19, 1, "Press c to see the next");
+            else if (id != 1 && id != 3 && id != 8) mvwprintw(win, 19, 1, "Press c to see the next");
         }
         else mvwprintw(win, 5, 3, "Nothing to show");
 

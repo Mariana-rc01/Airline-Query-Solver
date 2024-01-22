@@ -63,20 +63,23 @@ void settingsConfig(SETTINGS settings){
         create_button("--------------- Output Configuration ----------------", 1,5)
     };
 
+    char* pathG = get_datasetPath_S(settings);
     wattron(win, COLOR_PAIR(4));
-    mvwprintw(win, 3, 4+strlen("Select Dataset Path"), "%s",get_datasetPath_S(settings));
+    mvwprintw(win, 3, 4+strlen("Select Dataset Path"), "%s",pathG);
     mvwprintw(win, 11, 5+strlen("Number of pages"), "%d",get_nPages_S(settings));
     mvwprintw(win, 13, 5+strlen("Ouputs per page"), "%d",get_nOutputs_S(settings));
     wattroff(win, COLOR_PAIR(4));
+    free(pathG);
 
     int selectedOption = 0;
     int color = get_output_S(settings);
 
     for (int i = 0; i < 2; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+        char* labelC = get_label_B(config[i]);
+        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",labelC);
+        free(labelC);
     }
     drawWindow(win, options, selectedOption, title, MAX_OPTIONS, color);
-
 
     while (1){
         ch = getch();
@@ -133,9 +136,14 @@ void settingsConfig(SETTINGS settings){
                     set_changedPath_S(settings,1);
 
                     destroyFloatMenu(floatWin);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
+                    free_button(floatMenu1[2]);
+                    char* pathS = get_datasetPath_S(settings);
                     wattron(win, COLOR_PAIR(4));
-                    mvwprintw(win, 3, 4+strlen("Select Dataset Path"), "%s",get_datasetPath_S(settings));
+                    mvwprintw(win, 3, 4+strlen("Select Dataset Path"), "%s",pathS);
                     wattroff(win, COLOR_PAIR(4));
+                    free(pathS);
                 }
 
                 if (strcmp(option, "TXT Format") == 0){
@@ -234,7 +242,9 @@ void settingsConfig(SETTINGS settings){
                 }
 
                 if (strcmp(option, "[Run]") == 0){
-                    int verify = verify_datasetPath(get_datasetPath_S(settings));
+                    char* getPath = get_datasetPath_S(settings);
+                    int verify = verify_datasetPath(getPath);
+                    free(getPath);
                     if (!verify) {
                         WINDOW* floatWin = newwin(MAX_FLOAT_MENU_OPTIONS + 3, 40, 5, 4);
                         BUTTONS floatMenu1[2] ={
@@ -243,6 +253,8 @@ void settingsConfig(SETTINGS settings){
                         };
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
+                        free_button(floatMenu1[0]);
+                        free_button(floatMenu1[1]);
                         destroyFloatMenu(floatWin);
                     }
                     else{
@@ -255,12 +267,18 @@ void settingsConfig(SETTINGS settings){
                             free(path);
                         }
                         if (get_changedPath_S(settings) == 2){
-                            set_catalog_S(settings);
                             char* path = get_datasetPath_S(settings);
                             set_catalogs(get_catalog_S(settings), path);
                             set_changedPath_S(settings,0);
                             free(path);
                         }
+                        for (int i = 0; i < MAX_OPTIONS; i++){
+                            free_button(options[i]);
+                        }
+                        for (int i = 0; i < 2; i++){
+                            free_button(config[i]);
+                        }
+                        free(option);
                         werase(win);
                         wrefresh(win);
                         endwin();
@@ -270,25 +288,37 @@ void settingsConfig(SETTINGS settings){
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    for (int i = 0; i < MAX_OPTIONS; i++){
+                            free_button(options[i]);
+                    }
+                    for (int i = 0; i < 2; i++){
+                        free_button(config[i]);
+                    }
+                    free(option);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     home(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, color);
         for (int i = 0; i < 2; i++) {
-            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+            char* labelC = get_label_B(config[i]);
+            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",labelC);
+            free(labelC);
         }
+        char* pathG = get_datasetPath_S(settings);
         wattron(win, COLOR_PAIR(4));
-        mvwprintw(win, 3, 4+strlen("Select Dataset Path"), "%s",get_datasetPath_S(settings));
+        mvwprintw(win, 3, 4+strlen("Select Dataset Path"), "%s",pathG);
         mvwprintw(win, 11, 5+strlen("Number of pages"), "%d",get_nPages_S(settings));
         mvwprintw(win, 13, 5+strlen("Ouputs per page"), "%d",get_nOutputs_S(settings));
         wattroff(win, COLOR_PAIR(4));
+        free(pathG);
     }
 
     delwin(win);

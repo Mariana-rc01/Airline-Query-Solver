@@ -59,6 +59,8 @@ MANAGER get_catalog_S(SETTINGS setts);
 
 int get_nQueries_S(SETTINGS setts);
 
+void free_settings(SETTINGS setts);
+
 void interactive(void);
 
 #endif

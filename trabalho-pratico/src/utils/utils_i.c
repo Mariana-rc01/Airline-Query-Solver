@@ -54,6 +54,11 @@ char* get_label_B(BUTTONS button){
     return strdup(button->label);
 }
 
+void free_button(BUTTONS button){
+    free(button->label);
+    free(button);
+}
+
 // Função para desenhar as opções
 void drawWindow(WINDOW *win, BUTTONS* options, int selected, char* title, int n, int color){
 
@@ -72,51 +77,62 @@ void drawWindow(WINDOW *win, BUTTONS* options, int selected, char* title, int n,
 
     // Imprime as opções
     if (strcmp(title,"Interactive Mode") == 0){
-
+        char* label0 = get_label_B(options[0]);
         wattron(win, A_BOLD | COLOR_PAIR(2));
-        mvwprintw(win, get_y_B(options[0]), get_x_B(options[0]), "%s",get_label_B(options[0]));
+        mvwprintw(win, get_y_B(options[0]), get_x_B(options[0]), "%s",label0);
         wattroff(win, A_BOLD | COLOR_PAIR(2));
+        free(label0);
 
+        char* label1 = get_label_B(options[1]);
         wattron(win, A_BOLD | COLOR_PAIR(4));
-        mvwprintw(win, get_y_B(options[1]), get_x_B(options[1]), "%s",get_label_B(options[1]));
+        mvwprintw(win, get_y_B(options[1]), get_x_B(options[1]), "%s",label1);
         wattroff(win, A_BOLD | COLOR_PAIR(4));
+        free(label1);
 
+        char* label2 = get_label_B(options[2]);
         wattron(win, A_BOLD | COLOR_PAIR(3));
-        mvwprintw(win, get_y_B(options[2]), get_x_B(options[2]), "%s",get_label_B(options[2]));
+        mvwprintw(win, get_y_B(options[2]), get_x_B(options[2]), "%s",label2);
         wattroff(win, A_BOLD | COLOR_PAIR(3));
+        free(label2);
     }
     else{
         for (int i = 0; i < n; i++) {
-            if (strcmp(get_label_B(options[i]),"[Run]") == 0 || strcmp(get_label_B(options[i]),"[Try Again]") == 0){
+            char* label = get_label_B(options[i]);
+            if (strcmp(label,"[Run]") == 0 || strcmp(label,"[Try Again]") == 0 || strcmp(label,"[Cancel]") == 0){
                 wattron(win, A_BOLD | COLOR_PAIR(2));
-                mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",get_label_B(options[i]));
+                mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",label);
                 wattroff(win, A_BOLD | COLOR_PAIR(2));
             }
-            else if (strcmp(get_label_B(options[i]),"[Go Back]") == 0){
+            else if (strcmp(label,"[Go Back]") == 0 || strcmp(label,"[Leave]") == 0){
                 wattron(win, A_BOLD | COLOR_PAIR(3));
-                mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",get_label_B(options[i]));
+                mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",label);
                 wattroff(win, A_BOLD | COLOR_PAIR(3));
             }
-            else if (strcmp(get_label_B(options[i]),"[Home]") == 0){
+            else if (strcmp(label,"[Home]") == 0){
                 wattron(win, A_BOLD | COLOR_PAIR(4));
-                mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",get_label_B(options[i]));
+                mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",label);
                 wattroff(win, A_BOLD | COLOR_PAIR(4));
             }
-            else mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",get_label_B(options[i]));
+            else mvwprintw(win, get_y_B(options[i]), get_x_B(options[i]), "%s",label);
+            free(label);
         }
     }
 
     if (color >= 1 && color <= 4){
+        char* labelC = get_label_B(options[color]);
         // Destaca a opção selecionada
         wattron(win, A_BOLD | COLOR_PAIR(1) | A_REVERSE);
-        mvwprintw(win, get_y_B(options[color]), get_x_B(options[color]), "%s", get_label_B(options[color]));
+        mvwprintw(win, get_y_B(options[color]), get_x_B(options[color]), "%s", labelC);
         wattroff(win, A_BOLD | COLOR_PAIR(1) | A_REVERSE);
+        free(labelC);
     }
 
+    char* labelR = get_label_B(options[selected]);
     // Destaca a opção selecionada
     wattron(win, A_REVERSE); // Ativa a inversão de cores (para destacar)
-    mvwprintw(win, get_y_B(options[selected]), get_x_B(options[selected]), "%s", get_label_B(options[selected]));
+    mvwprintw(win, get_y_B(options[selected]), get_x_B(options[selected]), "%s", labelR);
     wattroff(win, A_REVERSE); // Desativa a inversão de cores
+    free(labelR);
 
     // Atualiza a tela
     wrefresh(win);
@@ -146,7 +162,9 @@ void drawFloatMenu(WINDOW* floatWin, char* title, BUTTONS* options, int n) {
     wattroff(floatWin, A_BOLD | COLOR_PAIR(5));
 
     for (int i = 0; i < n; i++) {
-        mvwprintw(floatWin, get_y_B(options[i]), get_x_B(options[i]), "%s", get_label_B(options[i]));
+        char* label = get_label_B(options[i]);
+        mvwprintw(floatWin, get_y_B(options[i]), get_x_B(options[i]), "%s", label);
+        free(label);
     }
 
     wrefresh(floatWin);

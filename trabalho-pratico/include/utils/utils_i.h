@@ -34,6 +34,8 @@ int get_y_B(BUTTONS button);
 
 char* get_label_B(BUTTONS button);
 
+void free_button(BUTTONS button);
+
 void drawWindow(WINDOW *win, BUTTONS* options, int selected, char* title, int n, int color);
 
 int verify_datasetPath(char* path);

@@ -55,7 +55,8 @@ void home(SETTINGS setts) {
     // Desenha as opções inicialmente
     drawWindow(home_win, options, selectedOption, title, MAX_OPTIONS, 0);
 
-    while ((ch = getch()) != 27) {
+    while (1) {
+        ch = getch();
         switch (ch){
             case KEY_MOUSE:
                 if (getmouse(&event) == OK) {
@@ -83,6 +84,10 @@ void home(SETTINGS setts) {
                 char* option = get_label_B(options[selectedOption]);
 
                 if (strcmp(option, "AirLine Query Solver") == 0){
+                    free(option);
+                    free_button(options[0]);
+                    free_button(options[1]);
+                    free_button(options[2]);
                     // Apaga a janela principal
                     werase(home_win);
                     // Atualiza a tela para garantir que a janela principal seja removida
@@ -95,6 +100,10 @@ void home(SETTINGS setts) {
                     exit(0);
                 }
                 if (strcmp(option, "Instructions") == 0){
+                    free(option);
+                    free_button(options[0]);
+                    free_button(options[1]);
+                    free_button(options[2]);
                     // Apaga a janela principal
                     werase(home_win);
                     // Atualiza a tela para garantir que a janela principal seja removida
@@ -106,14 +115,58 @@ void home(SETTINGS setts) {
                     // Sai do programa após exibir as instruções
                     exit(0);
                 }
-                if (strcmp(option, "Exit") == 0){
-                    // Apaga a janela principal
-                    werase(home_win);
-                    // Atualiza a tela para garantir que a janela principal seja removida
-                    wrefresh(home_win);
-                    // Sai do modo ncurses
-                    endwin();
-                    exit(0);
+                if (strcmp(option, "Exit") == 0) {
+                    free(option);
+                    WINDOW* floatWin = newwin(6, 35, 5, 4);
+                    BUTTONS floatMenu1[2] = {
+                        create_button("[Leave]", 5, 4),
+                        create_button("[Cancel]", 20, 4)
+                    };
+                    int selected = 0;
+                    drawWindow(floatWin, floatMenu1, selected, "Exit", 2, 0);
+                    mvwprintw(floatWin, 1, 1, "Are you sure you want to leave?");
+                    mvwprintw(floatWin, 1, 2, "(your settings will be lost)");
+                    int showExitMenu = 1;
+                    int c;
+                    while (showExitMenu) {
+                        mvwprintw(floatWin, 1, 1, "Are you sure you want to leave?");
+                        mvwprintw(floatWin, 2, 2, "(your settings will be lost)");
+                        drawWindow(floatWin, floatMenu1, selected, "Exit", 2, 0);
+                        c = getch();
+                        switch (c) {
+                            case KEY_RIGHT:
+                                selected = (selected - 1 + 2) % 2;
+                                break;
+                            case KEY_LEFT:
+                                selected = (selected + 1) % 2;
+                                break;
+                            case '\n':
+                                selected = selected % 2;
+                                char* option = get_label_B(floatMenu1[selected]);
+                                if (strcmp(option, "[Leave]") == 0) {
+                                    free(option);
+                                    free_settings(setts);
+                                    free_button(options[0]);
+                                    free_button(options[1]);
+                                    free_button(options[2]);
+                                    free_button(floatMenu1[0]);
+                                    free_button(floatMenu1[1]);
+                                    werase(floatWin);
+                                    wrefresh(floatWin);
+                                    endwin();
+                                    exit(0);
+                                }
+                                if (strcmp(option, "[Cancel]") == 0) {
+                                    free(option);
+                                    free_button(floatMenu1[0]);
+                                    free_button(floatMenu1[1]);
+                                    werase(floatWin);
+                                    wrefresh(floatWin);
+                                    showExitMenu = 0;
+                                    break;
+                                }
+                        }
+                    }
                 }
                 break;
         }

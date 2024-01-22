@@ -59,7 +59,9 @@ void solver(SETTINGS settings){
     int selectedOption = 0;
 
     for (int i = 0; i < 2; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+        char* configL = get_label_B(config[i]);
+        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",configL);
+        free(configL);
     }
     drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
 
@@ -133,6 +135,12 @@ void solver(SETTINGS settings){
                     drawFloatMenu(floatWin, "Query ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
+                    free(option);
+                    free_button(options[0]);
+                    free_button(options[1]);
+                    free_button(options[2]);
+                    free_button(config[0]);
+                    free_button(config[1]);
                     //vai para a função de cada query
                     queries_window[ourAtoi(number) - 1](settings);
                 }
@@ -146,23 +154,34 @@ void solver(SETTINGS settings){
                     };
                     drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                     getch();
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
                     destroyFloatMenu(floatWin);
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    free(option);
+                    free_button(options[0]);
+                    free_button(options[1]);
+                    free_button(options[2]);
+                    free_button(config[0]);
+                    free_button(config[1]);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 2; i++) {
-            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+            char* configG = get_label_B(config[i]);
+            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",configG);
+            free(configG);
         }
     }
 
