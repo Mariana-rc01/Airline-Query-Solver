@@ -26,9 +26,7 @@
 #include <ncurses.h>
 #include <string.h>
 
-/* O que não está a dar bem nas instructions:
-A linha vertical da direita nao está a ser bem colocada quando imprimimos texto que muda de linha
-*/
+#define PINK 5
 
 // Deve ser mudado para os utils
 void printLongText(WINDOW* win, int* text_y, int text_x, const char* text) {
@@ -51,7 +49,6 @@ void printLongText(WINDOW* win, int* text_y, int text_x, const char* text) {
     }
 }
 
-
 void instructions(SETTINGS setts){
     initscr();
     start_color();
@@ -59,6 +56,8 @@ void instructions(SETTINGS setts){
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
+    init_color(PINK,650,15,400);
+    init_pair(5,PINK,COLOR_BLACK);
 
     char option[] = "[Go Back]";
     char arrow_left[] = "<";
@@ -76,8 +75,10 @@ void instructions(SETTINGS setts){
 
     while (1){
         wclear(win);
+        wattron(win, A_BOLD | COLOR_PAIR(5));
         box(win, 0, 0);
         mvwprintw(win, 0, 1, "Instructions");
+        wattroff(win, A_BOLD | COLOR_PAIR(5));
 
         int text_y = 1;
         int text_x = 1;
@@ -112,8 +113,10 @@ void instructions(SETTINGS setts){
             mvwprintw(win, text_y++, text_x, "Erro ao abrir o ficheiro %s", filename);
         }
 
+        wattron(win, A_BOLD | COLOR_PAIR(5));
         box(win, 0, 0);
         mvwprintw(win, 0, 1, "Instructions");
+        wattroff(win, A_BOLD | COLOR_PAIR(5));
 
 
         mvwprintw(win, max_y - 2, 2, "%s", arrow_left);

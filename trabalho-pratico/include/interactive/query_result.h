@@ -29,6 +29,7 @@
 #include "interactive/settings_config.h"
 #include "interactive/instructions.h"
 #include "interactive/query_solver.h"
+#include "menuNdata/queries.h"
 
 typedef void (*format_func)(SETTINGS, int, void*, char**);
 

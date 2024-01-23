@@ -31,7 +31,6 @@ void home(SETTINGS setts) {
     initscr();
     cbreak();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
     start_color();
 
     // Criar uma janela principal
@@ -39,7 +38,6 @@ void home(SETTINGS setts) {
     refresh();
 
     int ch;
-    MEVENT event;
     char* title = "Interactive Mode";
 
     // Defina suas opções e suas posições aqui
@@ -58,21 +56,6 @@ void home(SETTINGS setts) {
     while (1) {
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            // Ação quando uma opção é selecionada (pode redirecionar para outra página, etc.)
-                            mvprintw(15, 1, "Selecionado: %s", get_label_B(options[i]));
-                            refresh();
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS; // com o - 1 ele sobe infinitamente
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;

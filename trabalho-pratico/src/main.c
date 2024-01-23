@@ -56,7 +56,7 @@ int main(int argc, char** argsv){
     if(argc == 3 && strcmp("./programa-principal",argsv[0]) == 0) {
         batch(argsv[1], argsv[2]);
     }
-    else if(argc == 1 ){//&& strcmp("./programa-principal",argsv[0]) == 0) {
+    else if(argc == 1 && strcmp("./programa-principal",argsv[0]) == 0) {
         interactive();
     }
     else if (argc == 4 && strcmp("./programa-testes",argsv[0]) == 0){

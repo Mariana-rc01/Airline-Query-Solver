@@ -30,7 +30,7 @@
 // Estrutura para representar um botão
 struct button {
     int x, y; // Posição do botão
-    char *label; // Texto do botão
+    char* label; // Texto do botão
 };
 
 BUTTONS create_button(char* label, int x, int y){

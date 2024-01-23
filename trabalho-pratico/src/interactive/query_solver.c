@@ -31,7 +31,6 @@ void solver(SETTINGS settings){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -39,7 +38,6 @@ void solver(SETTINGS settings){
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Solver";
 
@@ -72,18 +70,6 @@ void solver(SETTINGS settings){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -136,6 +122,9 @@ void solver(SETTINGS settings){
 
                     destroyFloatMenu(floatWin);
                     free(option);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
+                    free_button(floatMenu1[2]);
                     free_button(options[0]);
                     free_button(options[1]);
                     free_button(options[2]);
@@ -194,7 +183,6 @@ void query1W(SETTINGS settings){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -202,7 +190,6 @@ void query1W(SETTINGS settings){
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Solver 1";
 
@@ -224,7 +211,9 @@ void query1W(SETTINGS settings){
     int selectedOption = 0;
 
     for (int i = 0; i < 3; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+        char* labelC = get_label_B(config[i]);
+        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",labelC);
+        free(labelC);
     }
     drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
 
@@ -242,18 +231,6 @@ void query1W(SETTINGS settings){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -304,7 +281,10 @@ void query1W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Query ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    //vai para a função de cada query
+                    free(option);
+                    for (int i = 0; i < 4;  i++) free_button(options[i]);
+                    for (int i = 0; i < 3;  i++) free_button(floatMenu1[i]);
+                    for (int i = 0; i < 3;  i++) free_button(config[i]);
                     queries_window[ourAtoi(number) - 1](settings);
                 }
 
@@ -342,7 +322,9 @@ void query1W(SETTINGS settings){
                     drawFloatMenu(floatWin, "ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    args[0] = strdup(id);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
+                    args[0] = id;
 
                     wattron(win, COLOR_PAIR(4));
                     if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("ID"), "%s",args[0]);
@@ -353,6 +335,9 @@ void query1W(SETTINGS settings){
                     if (args[0] != NULL){
                         //realiza a query
                         void* result = query1(get_catalog_S(settings),args);
+                        free(option);
+                        for (int i = 0; i < 4;  i++) free_button(options[i]);
+                        for (int i = 0; i < 3;  i++) free_button(config[i]);
                         werase(win);
                         wrefresh(win);
                         endwin();
@@ -369,23 +354,31 @@ void query1W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        free_button(floatMenu1[0]);
+                        free_button(floatMenu1[1]);
                     }
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    free(option);
+                    for (int i = 0; i < 4;  i++) free_button(options[i]);
+                    for (int i = 0; i < 3;  i++) free_button(config[i]);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 3; i++) {
-            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+            char* label = get_label_B(config[i]);
+            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",label);
+            free(label);
         }
         wattron(win, COLOR_PAIR(4));
         if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("ID"), "%s",args[0]);
@@ -401,7 +394,6 @@ void query2W(SETTINGS settings){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -409,7 +401,6 @@ void query2W(SETTINGS settings){
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Solver 2";
     int color = 2;
@@ -435,7 +426,9 @@ void query2W(SETTINGS settings){
     int selectedOption = 0;
 
     for (int i = 0; i < 3; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+        char* labelC = get_label_B(config[i]);
+        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",labelC);
+        free(labelC);
     }
     drawWindow(win, options, selectedOption, title, 7, color);
 
@@ -454,18 +447,6 @@ void query2W(SETTINGS settings){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < 7; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -516,7 +497,10 @@ void query2W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Query ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    //vai para a função de cada query
+                    free(option);
+                    for (int i = 0; i < 7;  i++) free_button(options[i]);
+                    for (int i = 0; i < 3;  i++) free_button(config[i]);
+                    for (int i = 0; i < 3;  i++) free_button(floatMenu1[i]);
                     queries_window[ourAtoi(number) - 1](settings);
                 }
 
@@ -554,7 +538,9 @@ void query2W(SETTINGS settings){
                     drawFloatMenu(floatWin, "User ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    args[0] = strdup(id);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
+                    args[0] = id;
 
                     wattron(win, COLOR_PAIR(4));
                     if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("User ID"), "%s",args[0]);
@@ -576,12 +562,16 @@ void query2W(SETTINGS settings){
                 if (strcmp(option, "[Run]") == 0){
                     if (args[0] != NULL){
                         //realiza a query
-                        args[1] = get_label_B(options[color]);
-                        if (strcmp(args[1], "Both") == 0) args[1] = NULL;
-                        else if (strcmp(args[1], "Flights") == 0) args[1] = "flights";
+                        char* verify = get_label_B(options[color]);
+                        if (strcmp(verify, "Both") == 0) args[1] = NULL;
+                        else if (strcmp(verify, "Flights") == 0) args[1] = "flights";
                         else args[1] = "reservations";
+                        free(verify);
 
                         void* result = query2(get_catalog_S(settings),args);
+                        for (int i = 0; i < 7;  i++) free_button(options[i]);
+                        for (int i = 0; i < 3;  i++) free_button(config[i]);
+                        free(option);
                         werase(win);
                         wrefresh(win);
                         endwin();
@@ -598,23 +588,31 @@ void query2W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        free_button(floatMenu1[0]);
+                        free_button(floatMenu1[1]);
                     }
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    for (int i = 0; i < 7;  i++) free_button(options[i]);
+                    for (int i = 0; i < 3;  i++) free_button(config[i]);
+                    free(option);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, 7, color);
         for (int i = 0; i < 3; i++) {
-            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+            char* label = get_label_B(config[i]);
+            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",label);
+            free(label);
         }
         wattron(win, COLOR_PAIR(4));
         if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("User ID"), "%s",args[0]);
@@ -630,7 +628,6 @@ void query3W(SETTINGS settings){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -638,7 +635,6 @@ void query3W(SETTINGS settings){
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Solver 3";
 
@@ -660,7 +656,9 @@ void query3W(SETTINGS settings){
     int selectedOption = 0;
 
     for (int i = 0; i < 3; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+        char* label = get_label_B(config[i]);
+        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",label);
+        free(label);
     }
     drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
 
@@ -679,18 +677,6 @@ void query3W(SETTINGS settings){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -742,7 +728,10 @@ void query3W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Query ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    //vai para a função de cada query
+                    free(option);
+                    for (int i = 0; i < 4;  i++) free_button(options[i]);
+                    for (int i = 0; i < 3;  i++) free_button(floatMenu1[i]);
+                    for (int i = 0; i < 3;  i++) free_button(config[i]);
                     queries_window[ourAtoi(number) - 1](settings);
                 }
 
@@ -780,7 +769,9 @@ void query3W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Hotel ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    args[0] = strdup(id);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
+                    args[0] = id;
                     wattron(win, COLOR_PAIR(4));
                     if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
                     wattroff(win, COLOR_PAIR(4));
@@ -790,6 +781,9 @@ void query3W(SETTINGS settings){
                     if (args[0] != NULL){
                         //realiza a query
                         void* result = query3(get_catalog_S(settings),args);
+                        free(option);
+                        for (int i = 0; i < 4;  i++) free_button(options[i]);
+                        for (int i = 0; i < 3;  i++) free_button(config[i]);
                         werase(win);
                         wrefresh(win);
                         endwin();
@@ -806,23 +800,31 @@ void query3W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        free_button(floatMenu1[0]);
+                        free_button(floatMenu1[1]);
                     }
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    free(option);
+                    for (int i = 0; i < 4;  i++) free_button(options[i]);
+                    for (int i = 0; i < 3;  i++) free_button(config[i]);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 3; i++) {
-            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+            char* labelC = get_label_B(config[i]);
+            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",labelC);
+            free(labelC);
         }
         wattron(win, COLOR_PAIR(4));
         if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
@@ -838,7 +840,6 @@ void query4W(SETTINGS settings){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -846,7 +847,6 @@ void query4W(SETTINGS settings){
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Solver 4";
 
@@ -868,7 +868,9 @@ void query4W(SETTINGS settings){
     int selectedOption = 0;
 
     for (int i = 0; i < 3; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+        char* label = get_label_B(config[i]);
+        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",label);
+        free(label);
     }
     drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
 
@@ -886,18 +888,6 @@ void query4W(SETTINGS settings){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -948,7 +938,10 @@ void query4W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Query ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    //vai para a função de cada query
+                    free(option);
+                    for (int i = 0; i < 3;  i++) free_button(floatMenu1[i]);
+                    for (int i = 0; i < 4;  i++) free_button(options[i]);
+                    for (int i = 0; i < 3;  i++) free_button(config[i]);
                     queries_window[ourAtoi(number) - 1](settings);
                 }
 
@@ -986,7 +979,9 @@ void query4W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Hotel ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    args[0] = strdup(id);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
+                    args[0] = id;
                     wattron(win, COLOR_PAIR(4));
                     if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
                     wattroff(win, COLOR_PAIR(4));
@@ -994,8 +989,10 @@ void query4W(SETTINGS settings){
 
                 if (strcmp(option, "[Run]") == 0){
                     if (args[0] != NULL){
-                        //realiza a query
                         void* result = query4(get_catalog_S(settings),args);
+                        for (int i = 0; i < 4;  i++) free_button(options[i]);
+                        for (int i = 0; i < 3;  i++) free_button(config[i]);
+                        free(option);
                         werase(win);
                         wrefresh(win);
                         endwin();
@@ -1012,23 +1009,31 @@ void query4W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        free_button(floatMenu1[0]);
+                        free_button(floatMenu1[1]);
                     }
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    for (int i = 0; i < 4;  i++) free_button(options[i]);
+                    for (int i = 0; i < 3;  i++) free_button(config[i]);
+                    free(option);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 3; i++) {
-            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+            char* labelC = get_label_B(config[i]);
+            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",labelC);
+            free(labelC);
         }
         wattron(win, COLOR_PAIR(4));
         if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
@@ -1044,7 +1049,6 @@ void query5W(SETTINGS settings){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -1052,7 +1056,6 @@ void query5W(SETTINGS settings){
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Solver 5";
     int color = 0;
@@ -1078,7 +1081,9 @@ void query5W(SETTINGS settings){
     int selectedOption = 0;
 
     for (int i = 0; i < 4; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+        char* label = get_label_B(config[i]);
+        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",label);
+        free(label);
     }
     drawWindow(win, options, selectedOption, title, 6, color);
 
@@ -1100,18 +1105,6 @@ void query5W(SETTINGS settings){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < 6; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -1162,7 +1155,10 @@ void query5W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Query ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    //vai para a função de cada query
+                    free(option);
+                    for (int i = 0; i < 6;  i++) free_button(options[i]);
+                    for (int i = 0; i < 4;  i++) free_button(config[i]);
+                    for (int i = 0; i < 3;  i++) free_button(floatMenu1[i]);
                     queries_window[ourAtoi(number) - 1](settings);
                 }
 
@@ -1200,6 +1196,8 @@ void query5W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Airport name", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
                     args[0] = strdup(id);
                     wattron(win, COLOR_PAIR(4));
                     if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Airport name"), "%s",args[0]);
@@ -1214,18 +1212,20 @@ void query5W(SETTINGS settings){
                         create_button("[Save & Go Back]", 35,4)
                     };
                     drawFloatMenu(floatWin, "Begin date", floatMenu1, 2);
+                    mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "YYYY/MM/DD HH:MM:SS");
 
-                    char id[200] = " ";
 
-                    while (!validate_date_time(id)){
+                    char date[200] = " ";
+
+                    while (!validate_date_time(date)){
 
                         curs_set(1); // Mostra o cursor
                         echo();      // Habilita a exibição do texto digitado
 
-                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, id, 1024);
+                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, date, 1024);
 
                         // Verifica se a string contém apenas números
-                        if (!validate_date_time(id)) {
+                        if (!validate_date_time(date)) {
                             // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Begin date", floatMenu1, 2);
@@ -1240,32 +1240,35 @@ void query5W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Begin date", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    args[1] = strdup(id);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
+                    args[1] = strdup(date);
                     wattron(win, COLOR_PAIR(4));
                     if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Begin date"), "%s",args[1]);
                     wattroff(win, COLOR_PAIR(4));
                 }
 
                 if (strcmp(option, "End date") == 0){
-                                        //Menu flutuante 1
+                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert end date: ", 1,2),
                         create_button("[Save & Go Back]", 35,4)
                     };
                     drawFloatMenu(floatWin, "End date", floatMenu1, 2);
+                    mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "YYYY/MM/DD HH:MM:SS");
 
-                    char id[200] = " ";
+                    char Edate[200] = " ";
 
-                    while (!validate_date_time(id)){
+                    while (!validate_date_time(Edate)){
 
                         curs_set(1); // Mostra o cursor
                         echo();      // Habilita a exibição do texto digitado
 
-                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, id, 1024);
+                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, Edate, 1024);
 
                         // Verifica se a string contém apenas números
-                        if (!validate_date_time(id)) {
+                        if (!validate_date_time(Edate)) {
                             // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "End date", floatMenu1, 2);
@@ -1280,7 +1283,9 @@ void query5W(SETTINGS settings){
                     drawFloatMenu(floatWin, "End date", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    args[2] = strdup(id);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
+                    args[2] = strdup(Edate);
                     wattron(win, COLOR_PAIR(4));
                     if (args[2] != NULL) mvwprintw(win, 13, 3+strlen("End date"), "%s",args[2]);
                     wattroff(win, COLOR_PAIR(4));
@@ -1297,6 +1302,8 @@ void query5W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        free_button(floatMenu1[0]);
+                        free_button(floatMenu1[1]);
                     }
                     else if (args[1] == NULL || args[2] == NULL || !compare_date_timeless(args[1], args[2])){
                         //janela a dizer que nao foi inserido id
@@ -1308,10 +1315,15 @@ void query5W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        free_button(floatMenu1[0]);
+                        free_button(floatMenu1[1]);
                     }
                     else{
                         //realiza a query
                         void* result = query5(get_catalog_S(settings),args);
+                        for (int i = 0; i < 6;  i++) free_button(options[i]);
+                        for (int i = 0; i < 4;  i++) free_button(config[i]);
+                        free(option);
                         werase(win);
                         wrefresh(win);
                         endwin();
@@ -1321,19 +1333,25 @@ void query5W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    for (int i = 0; i < 6;  i++) free_button(options[i]);
+                    for (int i = 0; i < 4;  i++) free_button(config[i]);
+                    free(option);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, 6, color);
         for (int i = 0; i < 4; i++) {
-            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+            char* labelC = get_label_B(config[i]);
+            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",labelC);
+            free(labelC);
         }
         wattron(win, COLOR_PAIR(4));
         if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Airport name"), "%s",args[0]);
@@ -1351,7 +1369,6 @@ void query6W(SETTINGS settings){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -1359,7 +1376,6 @@ void query6W(SETTINGS settings){
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Solver 6";
 
@@ -1383,7 +1399,9 @@ void query6W(SETTINGS settings){
     int selectedOption = 0;
 
     for (int i = 0; i < 4; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+        char* label = get_label_B(config[i]);
+        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",label);
+        free(label);
     }
     drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
 
@@ -1402,18 +1420,6 @@ void query6W(SETTINGS settings){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -1464,7 +1470,10 @@ void query6W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Query ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    //vai para a função de cada query
+                    free(option);
+                    for (int i = 0; i < 5;  i++) free_button(options[i]);
+                    for (int i = 0; i < 4;  i++) free_button(config[i]);
+                    for (int i = 0; i < 3;  i++) free_button(floatMenu1[i]);
                     queries_window[ourAtoi(number) - 1](settings);
                 }
 
@@ -1502,6 +1511,7 @@ void query6W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Year", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
+                    for (int i = 0; i < 2;  i++) free_button(floatMenu1[i]);
                     args[0] = strdup(id);
                     wattron(win, COLOR_PAIR(4));
                     if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Year"), "%s",args[0]);
@@ -1517,17 +1527,17 @@ void query6W(SETTINGS settings){
                     };
                     drawFloatMenu(floatWin, "Top N", floatMenu1, 2);
 
-                    char id[200] = " ";
+                    char N[200] = " ";
 
-                    while (!isNumber(id)){
+                    while (!isNumber(N)){
 
                         curs_set(1); // Mostra o cursor
                         echo();      // Habilita a exibição do texto digitado
 
-                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 12, id, 1024);
+                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 12, N, 1024);
 
                         // Verifica se a string contém apenas números
-                        if (!isNumber(id)) {
+                        if (!isNumber(N)) {
                             // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Top N", floatMenu1, 2);
@@ -1542,7 +1552,8 @@ void query6W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Top N", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    args[1] = strdup(id);
+                    for (int i = 0; i < 2;  i++) free_button(floatMenu1[i]);
+                    args[1] = strdup(N);
                     wattron(win, COLOR_PAIR(4));
                     if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("N"), "%s",args[1]);
                     wattroff(win, COLOR_PAIR(4));
@@ -1559,6 +1570,7 @@ void query6W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        for (int i = 0; i < 2;  i++) free_button(floatMenu1[i]);
                     }
                     else if (args[1] == NULL){
                         //janela a dizer que nao foi inserido id
@@ -1570,10 +1582,13 @@ void query6W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        for (int i = 0; i < 2;  i++) free_button(floatMenu1[i]);
                     }
                     else{
-                        //realiza a query
                         void* result = query6(get_catalog_S(settings),args);
+                        free(option);
+                        for (int i = 0; i < 5;  i++) free_button(options[i]);
+                        for (int i = 0; i < 4;  i++) free_button(config[i]);
                         werase(win);
                         wrefresh(win);
                         endwin();
@@ -1583,19 +1598,25 @@ void query6W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    free(option);
+                    for (int i = 0; i < 5;  i++) free_button(options[i]);
+                    for (int i = 0; i < 4;  i++) free_button(config[i]);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 4; i++) {
-            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+            char* labelC = get_label_B(config[i]);
+            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",labelC);
+            free(labelC);
         }
         wattron(win, COLOR_PAIR(4));
         if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Year"), "%s",args[0]);
@@ -1612,7 +1633,6 @@ void query7W(SETTINGS settings){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -1620,7 +1640,6 @@ void query7W(SETTINGS settings){
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Solver 7";
 
@@ -1643,7 +1662,9 @@ void query7W(SETTINGS settings){
     int selectedOption = 0;
 
     for (int i = 0; i < 4; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+        char* label = get_label_B(config[i]);
+        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",label);
+        free(label);
     }
     drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
 
@@ -1661,18 +1682,6 @@ void query7W(SETTINGS settings){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -1723,7 +1732,10 @@ void query7W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Query ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    //vai para a função de cada query
+                    free(option);
+                    for (int i = 0; i < 4;  i++) free_button(options[i]);
+                    for (int i = 0; i < 4;  i++) free_button(config[i]);
+                    for (int i = 0; i < 3;  i++) free_button(floatMenu1[i]);
                     queries_window[ourAtoi(number) - 1](settings);
                 }
 
@@ -1761,6 +1773,8 @@ void query7W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Top N", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
                     args[0] = strdup(id);
                     wattron(win, COLOR_PAIR(4));
                     if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("N"), "%s",args[0]);
@@ -1778,10 +1792,14 @@ void query7W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        free_button(floatMenu1[0]);
+                        free_button(floatMenu1[1]);
                     }
                     else{
-                        //realiza a query
                         void* result = query7(get_catalog_S(settings),args);
+                        free(option);
+                        for (int i = 0; i < 4;  i++) free_button(options[i]);
+                        for (int i = 0; i < 4;  i++) free_button(config[i]);
                         werase(win);
                         wrefresh(win);
                         endwin();
@@ -1791,19 +1809,25 @@ void query7W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    free(option);
+                    for (int i = 0; i < 4;  i++) free_button(options[i]);
+                    for (int i = 0; i < 4;  i++) free_button(config[i]);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 4; i++) {
-            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+            char* labelC = get_label_B(config[i]);
+            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",labelC);
+            free(labelC);
         }
         wattron(win, COLOR_PAIR(4));
         if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("N"), "%s",args[0]);
@@ -1819,7 +1843,6 @@ void query8W(SETTINGS settings){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -1827,7 +1850,6 @@ void query8W(SETTINGS settings){
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Solver 8";
 
@@ -1852,7 +1874,9 @@ void query8W(SETTINGS settings){
     int selectedOption = 0;
 
     for (int i = 0; i < 4; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+        char* label = get_label_B(config[i]);
+        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",label);
+        free(label);
     }
     drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
 
@@ -1874,18 +1898,6 @@ void query8W(SETTINGS settings){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -1936,7 +1948,10 @@ void query8W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
 
                     destroyFloatMenu(floatWin);
-                    //vai para a função de cada query
+                    free(option);
+                    for (int i = 0; i < 6;  i++) free_button(options[i]);
+                    for (int i = 0; i < 4;  i++) free_button(config[i]);
+                    for (int i = 0; i < 3;  i++) free_button(floatMenu1[i]);
                     queries_window[ourAtoi(number) - 1](settings);
                 }
 
@@ -1974,6 +1989,8 @@ void query8W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Hotel ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
                     args[0] = strdup(id);
                     wattron(win, COLOR_PAIR(4));
                     if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
@@ -1988,18 +2005,19 @@ void query8W(SETTINGS settings){
                         create_button("[Save & Go Back]", 35,4)
                     };
                     drawFloatMenu(floatWin, "Begin date", floatMenu1, 2);
+                    mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Date Format: YYYY/MM/DD");
 
-                    char id[200] = " ";
+                    char date[200] = " ";
 
-                    while (!validate_date_timeless(id)){
+                    while (!validate_date_timeless(date)){
 
                         curs_set(1); // Mostra o cursor
                         echo();      // Habilita a exibição do texto digitado
 
-                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, id, 1024);
+                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, date, 1024);
 
                         // Verifica se a string contém apenas números
-                        if (!validate_date_timeless(id)) {
+                        if (!validate_date_timeless(date)) {
                             // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Begin date", floatMenu1, 2);
@@ -2014,7 +2032,9 @@ void query8W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Begin date", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    args[1] = strdup(id);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
+                    args[1] = strdup(date);
                     wattron(win, COLOR_PAIR(4));
                     if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Begin date"), "%s",args[1]);
                     wattroff(win, COLOR_PAIR(4));
@@ -2028,18 +2048,20 @@ void query8W(SETTINGS settings){
                         create_button("[Save & Go Back]", 35,4)
                     };
                     drawFloatMenu(floatWin, "End date", floatMenu1, 2);
+                    mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Date Format: YYYY/MM/DD");
 
-                    char id[200] = " ";
 
-                    while (!validate_date_timeless(id)){
+                    char Edate[200] = " ";
+
+                    while (!validate_date_timeless(Edate)){
 
                         curs_set(1); // Mostra o cursor
                         echo();      // Habilita a exibição do texto digitado
 
-                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, id, 1024);
+                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, Edate, 1024);
 
                         // Verifica se a string contém apenas números
-                        if (!validate_date_timeless(id)) {
+                        if (!validate_date_timeless(Edate)) {
                             // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "End date", floatMenu1, 2);
@@ -2054,7 +2076,9 @@ void query8W(SETTINGS settings){
                     drawFloatMenu(floatWin, "End date", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    args[2] = strdup(id);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
+                    args[2] = strdup(Edate);
                     wattron(win, COLOR_PAIR(4));
                     if (args[2] != NULL) mvwprintw(win, 13, 3+strlen("End date"), "%s",args[2]);
                     wattroff(win, COLOR_PAIR(4));
@@ -2071,6 +2095,8 @@ void query8W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        free_button(floatMenu1[0]);
+                        free_button(floatMenu1[1]);
                     }
                     else if (args[1] == NULL || args[2] == NULL || !compare_date_timeless(args[1], args[2])){
                         //janela a dizer que nao foi inserido id
@@ -2082,10 +2108,15 @@ void query8W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        free_button(floatMenu1[0]);
+                        free_button(floatMenu1[1]);
                     }
                     else{
                         //realiza a query
                         void* result = query8(get_catalog_S(settings),args);
+                        free(option);
+                        for (int i = 0; i < 6;  i++) free_button(options[i]);
+                        for (int i = 0; i < 4;  i++) free_button(config[i]);
                         werase(win);
                         wrefresh(win);
                         endwin();
@@ -2095,19 +2126,25 @@ void query8W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    free(option);
+                    for (int i = 0; i < 6;  i++) free_button(options[i]);
+                    for (int i = 0; i < 4;  i++) free_button(config[i]);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 4; i++) {
-            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+            char* labelC = get_label_B(config[i]);
+            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",labelC);
+            free(labelC);
         }
         wattron(win, COLOR_PAIR(4));
         if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Hotel ID"), "%s",args[0]);
@@ -2125,7 +2162,6 @@ void query9W(SETTINGS settings){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -2133,7 +2169,6 @@ void query9W(SETTINGS settings){
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Solver 9";
 
@@ -2155,7 +2190,9 @@ void query9W(SETTINGS settings){
     int selectedOption = 0;
 
     for (int i = 0; i < 3; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+        char* label = get_label_B(config[i]);
+        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",label);
+        free(label);
     }
     drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
 
@@ -2173,18 +2210,6 @@ void query9W(SETTINGS settings){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -2235,7 +2260,10 @@ void query9W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
 
                     destroyFloatMenu(floatWin);
-                    //vai para a função de cada query
+                    free(option);
+                    for (int i = 0; i < 4;  i++) free_button(options[i]);
+                    for (int i = 0; i < 3;  i++) free_button(config[i]);
+                    for (int i = 0; i < 3;  i++) free_button(floatMenu1[i]);
                     queries_window[ourAtoi(number) - 1](settings);
                 }
 
@@ -2261,7 +2289,8 @@ void query9W(SETTINGS settings){
                     drawFloatMenu(floatWin, "ID", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
-                    args[0] = strdup(id);
+                    for (int i = 0; i < 2;  i++) free_button(floatMenu1[i]);
+                    args[0] = id;
                     wattron(win, COLOR_PAIR(4));
                     if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Prefix"), "%s",args[0]);
                     wattroff(win, COLOR_PAIR(4));
@@ -2269,8 +2298,10 @@ void query9W(SETTINGS settings){
 
                 if (strcmp(option, "[Run]") == 0){
                     if (args[0] != NULL){
-                        //realiza a query
                         void* result = query9(get_catalog_S(settings),args);
+                        free(option);
+                        for (int i = 0; i < 4;  i++) free_button(options[i]);
+                        for (int i = 0; i < 3;  i++) free_button(config[i]);
                         werase(win);
                         wrefresh(win);
                         endwin();
@@ -2287,23 +2318,30 @@ void query9W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        for (int i = 0; i < 2;  i++) free_button(config[i]);
                     }
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    free(option);
+                    for (int i = 0; i < 4;  i++) free_button(options[i]);
+                    for (int i = 0; i < 3;  i++) free_button(config[i]);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 3; i++) {
-            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+            char* labelC = get_label_B(config[i]);
+            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",labelC);
+            free(labelC);
         }
         wattron(win, COLOR_PAIR(4));
         if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Prefix"), "%s",args[0]);
@@ -2319,7 +2357,6 @@ void query10W(SETTINGS settings){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -2327,7 +2364,6 @@ void query10W(SETTINGS settings){
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Solver 10";
     int color = 0;
@@ -2352,7 +2388,9 @@ void query10W(SETTINGS settings){
     int selectedOption = 0;
 
     for (int i = 0; i < 4; i++) {
-        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+        char* label = get_label_B(config[i]);
+        mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",label);
+        free(label);
     }
     drawWindow(win, options, selectedOption, title, 5, color);
 
@@ -2372,18 +2410,6 @@ void query10W(SETTINGS settings){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < 6; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -2434,7 +2460,10 @@ void query10W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
 
                     destroyFloatMenu(floatWin);
-                    //vai para a função de cada query
+                    free(option);
+                    for (int i = 0; i < 5;  i++) free_button(options[i]);
+                    for (int i = 0; i < 4;  i++) free_button(config[i]);
+                    for (int i = 0; i < 3;  i++) free_button(floatMenu1[i]);
                     queries_window[ourAtoi(number) - 1](settings);
                 }
 
@@ -2469,6 +2498,7 @@ void query10W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Year", floatMenu1, 3);
 
                     destroyFloatMenu(floatWin);
+                    for (int i = 0; i < 3;  i++) free_button(floatMenu1[i]);
                     if (strcmp(id, "0") != 0) args[0] = strdup(id);
                     wattron(win, COLOR_PAIR(4));
                     if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Year"), "%s",args[0]);
@@ -2485,14 +2515,14 @@ void query10W(SETTINGS settings){
                     };
                     drawFloatMenu(floatWin, "Month", floatMenu1, 3);
 
-                    char id[200] = "a";
+                    char m[200] = "a";
 
-                    while (!isNumber(id) || (ourAtoi(id) < 0 || ourAtoi(id) > 12) || strlen(id) != 2){
+                    while (!isNumber(m) || (ourAtoi(m) < 0 || ourAtoi(m) > 12) || strlen(m) != 2){
 
                         curs_set(1); // Mostra o cursor
                         echo();      // Habilita a exibição do texto digitado
 
-                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, id, 1024);
+                        mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, m, 1024);
 
                         wclear(floatWin);
                         drawFloatMenu(floatWin, "Month", floatMenu1, 3);
@@ -2505,7 +2535,8 @@ void query10W(SETTINGS settings){
                     drawFloatMenu(floatWin, "Month", floatMenu1, 3);
 
                     destroyFloatMenu(floatWin);
-                    if (strcmp(id, "00") != 0) args[1] = strdup(id);
+                    for (int i = 0; i < 3;  i++) free_button(floatMenu1[i]);
+                    if (strcmp(m, "00") != 0) args[1] = strdup(m);
                     wattron(win, COLOR_PAIR(4));
                     if (args[1] != NULL) mvwprintw(win, 11, 3+strlen("Month"), "%s",args[1]);
                     wattroff(win, COLOR_PAIR(4));
@@ -2522,10 +2553,13 @@ void query10W(SETTINGS settings){
                         drawFloatMenu(floatWin, "Error", floatMenu1, 2);
                         getch();
                         destroyFloatMenu(floatWin);
+                        for (int i = 0; i < 2;  i++) free_button(floatMenu1[i]);
                     }
                     else{
-                        //realiza a query
                         void* result = query10(get_catalog_S(settings),args);
+                        for (int i = 0; i < 5;  i++) free_button(options[i]);
+                        for (int i = 0; i < 4;  i++) free_button(config[i]);
+                        free(option);
                         werase(win);
                         wrefresh(win);
                         endwin();
@@ -2535,19 +2569,25 @@ void query10W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    for (int i = 0; i < 5;  i++) free_button(options[i]);
+                    for (int i = 0; i < 4;  i++) free_button(config[i]);
+                    free(option);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
         // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, 5, color);
         for (int i = 0; i < 4; i++) {
-            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",get_label_B(config[i]));
+            char* labelC = get_label_B(config[i]);
+            mvwprintw(win, get_y_B(config[i]), get_x_B(config[i]), "%s",labelC);
+            free(labelC);
         }
         wattron(win, COLOR_PAIR(4));
         if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Year"), "%s",args[0]);

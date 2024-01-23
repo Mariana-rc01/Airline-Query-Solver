@@ -26,6 +26,8 @@
 #include <ncurses.h>
 #include <string.h>
 
+// DAR FREE DOS RESULTADOS DAS QUERIES E DOS ARGUMENTOS
+
 void query_results(SETTINGS settings, int id, void* output, char** args){
 
     int optionFormat = get_output_S(settings);
@@ -42,13 +44,10 @@ void txtFormat(SETTINGS settings, int id, void* output, char** args){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
-
 
     WINDOW* win = newwin(20,78,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Results";
 
@@ -73,7 +72,7 @@ void txtFormat(SETTINGS settings, int id, void* output, char** args){
         "name;median",
         "revenue",
         "id;name",
-        "(year|month|day);users;flights;passengers;unique_passengers;reservations"
+        "(year|month|day);users;flights;passengers;unique_pass..;reservations"
     };
 
     if (id == 1 || id == 3 || id == 4 || id == 7 || id == 9){
@@ -113,18 +112,6 @@ void txtFormat(SETTINGS settings, int id, void* output, char** args){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -142,6 +129,9 @@ void txtFormat(SETTINGS settings, int id, void* output, char** args){
                 char* option = get_label_B(options[selectedOption]);
 
                 if (strcmp(option, "[Try Again]") == 0){
+                    free(args);
+                    free(option);
+                    for (int i = 0; i < 3; i++) free_button(options[i]);
                     werase(win);
                     wrefresh(win);
                     endwin();
@@ -150,6 +140,9 @@ void txtFormat(SETTINGS settings, int id, void* output, char** args){
                 }
 
                 if (strcmp(option, "[Home]") == 0){
+                    free(args);
+                    free(option);
+                    for (int i = 0; i < 3; i++) free_button(options[i]);
                     werase(win);
                     wrefresh(win);
                     endwin();
@@ -158,6 +151,9 @@ void txtFormat(SETTINGS settings, int id, void* output, char** args){
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    free(args);
+                    free(option);
+                    for (int i = 0; i < 3; i++) free_button(options[i]);
                     werase(win);
                     wrefresh(win);
                     endwin();
@@ -180,13 +176,10 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
-
 
     WINDOW* win = newwin(23,78,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Results";
 
@@ -203,7 +196,6 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
     int selectedOption = 0;
 
     drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
-
 
     int q = get_nQueries_S(settings);
 
@@ -231,7 +223,7 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
         "name;median",
         "revenue",
         "id;name",
-        "(year|month|day);users;flights;passengers;unique_passengers;reservations"
+        "(year|month|day);users;flights;passengers;unique_pass..;reservations"
     };
 
     while (1) {
@@ -337,18 +329,6 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
         ch = getch();
 
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -378,6 +358,9 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                 }
 
                 if (strcmp(option, "[Try Again]") == 0){
+                    free(args);
+                    free(option);
+                    for (int i = 0; i < 5; i++) free_button(options[i]);
                     werase(win);
                     wrefresh(win);
                     endwin();
@@ -386,6 +369,9 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                 }
 
                 if (strcmp(option, "[Home]") == 0){
+                    free(args);
+                    free(option);
+                    for (int i = 0; i < 5; i++) free_button(options[i]);
                     werase(win);
                     wrefresh(win);
                     endwin();
@@ -394,12 +380,16 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    free(args);
+                    free(option);
+                    for (int i = 0; i < 5; i++) free_button(options[i]);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
 
             case 'c':
@@ -427,13 +417,10 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
-
 
     WINDOW* win = newwin(23,78,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Results";
 
@@ -479,7 +466,7 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
         "name;median",
         "revenue",
         "id;name",
-        "(year|month|day);users;flights;passengers;unique_passengers;reservations"
+        "(year|month|day);users;flights;passengers;unique_pass..;reservations"
     };
 
     while (1) {
@@ -632,18 +619,6 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
         ch = getch();
 
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -679,6 +654,10 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
                 }
 
                 if (strcmp(option, "[Try Again]") == 0){
+                    free(args);
+                    free(option);
+                    for (int i = 0; i < 5; i++) free_button(options[i]);
+                    free_query(output,id);
                     werase(win);
                     wrefresh(win);
                     endwin();
@@ -687,6 +666,10 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
                 }
 
                 if (strcmp(option, "[Home]") == 0){
+                    free(args);
+                    free(option);
+                    for (int i = 0; i < 5; i++) free_button(options[i]);
+                    free_query(output,id);
                     werase(win);
                     wrefresh(win);
                     endwin();
@@ -695,12 +678,17 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    free(args);
+                    free(option);
+                    for (int i = 0; i < 5; i++) free_button(options[i]);
+                    free_query(output,id);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 
@@ -717,12 +705,10 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     WINDOW* win = newwin(23,78,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Query Results";
 
@@ -768,7 +754,7 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
         "name;median",
         "revenue",
         "id;name",
-        "(year|month|day);users;flights;passengers;unique_passengers;reservations"
+        "(year|month|day);users;flights;passengers;unique_pass..;reservations"
     };
 
     while (1) {
@@ -921,18 +907,6 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
         ch = getch();
 
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -968,6 +942,10 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
                 }
 
                 if (strcmp(option, "[Try Again]") == 0){
+                    free(args);
+                    free(option);
+                    for (int i = 0; i < 5; i++) free_button(options[i]);
+                    free_query(output,id);
                     werase(win);
                     wrefresh(win);
                     endwin();
@@ -976,6 +954,10 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
                 }
 
                 if (strcmp(option, "[Home]") == 0){
+                    free(args);
+                    free(option);
+                    for (int i = 0; i < 5; i++) free_button(options[i]);
+                    free_query(output,id);
                     werase(win);
                     wrefresh(win);
                     endwin();
@@ -984,12 +966,17 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
                 }
 
                 if (strcmp(option, "[Go Back]") == 0){
+                    free(args);
+                    free(option);
+                    for (int i = 0; i < 5; i++) free_button(options[i]);
+                    free_query(output,id);
                     werase(win);
                     wrefresh(win);
                     endwin();
                     settingsConfig(settings);
                     exit(0);
                 }
+                free(option);
                 break;
         }
 

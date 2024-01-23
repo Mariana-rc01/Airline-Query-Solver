@@ -193,6 +193,8 @@ void settingsConfig(SETTINGS settings){
                     drawFloatMenu(floatWin, "Number of pages", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
                     wattron(win, COLOR_PAIR(4));
                     mvwprintw(win, 11, 5+strlen("Number of pages"), "%d",get_nPages_S(settings));
                     wattroff(win, COLOR_PAIR(4));
@@ -236,6 +238,8 @@ void settingsConfig(SETTINGS settings){
                     drawFloatMenu(floatWin, "Number of Outputs", floatMenu1, 2);
 
                     destroyFloatMenu(floatWin);
+                    free_button(floatMenu1[0]);
+                    free_button(floatMenu1[1]);
                     wattron(win, COLOR_PAIR(4));
                     mvwprintw(win, 13, 5+strlen("Ouputs per page"), "%d",get_nOutputs_S(settings));
                     wattroff(win, COLOR_PAIR(4));
