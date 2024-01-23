@@ -55,6 +55,12 @@ int set_catalogs(MANAGER manager_catalog, char* path1);
  */
 int isDigit(char c);
 
+/**
+ * @brief Checks if a given string represents a number.
+ *
+ * @param str The input string.
+ * @return 1 if the string represents a number, 0 otherwise.
+ */
 int isNumber(const char* str);
 
 /**
@@ -164,7 +170,15 @@ int calculate_flight_delay(char* scheduleDate, char* actualDate);
  */
 int get_flight_delay(FLIGHT flight);
 
+/**
+ * @brief Calculates the time span in days between two dates.
+ *
+ * @param begin The start date string in the format "yyyy/mm/dd".
+ * @param end The end date string in the format "yyyy/mm/dd".
+ * @return The time span in days.
+ */
 int dates_timespan ( char* begin, char* end);
+
 /**
  * @brief Gets the number of nights for a reservation.
  *
@@ -189,8 +203,24 @@ char* int_to_string(int number);
  */
 char* double_to_string(double number);
 
+/**
+ * @brief Check if a string contains spaces.
+ *
+ * @param str The input string to be checked.
+ * @return 1 if the string contains at least one space, 0 otherwise.
+ */
 int has_spaces(char* str);
 
+/**
+ * @brief Replace the first two lines of a file with new lines.
+ *
+ * This function reads the content of a file, replaces the first two lines
+ * with the provided new lines, and writes the modified content back to the file.
+ *
+ * @param file_name The name of the file to be modified.
+ * @param new_line1 The new content for the first line.
+ * @param new_line2 The new content for the second line.
+ */
 void replace_lines_at_start(const char* file_name, const char* new_line1, const char* new_line2);
 
 #endif

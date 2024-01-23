@@ -106,6 +106,7 @@ void set_rating(RESERV res, char* ratin){
 void set_cost(RESERV res, double cost){
     res->cost = cost;
 }
+
 void set_price_per_night(RESERV res, int ppn){
     res->price_per_night = ppn;
 }

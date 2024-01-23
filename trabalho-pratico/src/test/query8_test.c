@@ -1,6 +1,6 @@
 /**
  * @file query8_test.c
- * @brief
+ * @brief Test file for Query 8 function.
  */
 
 /*

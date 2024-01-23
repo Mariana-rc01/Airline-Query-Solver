@@ -50,8 +50,23 @@ USERS_C create_user_c(void);
  */
 void insert_user_c(USER user, USERS_C catalog, char* key);
 
+/**
+ * @brief Inserts or updates the count of users for a given user ID on a specific day.
+ *
+ * @param catalog The users catalog structure.
+ * @param key The user ID to be inserted or updated.
+ * @param day The day of the month for which the user count should be updated.
+ */
 void insert_userNumber_c(USERS_C catalog, char* key, char* day);
 
+/**
+ * @brief Retrieves the count of users for a given user ID in the users catalog.
+ *
+ * @param catalog The users catalog structure.
+ * @param key The user ID for which the count should be retrieved.
+ * @return A pointer to an array representing the count of users for each day in a month.
+ *         Returns NULL if the user ID is not found in the catalog.
+ */
 int* get_userNumber_c(USERS_C catalog, char* key);
 
 /**
@@ -81,6 +96,12 @@ void update_user_c(USERS_C catalog, char* id, double cost);
  */
 void free_user_c(USERS_C catalog);
 
+/**
+ * @brief Retrieves the hash table containing user information from the users catalog.
+ *
+ * @param catalog The users catalog structure.
+ * @return A pointer to the GHashTable containing user information.
+ */
 GHashTable* get_hash_table_users(USERS_C catalog);
 
 #endif

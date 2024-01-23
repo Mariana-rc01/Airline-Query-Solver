@@ -1,6 +1,6 @@
 /**
  * @file test.c
- * @brief
+ * @brief Test file for the program.
  */
 
 /*
@@ -61,7 +61,7 @@ void test(char* pathD, char* pathI, char* pathO){
 
     replace_lines_at_start("Resultados/analysis.txt", time, memory);
 
-    //Testes para cada query
+    //Tests to each query
     clock_gettime(CLOCK_REALTIME, &start);
 
     static queries_test queries[] = {query1_test, query2_test, query3_test,

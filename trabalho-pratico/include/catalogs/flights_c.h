@@ -49,9 +49,25 @@ FLIGHTS_C create_flight_c(void);
  */
 void insert_flight_c(FLIGHT flight, FLIGHTS_C catalog, char* key);
 
+/**
+ * @brief Inserts or updates the count of flights for a given flight number on a specific day.
+ *
+ * @param catalog The flights catalog structure.
+ * @param key The flight number to be inserted or updated.
+ * @param day The day of the month for which the flight count should be updated.
+ */
 void insert_flightNumber_c(FLIGHTS_C catalog, char* key, char* day);
 
+/**
+ * @brief Retrieves the count of flights for a given flight number in the flights catalog.
+ *
+ * @param catalog The flights catalog structure.
+ * @param key The flight number for which the count should be retrieved.
+ * @return A pointer to an array representing the count of flights for each day in a month.
+ *         Returns NULL if the flight number is not found in the catalog.
+ */
 int* get_flightNumber_c(FLIGHTS_C catalog, char* key);
+
 /**
  * @brief Get a flight by its ID.
  *
@@ -70,6 +86,13 @@ FLIGHT get_flight_by_id(FLIGHTS_C catalog, char* id);
  */
 GHashTable* get_hash_table_flight(FLIGHTS_C catalog);
 
+/**
+ * @brief Updates the number of passengers for a given flight in the flights catalog.
+ *
+ *
+ * @param catalog The flights catalog structure.
+ * @param id The id of the flight for which the number of passengers should be updated.
+ */
 void update_flight_c(FLIGHTS_C catalog, char* id);
 
 /**

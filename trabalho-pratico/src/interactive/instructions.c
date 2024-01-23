@@ -1,6 +1,6 @@
 /**
  * @file instructions.c
- * @brief
+ * @brief Implementation of an interactive instructions menu.
  */
 
 /*
@@ -28,27 +28,6 @@
 
 #define PINK 5
 
-// Deve ser mudado para os utils
-void printLongText(WINDOW* win, int* text_y, int text_x, const char* text) {
-    int max_x = 65;
-    int max_y = 23;
-    size_t text_len = strlen(text);
-
-    while (text_len > 0 && *text_y < max_y - 2) {
-        int available_width = max_x - text_x - 2; // Espaço disponível para a linha atual
-
-        if (text_len > (size_t)available_width) {
-            // Imprimir parte da string que cabe na largura disponível
-            mvwprintw(win, (*text_y)++, text_x, "%.*s", available_width, text);
-            text += available_width;
-            text_len -= available_width;
-        } else {
-            mvwprintw(win, (*text_y)++, text_x, "%-*s", max_x - 2, text);
-            text_len = 0;
-        }
-    }
-}
-
 void instructions(SETTINGS setts){
     initscr();
     start_color();
@@ -71,7 +50,7 @@ void instructions(SETTINGS setts){
     int ch;
     int current_text = 1;
     int max_texts = 3;
-    int text_offset = 0;  // Offset vertical no texto
+    int text_offset = 0;  // Vertical offset in the text
 
     while (1){
         wclear(win);
@@ -92,17 +71,17 @@ void instructions(SETTINGS setts){
 
         if (file != NULL){
             char buffer[1024];
-            // Ajuste: Pular linhas conforme o deslocamento vertical
+            // Adjust: Skip lines based on vertical offset
             for (int i = 0; i < text_offset; ++i){
                 if (fgets(buffer, sizeof(buffer), file) == NULL){
-                    break;  // Chegamos ao final do arquivo
+                    break;  // Reached the end of the file
                 }
             }
             while (fgets(buffer, sizeof(buffer), file) != NULL && text_y < max_y - 2){
                 printLongText(win, &text_y, text_x, buffer);
             }
 
-            // Verificar se há mais linhas no arquivo
+            // Check if there are more lines in the file
             if (fgets(buffer, sizeof(buffer), file) == NULL){
                 verify = 1;
             }

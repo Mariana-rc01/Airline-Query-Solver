@@ -1,6 +1,6 @@
 /**
  * @file query3_test.h
- * @brief
+ * @brief Test file for Query 3 function.
  */
 
 /*
@@ -26,6 +26,13 @@
 #include "catalogs/manager_c.h"
 #include "menuNdata/queries.h"
 
+/**
+ * @brief Test function for Query 3.
+ *
+ * This function tests the behavior and performance of Query 3 for different scenarios.
+ *
+ * @param manager manager.
+ */
 void query3_test(MANAGER manager);
 
 #endif

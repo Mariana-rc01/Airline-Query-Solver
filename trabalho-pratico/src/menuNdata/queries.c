@@ -858,7 +858,7 @@ void* query7(MANAGER manager,char** args){
 }
 
 int compare_dates_timeless(char* itemA, char* itemB) {
-    // Comparar anos
+
     int yearA, monthA, dayA;
     sscanf(itemA, "%d/%d/%d", &yearA, &monthA, &dayA);
 
@@ -878,14 +878,6 @@ int compare_dates_timeless(char* itemA, char* itemB) {
     return dayB - dayA;  // Sort days by descending order
 
 }
-
-
-/*Apresentar a receita total de um hotel entre duas datas (inclusive), a partir do seu identificador.
-As receitas de um hotel devem considerar apenas o preço por noite (price_per_night) de todas as
-reservas com noites entre as duas datas. E.g., caso um hotel tenha apenas uma reserva de 100€/noite
-de 2023/10/01 a 2023/10/10, e quisermos saber as receitas entre 2023/10/01 a 2023/10/02, deverá ser
-retornado 200€ (duas noites). Por outro lado, caso a reserva seja entre 2023/10/01 a 2023/10/02,
-deverá ser retornado 100€ (uma noite).*/
 
 void* query8(MANAGER manager, char** args){
     char* hotel_id = strdup(args[0]);
@@ -937,7 +929,6 @@ int sort_users(const void* a, const void* b) {
     User_list* f_a = (User_list*)a;
     User_list* f_b = (User_list*)b;
 
-    // Compara as strings convertidas para minúsculas
     int result = strcoll(f_a->user, f_b->user);
 
     if(result == 0) result = strcoll(f_a->user_id, f_b->user_id);
@@ -976,7 +967,7 @@ void* query9(MANAGER manager,char** args) {
         free(user_status);
         free(truncatedString);
     }
-    //free(prefix);
+
     qsort(user_list, i, sizeof(User_list), sort_users);
 
     char** finalResult = malloc(sizeof(char*)*(i+1));
@@ -1047,12 +1038,12 @@ void* query10(MANAGER manager,char** args){
     int count = 0;
 
     if (year == NULL){
-        //1ª opção (Não indicam nada)
+        //1st option (No indication provided)
         for (int k = 2010; k < 2024; k++) {
             char year[6];
             sprintf(year, "%d", k);
 
-            // Inicializa as contagens para cada ano
+            // Initialize the counts for each year.
             int total_user = 0, total_flight = 0, total_reserv = 0, total_pass = 0, total_passU = 0;
             GHashTable* uniqueUsers = g_hash_table_new(g_str_hash, g_str_equal);
 
@@ -1098,7 +1089,7 @@ void* query10(MANAGER manager,char** args){
                     passU = g_hash_table_size(uniqueUsers);
                 }
 
-                // Acumula os totais de cada ano
+                // Accumulate the totals for each year.
                 total_user += user;
                 total_flight += flight;
                 total_reserv += reserv;
@@ -1123,7 +1114,7 @@ void* query10(MANAGER manager,char** args){
 
     }
     else if (month == NULL){
-        //2ª opção (Indicam ano)
+        //2nd option (Specify the year)
         if(ourAtoi(year) > 2023 || ourAtoi(year) < 2010) return NULL;
 
         for (int j = 0; j < 12; j++){
@@ -1178,7 +1169,7 @@ void* query10(MANAGER manager,char** args){
 
     }
     else {
-        //3ª opção (Indicam ano e mês)
+        //3rd option (Specify year and month)
         int Y = ourAtoi(year);
         int M = ourAtoi(month);
         if(Y > 2023 || Y < 2010 || M < 1 || M > 12) {

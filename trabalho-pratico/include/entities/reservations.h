@@ -108,7 +108,13 @@ void set_rating(RESERV res, char* ratin);
  */
 void set_cost(RESERV res, double cost);
 
+/**
+ * @brief Sets the price per night for a given reservation.
+ * @param res A pointer to the reservations struct.
+ * @param ppn The new price per night to be set for the reservation.
+ */
 void set_price_per_night(RESERV res, int ppn);
+
 /**
  * @brief Gets the reservation ID.
  * @param res A pointer to the reservations struct.
@@ -179,7 +185,13 @@ char* get_rating(RESERV res);
  */
 double get_cost(RESERV res);
 
+/**
+ * @brief Gets the price per nigth of the reservation.
+ * @param res A pointer to the reservations struct.
+ * @return The reservation's price per night.
+ */
 int get_price_per_night(RESERV res);
+
 /**
  * @brief Frees memory associated with a reserv struct.
  * @param res A pointer to the reservation struct.

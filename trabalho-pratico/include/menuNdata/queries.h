@@ -137,6 +137,10 @@ void* query6(MANAGER catalog, char** args);
 /**
  * @brief Executes Query 7
  *
+ * List the top N airports with the highest median delays. Delays at an airport are calculated
+ * based on the difference between the estimated and actual departure dates for flights departing
+ * from that airport.
+ *
  * @param catalog Catalog manager.
  * @param args    Array of arguments for the query.
  * @return        The result of the query.
@@ -145,6 +149,8 @@ void* query7(MANAGER catalog, char** args);
 
 /**
  * @brief Executes Query 8
+ *
+ * Present the total revenue of a hotel between two dates (inclusive), based on its identifier.
  *
  * @param catalog Catalog manager.
  * @param args    Array of arguments for the query.
@@ -155,6 +161,9 @@ void* query8(MANAGER catalog, char** args);
 /**
  * @brief Executes Query 9
  *
+ * List all users whose name starts with the prefix passed as an argument,
+ * sorted by name (in ascending order).
+ *
  * @param catalog Catalog manager.
  * @param args    Array of arguments for the query.
  * @return        The result of the query.
@@ -163,6 +172,11 @@ void* query9(MANAGER catalog, char** args);
 
 /**
  * @brief Executes Query 10
+ *
+ * Present various general metrics of the application. The considered metrics are: the number of
+ * new registered users (according to the account_creation field); the number of flights (according
+ * to the schedule_departure_date field); the number of passengers; the number of unique passengers;
+ * and the number of reservations (according to the begin_date field).
  *
  * @param catalog Catalog manager.
  * @param args    Array of arguments for the query.

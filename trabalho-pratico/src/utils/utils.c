@@ -1,6 +1,6 @@
 /**
  * @file utils.c
- * @brief Module that connects all the entities
+ * @brief Module containg utility functions used throughout the program.
  */
 
 /*
@@ -96,10 +96,10 @@ int isDigit(char c){
 int isNumber(const char* str) {
     for (int i = 0; str[i] != '\0'; i++) {
         if (!isDigit(str[i])) {
-            return 0; // Não é um número
+            return 0; // It isn't a number
         }
     }
-    return 1; // É um número
+    return 1; // It is a number
 }
 
 int isLetter(char c){

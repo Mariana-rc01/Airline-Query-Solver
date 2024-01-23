@@ -1,6 +1,6 @@
 /**
  * @file query2_test.h
- * @brief
+ * @brief Test file for Query 2 function.
  */
 
 /*
@@ -26,6 +26,13 @@
 #include "catalogs/manager_c.h"
 #include "menuNdata/queries.h"
 
+/**
+ * @brief Test function for Query 2.
+ *
+ * This function tests the behavior and performance of Query 2 for different scenarios.
+ *
+ * @param manager manager.
+ */
 void query2_test(MANAGER manager);
 
 #endif

@@ -1,6 +1,6 @@
 /**
  * @file file_compare.h
- * @brief
+ * @brief File containing definition of functions to compare output files with expected results for testing purposes.
  */
 
 /*
@@ -24,6 +24,15 @@
 
 #include "utils/utils.h"
 
+/**
+ * @brief Compare output files with expected results.
+ *
+ * This function compares the contents of the generated output files with the expected results.
+ * If any discrepancies are found, the function writes the details to the incongruities.txt file.
+ *
+ * @param pathO The path to the folder containing the expected output files.
+ * @param n The number of tests to run.
+ */
 void compare_files(char* pathO, int n);
 
 #endif

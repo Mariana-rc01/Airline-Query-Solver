@@ -1,6 +1,6 @@
 /**
  * @file query4_test.h
- * @brief
+ * @brief Test file for Query 4 function.
  */
 
 /*
@@ -26,6 +26,13 @@
 #include "catalogs/manager_c.h"
 #include "menuNdata/queries.h"
 
+/**
+ * @brief Test function for Query 4.
+ *
+ * This function tests the behavior and performance of Query 4 for different scenarios.
+ *
+ * @param manager manager.
+ */
 void query4_test(MANAGER manager);
 
 #endif

@@ -1,6 +1,6 @@
 /**
  * @file query5_test.c
- * @brief
+ * @brief Test file for Query 5 function.
  */
 
 /*

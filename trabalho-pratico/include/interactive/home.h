@@ -1,6 +1,6 @@
 /**
  * @file home.h
- * @brief 
+ * @brief Definition of an interactive home menu.
  */
 
 /*
@@ -27,6 +27,16 @@
 #include "interactive/settings_config.h"
 #include "interactive/instructions.h"
 
+/**
+ * @brief Displays an interactive home menu allowing users to select different options.
+ *
+ * The function initializes the NCurses library, creates a main window, and displays a menu with options.
+ * Users can navigate through the options using arrow keys and select an option by pressing Enter.
+ * Depending on the selected option, specific actions such as configuring settings, displaying instructions,
+ * or exiting the program may be triggered.
+ *
+ * @param setts The settings structure used for configuring the program.
+ */
 void home(SETTINGS settings);
 
 #endif

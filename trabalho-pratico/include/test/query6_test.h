@@ -1,6 +1,6 @@
 /**
  * @file query6_test.h
- * @brief
+ * @brief Test file for Query 6 function.
  */
 
 /*
@@ -26,6 +26,13 @@
 #include "catalogs/manager_c.h"
 #include "menuNdata/queries.h"
 
+/**
+ * @brief Test function for Query 6.
+ *
+ * This function tests the behavior and performance of Query 6 for different scenarios.
+ *
+ * @param manager manager.
+ */
 void query6_test(MANAGER manager);
 
 #endif

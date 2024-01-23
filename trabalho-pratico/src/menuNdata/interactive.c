@@ -23,15 +23,21 @@
 #include "menuNdata/interactive.h"
 #include <string.h>
 
-
+/**
+ * @struct setting
+ * @brief Represents the settings for interactive mode.
+ *
+ * This structure contains information such as dataset path, output format,
+ * and other parameters related to the interactive mode.
+ */
 struct setting {
-    char* datasetPath;
-    int changedPath; // 2 - é o pré-definido, 1 - mudado, 0 - catálogos já preenchidos
-    int output; // 1 - txt format, 2 - oneByOne, 3 - number page per Page, 4 - outputs per page
-    int nPages;
-    int nOutputs;
-    int nQueries; // number of queries done at the moment
-    MANAGER manager;
+    char* datasetPath; /**< The path to the dataset. */
+    int changedPath;   /**< 2 - predefined, 1 - changed, 0 - catalogs already filled. */
+    int output;        /**< 1 - TXT format, 2 - One by One, 3 - Number Page per Page, 4 - Outputs per page. */
+    int nPages;        /**< Number of pages. */
+    int nOutputs;      /**< Number of outputs. */
+    int nQueries;      /**< Number of queries done at the moment. */
+    MANAGER manager;   /**< The manager structure containing catalogs. */
 };
 
 SETTINGS create_settings(void){

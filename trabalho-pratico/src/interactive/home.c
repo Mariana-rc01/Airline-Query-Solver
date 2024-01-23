@@ -1,6 +1,6 @@
 /**
  * @file home.c
- * @brief
+ * @brief Implementation of an interactive home menu using NCurses.
  */
 
 /*
@@ -33,24 +33,24 @@ void home(SETTINGS setts) {
     keypad(stdscr, TRUE);
     start_color();
 
-    // Criar uma janela principal
+    // Create the main window
     WINDOW* home_win = newwin(10, 30, 2, 5);
     refresh();
 
     int ch;
     char* title = "Interactive Mode";
 
-    // Defina suas opções e suas posições aqui
+    // Define menu options and positions
     BUTTONS options[MAX_OPTIONS] = {
         create_button("AirLine Query Solver",2,2),
         create_button("Instructions",2,4),
         create_button("Exit",2,6)
     };
 
-    // Índice da opção selecionada
+    // Index of the selected option
     int selectedOption = 0;
 
-    // Desenha as opções inicialmente
+    // Draw the initial options on the screen
     drawWindow(home_win, options, selectedOption, title, MAX_OPTIONS, 0);
 
     while (1) {
@@ -71,15 +71,10 @@ void home(SETTINGS setts) {
                     free_button(options[0]);
                     free_button(options[1]);
                     free_button(options[2]);
-                    // Apaga a janela principal
                     werase(home_win);
-                    // Atualiza a tela para garantir que a janela principal seja removida
                     wrefresh(home_win);
-                    // Sai do modo ncurses
                     endwin();
-                    // Chama a função de instruções
                     settingsConfig(setts);
-                    // Sai do programa após exibir as instruções
                     exit(0);
                 }
                 if (strcmp(option, "Instructions") == 0){
@@ -87,15 +82,10 @@ void home(SETTINGS setts) {
                     free_button(options[0]);
                     free_button(options[1]);
                     free_button(options[2]);
-                    // Apaga a janela principal
                     werase(home_win);
-                    // Atualiza a tela para garantir que a janela principal seja removida
                     wrefresh(home_win);
-                    // Sai do modo ncurses
                     endwin();
-                    // Chama a função de instruções
                     instructions(setts);
-                    // Sai do programa após exibir as instruções
                     exit(0);
                 }
                 if (strcmp(option, "Exit") == 0) {
@@ -154,7 +144,7 @@ void home(SETTINGS setts) {
                 break;
         }
 
-        // Atualiza as opções na tela
+        // Update the options on the screen
         drawWindow(home_win, options, selectedOption, title, MAX_OPTIONS, 0);
     }
     delwin(home_win);

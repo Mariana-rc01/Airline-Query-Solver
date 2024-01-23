@@ -1,6 +1,6 @@
 /**
  * @file test.h
- * @brief
+ * @brief Test file for the program.
  */
 
 /*
@@ -47,8 +47,25 @@
 #include "test/query9_test.h"
 #include "test/query10_test.h"
 
+/**
+ * @typedef queries_test
+ * @brief Type definition for function pointers to queries tests.
+ *
+ * The queries_test type represents a function pointer to a test function for a specific query.
+ *
+ * @param catalog The MANAGER catalog to be used in the test.
+ */
 typedef void (*queries_test)(MANAGER catalog);
 
+/**
+ * @brief Function to perform the test of the application.
+ *
+ * This function sets up the necessary data structures, executes queries, and performs tests for each query.
+ *
+ * @param pathD Path to the dataset.
+ * @param pathI Path to the input queries file.
+ * @param pathO Path to the expected output file for file comparison.
+ */
 void test(char* pathD, char* pathI, char* pathO);
 
 #endif

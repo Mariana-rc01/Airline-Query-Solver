@@ -30,7 +30,7 @@
  */
 struct flights_catalog {
     GHashTable* flights; /**< Hash table that maps flight IDs to flight objects.*/
-    GHashTable* flightsNumber;
+    GHashTable* flightsNumber; /**< Hash table that maps flight numbers to flight objects. */
 };
 
 FLIGHTS_C create_flight_c(void){

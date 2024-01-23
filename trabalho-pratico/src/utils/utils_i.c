@@ -1,6 +1,6 @@
 /**
  * @file utils_i.c
- * @brief 
+ * @brief Module containg utility functions used throughout the interactive mode.
  */
 
 /*
@@ -27,10 +27,15 @@
 
 #define PINK 5
 
-// Estrutura para representar um botão
+/**
+ * @struct button
+ * @brief Structure representing a button in the interactive mode.
+ *
+ * The button structure contains the position (x, y) and label text of a button.
+ */
 struct button {
-    int x, y; // Posição do botão
-    char* label; // Texto do botão
+    int x, y; /**< x-coordinate of the button */
+    char* label; /**< Text label of the button */
 };
 
 BUTTONS create_button(char* label, int x, int y){
@@ -174,4 +179,24 @@ void destroyFloatMenu(WINDOW* floatWin) {
     werase(floatWin);
     wrefresh(floatWin);
     delwin(floatWin);
+}
+
+void printLongText(WINDOW* win, int* text_y, int text_x, const char* text) {
+    int max_x = 65;
+    int max_y = 23;
+    size_t text_len = strlen(text);
+
+    while (text_len > 0 && *text_y < max_y - 2) {
+        int available_width = max_x - text_x - 2; // Espaço disponível para a linha atual
+
+        if (text_len > (size_t)available_width) {
+            // Imprimir parte da string que cabe na largura disponível
+            mvwprintw(win, (*text_y)++, text_x, "%.*s", available_width, text);
+            text += available_width;
+            text_len -= available_width;
+        } else {
+            mvwprintw(win, (*text_y)++, text_x, "%-*s", max_x - 2, text);
+            text_len = 0;
+        }
+    }
 }

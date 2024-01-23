@@ -1,6 +1,6 @@
 /**
  * @file settings.h
- * @brief
+ * @brief Definition of functions related to settings configuration.
  */
 
 /*
@@ -29,6 +29,14 @@
 #include "utils/utils_i.h"
 #include "utils/utils.h"
 
+/**
+ * @brief Main function for configuring application settings.
+ *
+ * Initializes the curses environment and sets up the user interface for configuring
+ * various application settings such as dataset path, output format, etc.
+ *
+ * @param settings The SETTINGS structure.
+ */
 void settingsConfig(SETTINGS setts);
 
 #endif

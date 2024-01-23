@@ -1,6 +1,6 @@
 /**
  * @file query_solver.c
- * @brief
+ * @brief Implementation of query solver functionality and menu.
  */
 
 /*
@@ -100,21 +100,21 @@ void solver(SETTINGS settings){
 
                     while (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1); // Show the cursor
+                        echo();      // Enable display of entered text
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, number, 1024);
 
-                        // Verifica se a string contém apenas números
+                        // Check if the string contains only numbers
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
-                            // Exibe uma mensagem de erro e não permite salvar
+                            // Display an error message and do not allow saving
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0); // Hide the cursor
+                        noecho();    // Disable display of entered text
 
                     }
 
@@ -130,12 +130,12 @@ void solver(SETTINGS settings){
                     free_button(options[2]);
                     free_button(config[0]);
                     free_button(config[1]);
-                    //vai para a função de cada query
+                    // Go to the function of each query
                     queries_window[ourAtoi(number) - 1](settings);
                 }
 
                 if (strcmp(option, "[Run]") == 0){
-                    //janela a dizer que nao foi inserido id
+                    // Window saying that no ID was entered
                     WINDOW* floatWin = newwin(6, 40, 5, 4);
                     BUTTONS floatMenu1[2] ={
                         create_button("You didn't enter any Query ID! Try again :)", 1,2),
@@ -165,7 +165,6 @@ void solver(SETTINGS settings){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 2; i++) {
             char* configG = get_label_B(config[i]);
@@ -248,7 +247,6 @@ void query1W(SETTINGS settings){
                 char* option = get_label_B(options[selectedOption]);
 
                 if (strcmp(option, "Query ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Query ID: ", 1,2),
@@ -261,20 +259,18 @@ void query1W(SETTINGS settings){
 
                     while (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, number, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -289,7 +285,6 @@ void query1W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert ID: ", 1,2),
@@ -301,21 +296,19 @@ void query1W(SETTINGS settings){
 
                     while (has_spaces(id)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 15, id, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (has_spaces(id)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "ID", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a ID without spaces");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -333,7 +326,6 @@ void query1W(SETTINGS settings){
 
                 if (strcmp(option, "[Run]") == 0){
                     if (args[0] != NULL){
-                        //realiza a query
                         void* result = query1(get_catalog_S(settings),args);
                         free(option);
                         for (int i = 0; i < 4;  i++) free_button(options[i]);
@@ -345,7 +337,6 @@ void query1W(SETTINGS settings){
                         exit(0);
                     }
                     else{
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 40, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("You didn't enter any ID! Try again :)", 1,2),
@@ -373,7 +364,6 @@ void query1W(SETTINGS settings){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 3; i++) {
             char* label = get_label_B(config[i]);
@@ -464,7 +454,6 @@ void query2W(SETTINGS settings){
                 char* option = get_label_B(options[selectedOption]);
 
                 if (strcmp(option, "Query ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Query ID: ", 1,2),
@@ -477,20 +466,18 @@ void query2W(SETTINGS settings){
 
                     while (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, number, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -505,7 +492,6 @@ void query2W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "User ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert User ID: ", 1,2),
@@ -517,21 +503,19 @@ void query2W(SETTINGS settings){
 
                     while (has_spaces(id)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 16, id, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (has_spaces(id)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "User ID", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a ID without spaces");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -561,7 +545,6 @@ void query2W(SETTINGS settings){
 
                 if (strcmp(option, "[Run]") == 0){
                     if (args[0] != NULL){
-                        //realiza a query
                         char* verify = get_label_B(options[color]);
                         if (strcmp(verify, "Both") == 0) args[1] = NULL;
                         else if (strcmp(verify, "Flights") == 0) args[1] = "flights";
@@ -579,7 +562,6 @@ void query2W(SETTINGS settings){
                         exit(0);
                     }
                     else{
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 40, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("You didn't enter any ID! Try again :)", 1,2),
@@ -607,7 +589,6 @@ void query2W(SETTINGS settings){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, 7, color);
         for (int i = 0; i < 3; i++) {
             char* label = get_label_B(config[i]);
@@ -694,7 +675,6 @@ void query3W(SETTINGS settings){
                 char* option = get_label_B(options[selectedOption]);
 
                 if (strcmp(option, "Query ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Query ID: ", 1,2),
@@ -707,21 +687,19 @@ void query3W(SETTINGS settings){
 
                     while (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, number, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
 
                         }
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -736,7 +714,6 @@ void query3W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "Hotel ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Hotel ID: ", 1,2),
@@ -748,21 +725,19 @@ void query3W(SETTINGS settings){
 
                     while (has_spaces(id)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, id, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (has_spaces(id)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Hotel ID", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a ID without spaces");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -791,7 +766,6 @@ void query3W(SETTINGS settings){
                         exit(0);
                     }
                     else{
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 40, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("You didn't enter any ID! Try again :)", 1,2),
@@ -819,7 +793,6 @@ void query3W(SETTINGS settings){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 3; i++) {
             char* labelC = get_label_B(config[i]);
@@ -905,7 +878,6 @@ void query4W(SETTINGS settings){
                 char* option = get_label_B(options[selectedOption]);
 
                 if (strcmp(option, "Query ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Query ID: ", 1,2),
@@ -918,20 +890,18 @@ void query4W(SETTINGS settings){
 
                     while (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, number, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -946,7 +916,6 @@ void query4W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "Hotel ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Hotel ID: ", 1,2),
@@ -958,22 +927,19 @@ void query4W(SETTINGS settings){
 
                     while (has_spaces(id)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, id, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (has_spaces(id)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Hotel ID", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a ID without spaces");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
-
+                        curs_set(0);
+                        noecho();
                     }
 
                     drawFloatMenu(floatWin, "Hotel ID", floatMenu1, 2);
@@ -1000,7 +966,6 @@ void query4W(SETTINGS settings){
                         exit(0);
                     }
                     else{
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 40, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("You didn't enter any ID! Try again :)", 1,2),
@@ -1028,7 +993,6 @@ void query4W(SETTINGS settings){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 3; i++) {
             char* labelC = get_label_B(config[i]);
@@ -1122,7 +1086,6 @@ void query5W(SETTINGS settings){
                 char* option = get_label_B(options[selectedOption]);
 
                 if (strcmp(option, "Query ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Query ID: ", 1,2),
@@ -1135,20 +1098,18 @@ void query5W(SETTINGS settings){
 
                     while (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, number, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -1163,7 +1124,6 @@ void query5W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "Airport name") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert airport name: ", 1,2),
@@ -1175,21 +1135,19 @@ void query5W(SETTINGS settings){
 
                     while (!validate_airports(id)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, id, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!validate_airports(id)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Airport name", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid airport :)");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -1205,7 +1163,6 @@ void query5W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "Begin date") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert begin date: ", 1,2),
@@ -1219,21 +1176,19 @@ void query5W(SETTINGS settings){
 
                     while (!validate_date_time(date)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, date, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!validate_date_time(date)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Begin date", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "YYYY/MM/DD HH:MM:SS");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -1249,7 +1204,6 @@ void query5W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "End date") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert end date: ", 1,2),
@@ -1262,21 +1216,19 @@ void query5W(SETTINGS settings){
 
                     while (!validate_date_time(Edate)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, Edate, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!validate_date_time(Edate)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "End date", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "YYYY/MM/DD HH:MM:SS");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -1293,7 +1245,6 @@ void query5W(SETTINGS settings){
 
                 if (strcmp(option, "[Run]") == 0){
                     if (args[0] == NULL){
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 40, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("You didn't enter any name! Try again :)", 1,2),
@@ -1306,7 +1257,6 @@ void query5W(SETTINGS settings){
                         free_button(floatMenu1[1]);
                     }
                     else if (args[1] == NULL || args[2] == NULL || !compare_date_timeless(args[1], args[2])){
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 40, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("Start date is later than the end date.", 1,2),
@@ -1319,7 +1269,6 @@ void query5W(SETTINGS settings){
                         free_button(floatMenu1[1]);
                     }
                     else{
-                        //realiza a query
                         void* result = query5(get_catalog_S(settings),args);
                         for (int i = 0; i < 6;  i++) free_button(options[i]);
                         for (int i = 0; i < 4;  i++) free_button(config[i]);
@@ -1346,7 +1295,6 @@ void query5W(SETTINGS settings){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, 6, color);
         for (int i = 0; i < 4; i++) {
             char* labelC = get_label_B(config[i]);
@@ -1437,7 +1385,6 @@ void query6W(SETTINGS settings){
                 char* option = get_label_B(options[selectedOption]);
 
                 if (strcmp(option, "Query ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Query ID: ", 1,2),
@@ -1450,20 +1397,18 @@ void query6W(SETTINGS settings){
 
                     while (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, number, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -1478,7 +1423,6 @@ void query6W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "Year") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Enter a year: ", 1,2),
@@ -1490,21 +1434,19 @@ void query6W(SETTINGS settings){
 
                     while (!isNumber(id) || strlen(id) != 4){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 15, id, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(id) || strlen(id) != 4) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Year", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Year Format: YYYY :)");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -1516,10 +1458,11 @@ void query6W(SETTINGS settings){
                     wattron(win, COLOR_PAIR(4));
                     if (args[0] != NULL) mvwprintw(win, 9, 3+strlen("Year"), "%s",args[0]);
                     wattroff(win, COLOR_PAIR(4));
+                    free(option);
+                    break;
                 }
 
                 if (strcmp(option, "N") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Enter a N: ", 1,2),
@@ -1531,21 +1474,19 @@ void query6W(SETTINGS settings){
 
                     while (!isNumber(N)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 12, N, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(N)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Top N", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a number :)");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -1561,7 +1502,6 @@ void query6W(SETTINGS settings){
 
                 if (strcmp(option, "[Run]") == 0){
                     if (args[0] == NULL){
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 40, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("You didn't enter any Year! Try again :)", 1,2),
@@ -1573,7 +1513,6 @@ void query6W(SETTINGS settings){
                         for (int i = 0; i < 2;  i++) free_button(floatMenu1[i]);
                     }
                     else if (args[1] == NULL){
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 40, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("You didn't enter any N! Try again :)", 1,2),
@@ -1611,7 +1550,6 @@ void query6W(SETTINGS settings){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 4; i++) {
             char* labelC = get_label_B(config[i]);
@@ -1699,7 +1637,6 @@ void query7W(SETTINGS settings){
                 char* option = get_label_B(options[selectedOption]);
 
                 if (strcmp(option, "Query ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Query ID: ", 1,2),
@@ -1712,20 +1649,18 @@ void query7W(SETTINGS settings){
 
                     while (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, number, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -1740,7 +1675,6 @@ void query7W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "N") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Enter a N: ", 1,2),
@@ -1752,21 +1686,19 @@ void query7W(SETTINGS settings){
 
                     while (!isNumber(id)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 12, id, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(id)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Top N", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a number :)");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -1783,7 +1715,6 @@ void query7W(SETTINGS settings){
 
                 if (strcmp(option, "[Run]") == 0){
                     if (args[0] == NULL){
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 40, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("You didn't enter any N! Try again :)", 1,2),
@@ -1822,7 +1753,6 @@ void query7W(SETTINGS settings){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 4; i++) {
             char* labelC = get_label_B(config[i]);
@@ -1915,7 +1845,6 @@ void query8W(SETTINGS settings){
                 char* option = get_label_B(options[selectedOption]);
 
                 if (strcmp(option, "Query ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Query ID: ", 1,2),
@@ -1928,20 +1857,18 @@ void query8W(SETTINGS settings){
 
                     while (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, number, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -1956,7 +1883,6 @@ void query8W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "Hotel ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Hotel ID: ", 1,2),
@@ -1968,21 +1894,19 @@ void query8W(SETTINGS settings){
 
                     while (has_spaces(id)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, id, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (has_spaces(id)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Hotel ID", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a ID without spaces");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -1998,7 +1922,6 @@ void query8W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "Begin date") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert begin date: ", 1,2),
@@ -2011,21 +1934,19 @@ void query8W(SETTINGS settings){
 
                     while (!validate_date_timeless(date)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, date, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!validate_date_timeless(date)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Begin date", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Date Format: YYYY/MM/DD");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -2041,7 +1962,6 @@ void query8W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "End date") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert end date: ", 1,2),
@@ -2055,21 +1975,19 @@ void query8W(SETTINGS settings){
 
                     while (!validate_date_timeless(Edate)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, Edate, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!validate_date_timeless(Edate)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "End date", floatMenu1, 2);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Date Format: YYYY/MM/DD");
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -2086,7 +2004,6 @@ void query8W(SETTINGS settings){
 
                 if (strcmp(option, "[Run]") == 0){
                     if (args[0] == NULL){
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 45, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("You didn't enter any hotel ID! Try again :)", 1,2),
@@ -2099,7 +2016,6 @@ void query8W(SETTINGS settings){
                         free_button(floatMenu1[1]);
                     }
                     else if (args[1] == NULL || args[2] == NULL || !compare_date_timeless(args[1], args[2])){
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 40, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("Start date is later than the end date.", 1,2),
@@ -2112,7 +2028,6 @@ void query8W(SETTINGS settings){
                         free_button(floatMenu1[1]);
                     }
                     else{
-                        //realiza a query
                         void* result = query8(get_catalog_S(settings),args);
                         free(option);
                         for (int i = 0; i < 6;  i++) free_button(options[i]);
@@ -2139,7 +2054,6 @@ void query8W(SETTINGS settings){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 4; i++) {
             char* labelC = get_label_B(config[i]);
@@ -2227,7 +2141,6 @@ void query9W(SETTINGS settings){
                 char* option = get_label_B(options[selectedOption]);
 
                 if (strcmp(option, "Query ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Query ID: ", 1,2),
@@ -2240,20 +2153,18 @@ void query9W(SETTINGS settings){
 
                     while (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, number, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -2268,7 +2179,6 @@ void query9W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "Prefix") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Prefix: ", 1,2),
@@ -2278,13 +2188,12 @@ void query9W(SETTINGS settings){
 
                     char id[200] = " ";
 
-                    curs_set(1); // Mostra o cursor
-                    echo();      // Habilita a exibição do texto digitado
-
+                    curs_set(1);
+                    echo();
                     mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 15, id, 1024);
 
-                    curs_set(0); // Esconde o cursor
-                    noecho();    // Desabilita a exibição do texto digitado
+                    curs_set(0);
+                    noecho();
 
                     drawFloatMenu(floatWin, "ID", floatMenu1, 2);
 
@@ -2309,7 +2218,6 @@ void query9W(SETTINGS settings){
                         exit(0);
                     }
                     else{
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 40, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("Didn't enter any prefix! Try again :)", 1,2),
@@ -2336,7 +2244,6 @@ void query9W(SETTINGS settings){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
         for (int i = 0; i < 3; i++) {
             char* labelC = get_label_B(config[i]);
@@ -2427,7 +2334,6 @@ void query10W(SETTINGS settings){
                 char* option = get_label_B(options[selectedOption]);
 
                 if (strcmp(option, "Query ID") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert Query ID: ", 1,2),
@@ -2440,20 +2346,18 @@ void query10W(SETTINGS settings){
 
                     while (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 17, number, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(number) || (ourAtoi(number) > 10 || ourAtoi(number) < 1)) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             wclear(floatWin);
                             drawFloatMenu(floatWin, "Query ID", floatMenu1, 3);
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 1, "Please enter a valid number :)");
                         }
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -2468,7 +2372,6 @@ void query10W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "Year") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert year: ", 1,2),
@@ -2482,16 +2385,16 @@ void query10W(SETTINGS settings){
                     while (!isNumber(id) || strlen(id) != 4){
                         if (ourAtoi(id) == 0) break;
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 15, id, 1024);
 
                         wclear(floatWin);
                         drawFloatMenu(floatWin, "Year", floatMenu1, 3);
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -2506,7 +2409,6 @@ void query10W(SETTINGS settings){
                 }
 
                 if (strcmp(option, "Month") == 0){
-                    //Menu flutuante 1
                     WINDOW* floatWin = newwin(6, 55, 5, 4);
                     BUTTONS floatMenu1[3] ={
                         create_button("Insert month: ", 1,2),
@@ -2519,16 +2421,16 @@ void query10W(SETTINGS settings){
 
                     while (!isNumber(m) || (ourAtoi(m) < 0 || ourAtoi(m) > 12) || strlen(m) != 2){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 21, m, 1024);
 
                         wclear(floatWin);
                         drawFloatMenu(floatWin, "Month", floatMenu1, 3);
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -2544,7 +2446,6 @@ void query10W(SETTINGS settings){
 
                 if (strcmp(option, "[Run]") == 0){
                     if (args[0] == NULL && args[1] != NULL){
-                        //janela a dizer que nao foi inserido id
                         WINDOW* floatWin = newwin(6, 45, 5, 4);
                         BUTTONS floatMenu1[2] ={
                             create_button("You entered the month but forgot the year.", 1,2),
@@ -2582,7 +2483,6 @@ void query10W(SETTINGS settings){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, 5, color);
         for (int i = 0; i < 4; i++) {
             char* labelC = get_label_B(config[i]);

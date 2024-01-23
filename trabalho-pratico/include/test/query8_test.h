@@ -1,6 +1,6 @@
 /**
  * @file query8_test.h
- * @brief
+ * @brief Test file for Query 8 function.
  */
 
 /*
@@ -26,6 +26,13 @@
 #include "catalogs/manager_c.h"
 #include "menuNdata/queries.h"
 
+/**
+ * @brief Test function for Query 8.
+ *
+ * This function tests the behavior and performance of Query 8 for different scenarios.
+ *
+ * @param manager manager.
+ */
 void query8_test(MANAGER manager);
 
 #endif

@@ -94,6 +94,15 @@ int validate_country_code(char* code);
  */
 int validate_account_status(char* status);
 
+/**
+ * @brief Validates the format of seat numbers.
+ *
+ * This function checks whether the given string contains only numerical digits,
+ * ensuring that it represents a valid format for seat numbers.
+ *
+ * @param seats A string representing the seat numbers to be validated.
+ * @return 1 if the seat numbers are valid (contains only digits), 0 otherwise.
+ */
 int validate_seats(char* seats);
 
 /**

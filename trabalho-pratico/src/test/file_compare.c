@@ -1,6 +1,6 @@
 /**
  * @file file_compare.c
- * @brief
+ * @brief File containing functions to compare output files with expected results for testing purposes.
  */
 
 /*

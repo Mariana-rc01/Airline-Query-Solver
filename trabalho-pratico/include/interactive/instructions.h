@@ -1,6 +1,6 @@
 /**
  * @file instructions.h
- * @brief
+ * @brief Definition of an interactive instructions menu.
  */
 
 /*
@@ -25,7 +25,17 @@
 
 #include "menuNdata/interactive.h"
 #include "interactive/home.h"
+#include "utils/utils_i.h"
 
+/**
+ * @brief Displays an interactive instructions menu allowing users to navigate between different pages.
+ *
+ * The function initializes the NCurses library, creates a window, and displays instructions loaded from text files.
+ * Users can navigate between pages using arrow keys, mouse clicks, and scroll up/down.
+ * The menu also provides an option to go back to the main menu.
+ *
+ * @param setts The settings structure used for configuring the program.
+ */
 void instructions(SETTINGS setts);
 
 #endif

@@ -1,6 +1,6 @@
 /**
  * @file query7_test.h
- * @brief
+ * @brief Test file for Query 7 function.
  */
 
 /*
@@ -26,6 +26,13 @@
 #include "catalogs/manager_c.h"
 #include "menuNdata/queries.h"
 
+/**
+ * @brief Test function for Query 7.
+ *
+ * This function tests the behavior and performance of Query 7 for different scenarios.
+ *
+ * @param manager manager.
+ */
 void query7_test(MANAGER manager);
 
 #endif

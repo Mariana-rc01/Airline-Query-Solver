@@ -1,6 +1,6 @@
 /**
  * @file query_result.c
- * @brief 
+ * @brief Implementation of functions related to query results in interactive mode.
  */
 
 /*
@@ -25,8 +25,6 @@
 #include <stdio.h>
 #include <ncurses.h>
 #include <string.h>
-
-// DAR FREE DOS RESULTADOS DAS QUERIES E DOS ARGUMENTOS
 
 void query_results(SETTINGS settings, int id, void* output, char** args){
 
@@ -163,7 +161,6 @@ void txtFormat(SETTINGS settings, int id, void* output, char** args){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
     }
 
@@ -279,14 +276,14 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                     endIdx = startIdx + 12;
                 }
 
-                // Limites do array
+                // Array bounds
                 if (endIdx > nArgs + 2) {
                     endIdx = nArgs + 2;
                     verify = 1;
                 }
 
                 for (int j = startIdx; j < endIdx ; j++) {
-                    // Exibir apenas resultados que pertencem à página atual
+                    // Display only results belonging to the current page
                     int total_size = snprintf(NULL, 0, "%s", results[j]) + 1;
                     char* formatted_string = malloc(total_size);
                     snprintf(formatted_string, total_size, "%s", results[j]);
@@ -303,14 +300,14 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                     endIdx = startIdx + 12;
                 }
 
-                // Certificar-se de não ultrapassar os limites do array
+                // Ensure not to exceed array bounds
                 if (endIdx > nArgs + 1) {
                     endIdx = nArgs + 1;
                     verify = 1;
                 }
 
                 for (int j = startIdx; j < endIdx ; j++) {
-                    // Exibir apenas resultados que pertencem à página atual
+                    // Display only results belonging to the current page
                     int total_size = snprintf(NULL, 0, "%s", results[j]) + 1;
                     char* formatted_string = malloc(total_size);
                     snprintf(formatted_string, total_size, "%s", results[j]);
@@ -404,7 +401,6 @@ void oneByOne(SETTINGS settings, int id, void* output, char** args){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
     }
 
@@ -440,14 +436,14 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
 
     set_nQueries_S(settings, n+1);
 
-    int currentPage = 1; // Adição: variável para controlar a página atual
+    int currentPage = 1; // Variable to control the current page
     char** results = (char**)output;
     int nPages = get_nPages_S(settings);
     int nArgs = 0;
     int resultsPerPage = 0;
     if (output != NULL && (id != 3 && id != 8)){
         nArgs = ourAtoi(results[0]);
-        resultsPerPage = (nArgs / nPages) + ((nArgs % nPages) > 0); // Número de resultados por página
+        resultsPerPage = (nArgs / nPages) + ((nArgs % nPages) > 0); // Number of results per page
     }
 
     int pageSize = 12;
@@ -507,12 +503,12 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
                 int startIdx = 2 + resultsPerPage * (currentPage - 1);
                 int endIdx = startIdx + resultsPerPage;
 
-                // Limites do array
+                // Array limits
                 if (endIdx > nArgs + 2) {
                     endIdx = nArgs + 2;
                 }
 
-                // Descida na página
+                 // Page scroll
                 if (ch == 'u' && scrollStart > 1) {
                     scrollStart--;
                     scrollEnd--;
@@ -523,14 +519,14 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
                     scrollEnd++;
                 }
 
-                // CNão ultrapassa os limites do array
+                // Ensure not to exceed array limits
                 if (scrollEnd > endIdx) {
                     scrollEnd = endIdx;
                 }
 
                 if (resultsPerPage <= 12){
                     for (int j = startIdx; j <= endIdx; j++) {
-                        // Exibir apenas resultados que pertencem à página atual
+                        // Display only results belonging to the current page
                         int total_size = snprintf(NULL, 0, "%s", results[j - 1]) + 1;
                         char* formatted_string = malloc(total_size);
                         snprintf(formatted_string, total_size, "%s", results[j - 1]);
@@ -542,7 +538,7 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
                     mvwprintw(win, 19, 1, "press 'u' to go up");
                     mvwprintw(win, 19, 55, "press 'd' to go down");
                     for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx - 1)< nArgs; j++) {
-                        // Exibir apenas resultados que pertencem à página atual
+                        // Display only results belonging to the current page
                         int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
                         char* formatted_string = malloc(total_size);
                         snprintf(formatted_string, total_size, "%s", results[j + startIdx - 1]);
@@ -567,12 +563,10 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
             int startIdx = 1 + resultsPerPage * (currentPage - 1);
             int endIdx = startIdx + resultsPerPage;
 
-            // Certificar-se de não ultrapassar os limites do array
             if (endIdx > nArgs + 1) {
                 endIdx = nArgs + 1;
             }
 
-            // Adicione esta parte para calcular a rolagem na página
             if (ch == 'u' && scrollStart > 1) {
                 scrollStart--;
                 scrollEnd--;
@@ -583,14 +577,12 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
                 scrollEnd++;
             }
 
-            // Certifique-se de não ultrapassar os limites do array
             if (scrollEnd > endIdx) {
                 scrollEnd = endIdx;
             }
 
             if (resultsPerPage <= 12){
                     for (int j = startIdx; j <= endIdx; j++) {
-                        // Exibir apenas resultados que pertencem à página atual
                         int total_size = snprintf(NULL, 0, "%s", results[j - 1]) + 1;
                         char* formatted_string = malloc(total_size);
                         snprintf(formatted_string, total_size, "%s", results[j - 1]);
@@ -602,7 +594,6 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
                 mvwprintw(win, 19, 1, "press 'u' to go up");
                 mvwprintw(win, 19, 55, "press 'd' to go down");
                 for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx -1)< nArgs; j++) {
-                    // Exibir apenas resultados que pertencem à página atual
                     int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
                     char* formatted_string = malloc(total_size);
                     snprintf(formatted_string, total_size, "%s", results[j + startIdx - 1]);
@@ -692,7 +683,6 @@ void numberPage(SETTINGS settings, int id, void* output, char** args){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
     }
 
@@ -728,14 +718,14 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
 
     set_nQueries_S(settings, n+1);
 
-    int currentPage = 1; // Adição: variável para controlar a página atual
+    int currentPage = 1; // Variable to control the current page
     char** results = (char**)output;
     int nPages = 0;
     int nArgs = 0;
     int resultsPerPage = get_nOutputs_S(settings);
     if (output != NULL && (id != 3 && id != 8)){
         nArgs = ourAtoi(results[0]);
-        nPages = (nArgs / resultsPerPage) + ((nArgs % resultsPerPage) > 0); // Número de resultados por página
+        nPages = (nArgs / resultsPerPage) + ((nArgs % resultsPerPage) > 0); // Number of results per page
     }
 
     int pageSize = 12;
@@ -795,12 +785,12 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
                 int startIdx = 2 + resultsPerPage * (currentPage - 1);
                 int endIdx = startIdx + resultsPerPage;
 
-                // Limites do array
+                // Array limits
                 if (endIdx > nArgs + 2) {
                     endIdx = nArgs + 2;
                 }
 
-                // Descida na página
+                // Page scroll
                 if (ch == 'u' && scrollStart > 1) {
                     scrollStart--;
                     scrollEnd--;
@@ -811,14 +801,14 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
                     scrollEnd++;
                 }
 
-                // CNão ultrapassa os limites do array
+                // Ensure not to exceed array limits
                 if (scrollEnd > endIdx) {
                     scrollEnd = endIdx;
                 }
 
                 if (resultsPerPage <= 12){
                     for (int j = startIdx; j <= endIdx; j++) {
-                        // Exibir apenas resultados que pertencem à página atual
+                        // Display only results belonging to the current page
                         int total_size = snprintf(NULL, 0, "%s", results[j - 1]) + 1;
                         char* formatted_string = malloc(total_size);
                         snprintf(formatted_string, total_size, "%s", results[j - 1]);
@@ -830,7 +820,7 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
                     mvwprintw(win, 19, 1, "press 'u' to go up");
                     mvwprintw(win, 19, 55, "press 'd' to go down");
                     for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx - 1)< nArgs; j++) {
-                        // Exibir apenas resultados que pertencem à página atual
+                        // Display only results belonging to the current page
                         int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
                         char* formatted_string = malloc(total_size);
                         snprintf(formatted_string, total_size, "%s", results[j + startIdx - 1]);
@@ -855,12 +845,10 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
             int startIdx = 1 + resultsPerPage * (currentPage - 1);
             int endIdx = startIdx + resultsPerPage;
 
-            // Certificar-se de não ultrapassar os limites do array
             if (endIdx > nArgs + 1) {
                 endIdx = nArgs + 1;
             }
 
-            // Adicione esta parte para calcular a rolagem na página
             if (ch == 'u' && scrollStart > 1) {
                 scrollStart--;
                 scrollEnd--;
@@ -871,14 +859,12 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
                 scrollEnd++;
             }
 
-            // Certifique-se de não ultrapassar os limites do array
             if (scrollEnd > endIdx) {
                 scrollEnd = endIdx;
             }
 
             if (resultsPerPage <= 12){
                     for (int j = startIdx; j <= endIdx; j++) {
-                        // Exibir apenas resultados que pertencem à página atual
                         int total_size = snprintf(NULL, 0, "%s", results[j - 1]) + 1;
                         char* formatted_string = malloc(total_size);
                         snprintf(formatted_string, total_size, "%s", results[j - 1]);
@@ -890,7 +876,6 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
                 mvwprintw(win, 19, 1, "press 'u' to go up");
                 mvwprintw(win, 19, 55, "press 'd' to go down");
                 for (int j = scrollStart; j <= scrollEnd && scrollEnd < endIdx && (j + startIdx -1)< nArgs; j++) {
-                    // Exibir apenas resultados que pertencem à página atual
                     int total_size = snprintf(NULL, 0, "%s", results[j + startIdx - 1]) + 1;
                     char* formatted_string = malloc(total_size);
                     snprintf(formatted_string, total_size, "%s", results[j + startIdx - 1]);
@@ -980,7 +965,6 @@ void outputsPage(SETTINGS settings, int id, void* output, char** args){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, 0);
     }
 

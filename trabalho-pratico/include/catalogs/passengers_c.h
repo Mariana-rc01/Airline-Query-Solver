@@ -48,8 +48,23 @@ PASS_C create_passengers_c(void);
  */
 void insert_pass_user_c(char* flight_id, PASS_C catalog, char* key);
 
+/**
+ * @brief Inserts a passenger into the passengers catalog for a given key.
+ *
+ * @param catalog The passengers catalog structure.
+ * @param key The key under which the passenger should be stored in the catalog.
+ * @param user The user to be added to the catalog.
+ */
 void insert_passengers_c(PASS_C catalog, char* key, char* user);
 
+/**
+ * @brief Retrieves the array of passengers for a given key from the passengers catalog.
+ *
+ * @param catalog The passengers catalog structure.
+ * @param key The key for which the array of passengers should be retrieved.
+ * @return A pointer to a GPtrArray representing the array of passengers.
+ *         Returns NULL if the key is not found in the catalog.
+ */
 GPtrArray* get_passengers_c(PASS_C catalog, char* key);
 
 /**

@@ -1,6 +1,6 @@
 /**
  * @file query2_test.c
- * @brief
+ * @brief Test file for Query 1 function.
  */
 
 /*
@@ -56,9 +56,10 @@ void query2_test(MANAGER manager){
     free(argsValidID);
 // ----------------------------------------------------------------------------
 
-    char** argsValidFlight = malloc(sizeof(char*)*2);
+    char** argsValidFlight = malloc(sizeof(char*)*3);
     argsValidFlight[0] = "Jéssica Tavares";
     argsValidFlight[1] = "flights";
+    argsValidFlight[2] = NULL;
 
     clock_gettime(CLOCK_REALTIME, &start);
     void* resultValidFlight = query2(manager, argsValidFlight);
@@ -70,9 +71,10 @@ void query2_test(MANAGER manager){
     free(argsValidFlight);
 // ----------------------------------------------------------------------------
 
-    char** argsValidReservations = malloc(sizeof(char*)*2);
+    char** argsValidReservations = malloc(sizeof(char*)*3);
     argsValidReservations[0] = "Jéssica Tavares";
     argsValidReservations[1] = "reservations";
+    argsValidReservations[2] = NULL;
 
     clock_gettime(CLOCK_REALTIME, &start);
     void* resultValidReservations = query2(manager, argsValidReservations);

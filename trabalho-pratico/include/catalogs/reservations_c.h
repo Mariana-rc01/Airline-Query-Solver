@@ -55,10 +55,32 @@ void insert_reservations_c(RESERV reserv, RESERV_C catalog, char* key);
  */
 void insert_usersReservations_c(char* reserv_id, RESERV_C catalog, char* key);
 
+/**
+ * @brief Inserts a hotel reservation ID into the hotel reservations catalog for a given key.
+ *
+ * @param reserv_id The ID of the hotel reservation to be inserted.
+ * @param catalog The hotel reservations catalog structure.
+ * @param key The key under which the reservation ID should be stored in the catalog.
+ */
 void insert_hotelsReservations_c(char* reserv_id, RESERV_C catalog, char* key);
 
+/**
+ * @brief Inserts or updates the count of reservations for a given reservation number on a specific day.
+ *
+ * @param catalog The reservations catalog structure.
+ * @param key The reservation number to be inserted or updated.
+ * @param day The day of the month for which the reservation count should be updated.
+ */
 void insert_reservNumber_c(RESERV_C catalog, char* key, char* day);
 
+/**
+ * @brief Retrieves the count of reservations for a given reservation number in the reservations catalog.
+ *
+ * @param catalog The reservations catalog structure.
+ * @param key The reservation number for which the count should be retrieved.
+ * @return A pointer to an array representing the count of reservations for each day in a month.
+ *         Returns NULL if the reservation number is not found in the catalog.
+ */
 int* get_reservNumber_c(RESERV_C catalog, char* key);
 
 /**
@@ -89,6 +111,14 @@ RESERV get_reservations_by_id(RESERV_C catalog, char* id);
  */
 GPtrArray* get_user_reserv_array_by_id(RESERV_C catalog, char* user_id);
 
+/**
+ * @brief Retrieves the array of hotel reservation IDs for a given hotel ID from the hotel reservations catalog.
+ *
+ * @param catalog The hotel reservations catalog structure.
+ * @param hotel_id The ID of the hotel for which the array of reservation IDs should be retrieved.
+ * @return A pointer to a GPtrArray representing the array of hotel reservation IDs.
+ *         Returns NULL if the hotel ID is not found in the catalog.
+ */
 GPtrArray* get_hotel_reserv_array_by_id(RESERV_C catalog, char* hotel_id);
 
 /**

@@ -1,6 +1,6 @@
 /**
  * @file settings.c
- * @brief
+ * @brief Implementation of functions related to settings configuration.
  */
 
 /*
@@ -28,7 +28,6 @@
 
 #define MAX_OPTIONS 7
 
-// Defina o número máximo de opções do menu flutuante
 #define MAX_FLOAT_MENU_OPTIONS 3
 
 void settingsConfig(SETTINGS settings){
@@ -36,7 +35,6 @@ void settingsConfig(SETTINGS settings){
     cbreak();
     start_color();
     keypad(stdscr, TRUE);
-    mousemask(ALL_MOUSE_EVENTS, NULL);
 
     start_color();
     init_pair(1, COLOR_RED, COLOR_BLACK);
@@ -44,7 +42,6 @@ void settingsConfig(SETTINGS settings){
     WINDOW* win = newwin(20,55,0,0);
     refresh();
 
-    MEVENT event;
     int ch;
     char* title = "Settings";
 
@@ -84,18 +81,6 @@ void settingsConfig(SETTINGS settings){
     while (1){
         ch = getch();
         switch (ch){
-            case KEY_MOUSE:
-                if (getmouse(&event) == OK) {
-                    // Verifica se o clique do mouse ocorreu dentro de uma opção
-                    for (int i = 0; i < MAX_OPTIONS; i++) {
-                        if ((event.x >= get_x_B(options[i]) && event.x < get_x_B(options[i]) + (int)strlen(get_label_B(options[i]))) &&
-                            (event.y == get_y_B(options[i]))) {
-                            selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
-                            break; // perceber melhor o comportamento do rato
-                        }
-                    }
-                }
-                break;
             case KEY_UP:
                 selectedOption = (selectedOption - 1 + MAX_OPTIONS) % MAX_OPTIONS;
                 break;
@@ -124,14 +109,14 @@ void settingsConfig(SETTINGS settings){
 
                     char path[1025];
 
-                    curs_set(1); // Mostra o cursor
-                    echo();      // Habilita a exibição do texto digitado
+                    curs_set(1);
+                    echo();
 
                     mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 15, path, 1024);
                     set_datasetPath_S(settings, path);
 
-                    curs_set(0); // Esconde o cursor
-                    noecho();    // Desabilita a exibição do texto digitado
+                    curs_set(0);
+                    noecho();
 
                     set_changedPath_S(settings,1);
 
@@ -151,13 +136,11 @@ void settingsConfig(SETTINGS settings){
                     color = 1;
                 }
                 if (strcmp(option, "One by one") == 0){
-                    //Seleciona one by one
                     set_output_S(settings,2);
                     color = 2;
                 }
 
                 if (strcmp(option, "Number of pages") == 0){
-                    //Menu flutuante 2 e seleciona Per Page
                     set_output_S(settings,3);
                     color = 3;
                     WINDOW* floatWin = newwin(MAX_FLOAT_MENU_OPTIONS + 3, 55, 5, 4);
@@ -171,22 +154,20 @@ void settingsConfig(SETTINGS settings){
 
                     while (!isNumber(number) || ourAtoi(number) == 0){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 25, number, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(number) || ourAtoi(number) == 0) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
                             refresh();
                         } else {
                             set_nPages_S(settings, ourAtoi(number));
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -201,7 +182,6 @@ void settingsConfig(SETTINGS settings){
                 }
 
                 if (strcmp(option, "Outputs per page") == 0){
-                    //Menu flutuante 2 e seleciona outputs Per Page
                     set_output_S(settings,4);
                     color = 4;
 
@@ -216,22 +196,20 @@ void settingsConfig(SETTINGS settings){
 
                     while (!isNumber(number) || ourAtoi(number) == 0){
 
-                        curs_set(1); // Mostra o cursor
-                        echo();      // Habilita a exibição do texto digitado
+                        curs_set(1);
+                        echo();
 
                         mvwgetnstr(floatWin, get_y_B(floatMenu1[0]), get_x_B(floatMenu1[0]) + 36, number, 1024);
 
-                        // Verifica se a string contém apenas números
                         if (!isNumber(number) || ourAtoi(number) == 0) {
-                            // Exibe uma mensagem de erro e não permite salvar
                             mvwprintw(floatWin, get_y_B(floatMenu1[0]) + 2, 2, "Please enter a valid number :)");
                             refresh();
                         } else {
                             set_nOutputs_S(settings, ourAtoi(number));
                         }
 
-                        curs_set(0); // Esconde o cursor
-                        noecho();    // Desabilita a exibição do texto digitado
+                        curs_set(0);
+                        noecho();
 
                     }
 
@@ -309,7 +287,6 @@ void settingsConfig(SETTINGS settings){
                 break;
         }
 
-        // Atualiza as opções na tela
         drawWindow(win, options, selectedOption, title, MAX_OPTIONS, color);
         for (int i = 0; i < 2; i++) {
             char* labelC = get_label_B(config[i]);
