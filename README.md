@@ -2,7 +2,7 @@
 
 ## Grade: 19/20 :star:
 
-![Interactive mode](Relatorio/2ª%20Fase/Images/home.png)
+![Interactive mode](trabalho-pratico/Relatorio/2ª%20Fase/Images/home.png)
 
 ## Building
 
