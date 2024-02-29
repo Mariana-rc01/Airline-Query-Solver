@@ -1,4 +1,4 @@
-# LI3
+# Airline Query Solver
 
 ## Grade: 19/20 :star:
 
