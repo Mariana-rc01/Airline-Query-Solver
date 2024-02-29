@@ -4,6 +4,8 @@
 
 ![Interactive mode](trabalho-pratico/Relatorio/2ª%20Fase/Images/settings.png)
 
+![Interactive mode](trabalho-pratico/Relatorio/2ª%20Fase/Images/result.png)
+
 ## Building
 
 ### Dependencies
