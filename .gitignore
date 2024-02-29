@@ -1,7 +1,6 @@
 .DS_Store
 *.vscode
 programa-testes
-*.csv
 Resultados/*
 
 # Prerequisites

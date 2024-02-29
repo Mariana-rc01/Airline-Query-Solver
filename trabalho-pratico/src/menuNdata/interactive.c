@@ -121,7 +121,6 @@ int get_nQueries_S(SETTINGS setts){
 
 void free_settings(SETTINGS setts){
     free_manager_c(setts->manager);
-    if (setts->changedPath != 2) free(setts->datasetPath);
     free(setts);
 }
 
